@@ -3,17 +3,34 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "render/shader.h"
+#include "render/textures.h"
+#include "../external/stb_image.h"
 
 GLfloat points[] = {
-    0.0f, 0.5f, 0.0f,
+    -0.5f, -0.5f, 0.0f,
+    -0.5f, 0.5f, 0.0f,
+    0.5f,  0.5f, 0.0f,
+    -0.5f, -0.5f, 0.0f,
     0.5f, -0.5f, 0.0f,
-    -0.5f, -0.5f, 0.0f
+    0.5f, 0.5f, 0.0f,
 };
 
 GLfloat colors[] = {
-    1.0f, 0.0f, 0.0f,
+    0.0f, 0.0f, 0.0f,
     0.0f, 1.0f, 0.0f,
-    0.0f, 0.0f, 1.0f
+    1.0f, 1.0f, 1.0f,
+    0.0f, 0.0f, 0.0f,
+    1.0f, 0.0f, 0.0f,
+    1.0f, 1.0f, 1.0f
+};
+
+GLfloat textureCoords[] = {
+    0.0f, 0.0f,
+    0.0f, 1.0f,
+    1.0f, 1.0f,
+    0.0f, 0.0f,
+    1.0f, 0.0f,
+    1.0f, 1.0f,
 };
 
 int windowSizeX = 1280;
@@ -47,6 +64,7 @@ int main(void)
     //const GLchar* text = readShaderFromFile("../src/render/baseVertex.glsl");
     //printf("%s\n", text);
     //free((GLchar*)text);
+    
 
     if (!window)
     {
@@ -73,13 +91,19 @@ int main(void)
 
     glGenBuffers(1, &pointsVBO);
     glBindBuffer(GL_ARRAY_BUFFER, pointsVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 3 * 3, points, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 3, points, GL_STATIC_DRAW);
 
     GLuint colorsVBO = 0;
 
     glGenBuffers(1, &colorsVBO);
     glBindBuffer(GL_ARRAY_BUFFER, colorsVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 3 * 3, colors, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 3, colors, GL_STATIC_DRAW);
+
+    GLuint texCoordsVBO = 0;
+
+    glGenBuffers(1, &texCoordsVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, texCoordsVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 2 * 6, textureCoords, GL_STATIC_DRAW);
 
     GLuint VAO = 0;
     glGenVertexArrays(1, &VAO);
@@ -94,8 +118,17 @@ int main(void)
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
     glEnableVertexAttribArray(1);
 
-    GLuint shaderProg = MakeShaderProgram("../src/render/baseVertex.glsl", "../src/render/baseFragment.glsl");
-    glUseProgram(shaderProg);   
+    glBindBuffer(GL_ARRAY_BUFFER, texCoordsVBO);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+    glEnableVertexAttribArray(2);
+
+    GLuint shaderProg = MakeShaderProgram("../resources/shaders/TextureVertex.glsl", "../resources/shaders/TextureFragment.glsl");
+    glUseProgram(shaderProg); 
+
+    GLuint TexID1 = MakeNewTexture("../resources/textures/1.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+    GLuint TexID2 = MakeNewTexture("../resources/textures/2.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+
+    setInt("tex", 0, TexID1);  
     
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -103,7 +136,15 @@ int main(void)
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
         
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+
+        if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS){
+            BindTexture(TexID1);
+        }
+        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS){
+            BindTexture(TexID2);
+        }
+
+        glDrawArrays(GL_TRIANGLES, 0, 6);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

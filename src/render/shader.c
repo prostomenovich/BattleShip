@@ -60,8 +60,7 @@ GLuint MakeVertexShader(const GLchar* shaderText)
 		glGetShaderInfoLog(vertexShader, MAX_LOG_SIZE,NULL ,ErrorLog); 
 		printf("VertexShader compile error!\n %s", ErrorLog);
 		glfwTerminate();
-		return 1;
-
+		return COMPILE_SHADER_ERROR;
 	}
 
     return vertexShader;
@@ -82,8 +81,7 @@ GLuint MakeFragmentShader(const GLchar* shaderText)
 		glGetShaderInfoLog(fragmentShader, MAX_LOG_SIZE, NULL ,ErrorLog); 
 		printf("FragmentShader compile error!\n %s", ErrorLog);
 		glfwTerminate();
-		return 1;
-
+		return COMPILE_SHADER_ERROR;
 	}
 
     return fragmentShader;
@@ -117,4 +115,5 @@ GLuint MakeShaderProgram(char* PathToVertex, char* PathToFragment)
 
     return shaderProgram;
 }
+
 #endif

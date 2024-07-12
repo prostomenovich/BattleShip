@@ -8,6 +8,7 @@
 #define SHADER_H
 
 #define READING_SHADER_ERROR 111111
+#define COMPILE_SHADER_ERROR 222222
 #define MAX_LOG_SIZE 1024
 
 const GLchar* readShaderFromFile(char* fileName);
