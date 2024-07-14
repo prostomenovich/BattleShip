@@ -4,34 +4,10 @@
 #include <stdlib.h>
 #include "render/shader.h"
 #include "render/textures.h"
-#include "../external/stb_image.h"
-
-GLfloat points[] = {
-    -0.5f, -0.5f, 0.0f,
-    -0.5f, 0.5f, 0.0f,
-    0.5f,  0.5f, 0.0f,
-    -0.5f, -0.5f, 0.0f,
-    0.5f, -0.5f, 0.0f,
-    0.5f, 0.5f, 0.0f,
-};
-
-GLfloat colors[] = {
-    0.0f, 0.0f, 0.0f,
-    0.0f, 1.0f, 0.0f,
-    1.0f, 1.0f, 1.0f,
-    0.0f, 0.0f, 0.0f,
-    1.0f, 0.0f, 0.0f,
-    1.0f, 1.0f, 1.0f
-};
-
-GLfloat textureCoords[] = {
-    0.0f, 0.0f,
-    0.0f, 1.0f,
-    1.0f, 1.0f,
-    0.0f, 0.0f,
-    1.0f, 0.0f,
-    1.0f, 1.0f,
-};
+#include "render/renderUtils.h"
+#include "render/sprite.h"
+#include <cglm/mat4.h>
+#include <cglm/call.h>
 
 int windowSizeX = 1280;
 int windowSizeY = 720;
@@ -61,11 +37,6 @@ int main(void)
     glfwSetWindowSizeCallback(window, glfwWindowSizeCallback);
     glfwSetKeyCallback(window, glfwKeyCallback);
 
-    //const GLchar* text = readShaderFromFile("../src/render/baseVertex.glsl");
-    //printf("%s\n", text);
-    //free((GLchar*)text);
-    
-
     if (!window)
     {
         printf("GLFW_CREATE_WINDOW_FAILED!\n");
@@ -87,64 +58,35 @@ int main(void)
 
 	glClearColor(0, 1, 0, 1);
 
-    GLuint pointsVBO = 0;
-
-    glGenBuffers(1, &pointsVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, pointsVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 3, points, GL_STATIC_DRAW);
-
-    GLuint colorsVBO = 0;
-
-    glGenBuffers(1, &colorsVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, colorsVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 3, colors, GL_STATIC_DRAW);
-
-    GLuint texCoordsVBO = 0;
-
-    glGenBuffers(1, &texCoordsVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, texCoordsVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 2 * 6, textureCoords, GL_STATIC_DRAW);
-
-    GLuint VAO = 0;
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
-
-    
-    glBindBuffer(GL_ARRAY_BUFFER, pointsVBO);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-
-    glBindBuffer(GL_ARRAY_BUFFER, colorsVBO);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-    glEnableVertexAttribArray(1);
-
-    glBindBuffer(GL_ARRAY_BUFFER, texCoordsVBO);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-    glEnableVertexAttribArray(2);
-
-    GLuint shaderProg = MakeShaderProgram("../resources/shaders/TextureVertex.glsl", "../resources/shaders/TextureFragment.glsl");
+    GLuint shaderProg = MakeShaderProgram("../resources/shaders/SpriteVertex.glsl", "../resources/shaders/SpriteFragment.glsl");
     glUseProgram(shaderProg); 
 
-    GLuint TexID1 = MakeNewTexture("../resources/textures/1.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
-    GLuint TexID2 = MakeNewTexture("../resources/textures/2.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+    Sprite* sp = initSprite();
+    setSpriteTexture(sp, "../resources/textures/3.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+    setStartSpriteParams(sp, 800, 708, 100, 10, 0);
+    Sprite* sp1 = initSprite();
+    setSpriteTexture(sp1, "../resources/textures/2.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+    setStartSpriteParams(sp1, 100, 100, 1000, 290, 0);
 
-    setInt("tex", 0, TexID1);  
-    
+    mat4 projectionMatrix;
+    glm_ortho(0.f, windowSizeX, 0.f, windowSizeY, -100.f, 100.f, projectionMatrix);
+    sendMatrix4ToShader("projectionMat", &projectionMatrix, shaderProg);
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
         
-
         if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS){
-            BindTexture(TexID1);
+            sp->rotate = sp->rotate += 1.;
         }
         if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS){
-            BindTexture(TexID2);
+            //renderSprite(sp, shaderProg, SECOND_TEXTURE);
+            sp->rotate = sp->rotate -= 1.;
         }
-
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        renderSprite(sp, shaderProg, FIRST_TEXTURE);
+        renderSprite(sp1, shaderProg, FIRST_TEXTURE);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
@@ -152,6 +94,9 @@ int main(void)
         /* Poll for and process events */
         glfwPollEvents();
     }
+
+    freeSprite(sp1);
+    freeSprite(sp);
 
     glfwTerminate();
     return EXIT_SUCCESS;
@@ -169,4 +114,9 @@ void glfwKeyCallback(GLFWwindow* window, int key, int scancode, int action, int 
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
         glfwSetWindowShouldClose(window, GL_TRUE);
     }
+}
+
+void changeSpriteRotation(Sprite* sprite, GLfloat newRotate)
+{
+    sprite->rotate = newRotate;
 }

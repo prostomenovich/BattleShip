@@ -46,7 +46,7 @@ GLuint NewTexture(GLuint width, GLuint height, unsigned char* texturePixels, GLu
         break;
     }
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, channelCountMode, GL_UNSIGNED_BYTE, texturePixels);
+    glTexImage2D(GL_TEXTURE_2D, 0, channelCountMode, width, height, 0, channelCountMode, GL_UNSIGNED_BYTE, texturePixels);
     glActiveTexture(GL_TEXTURE0);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapMode);
@@ -60,11 +60,6 @@ GLuint NewTexture(GLuint width, GLuint height, unsigned char* texturePixels, GLu
     stbi_image_free(texturePixels);
 
     return TextureID;
-}
-
-void setInt(char* name, GLint value, GLuint textureID)
-{
-    glUniform1i(glGetUniformLocation(textureID, name), value);
 }
 
 GLuint MakeNewTexture(char* pathToTexture, GLenum filter, GLenum wrapMode)
@@ -86,7 +81,7 @@ GLuint MakeNewTexture(char* pathToTexture, GLenum filter, GLenum wrapMode)
 
 void BindTexture(GLuint TextureID)
 {
-    setInt("tex", 0, TextureID);
+    sendTextureToShader("tex", 0, TextureID);
     glBindTexture(GL_TEXTURE_2D, TextureID);
 }
 

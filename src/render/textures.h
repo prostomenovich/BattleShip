@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "../../external/stb_image.h"
+#include <cglm/mat4.h>
+#include <cglm/types.h>
+#include "renderUtils.h"
 
 
 #ifndef TEXTURES_H
@@ -25,7 +28,6 @@ GLuint NewTexture(GLuint width,
                       GLenum filter, 
                       GLenum wrapMode);
 
-void setInt(char* name, GLint value, GLuint textureID);
 
 GLuint MakeNewTexture(char* pathToTexture, GLenum filter, GLenum wrapMode);
 
