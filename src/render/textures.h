@@ -3,14 +3,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "../../external/stb_image.h"
 #include <cglm/mat4.h>
 #include <cglm/types.h>
 #include "renderUtils.h"
-
+#include "../../external/stb_image.h"
 
 #ifndef TEXTURES_H
 #define TEXTURES_H
+
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ONLY_PNG

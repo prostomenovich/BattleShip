@@ -6,6 +6,7 @@
 #include <cglm/mat4.h>
 #include "textures.h"
 #include "renderUtils.h"
+#include <stdarg.h>
 
 
 #ifndef SPRITE_H

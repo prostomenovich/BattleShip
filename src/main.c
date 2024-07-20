@@ -3,9 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "render/shader.h"
-#include "render/textures.h"
 #include "render/renderUtils.h"
 #include "render/sprite.h"
+#include "render/AnimSprite.h"
 #include <cglm/mat4.h>
 #include <cglm/call.h>
 
@@ -63,10 +63,20 @@ int main(void)
 
     Sprite* sp = initSprite();
     setSpriteTexture(sp, "../resources/textures/3.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
-    setStartSpriteParams(sp, 800, 708, 100, 10, 0);
+    setStartSpriteParams(sp, 800, 708, 10, 10, 0);
     Sprite* sp1 = initSprite();
     setSpriteTexture(sp1, "../resources/textures/2.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
-    setStartSpriteParams(sp1, 100, 100, 1000, 290, 0);
+    setStartSpriteParams(sp1, 600, 600, 600, 100, 0);
+
+    AnimatedSprite* monks = initAnimatedSprite();
+    setStartAnimSpriteParams(monks, 200, 200, 560, 560, 0);
+    setAnimSpriteFrames(monks, 3, REPEAT_TRUE, GL_NEAREST, GL_CLAMP_TO_EDGE,
+                        "../resources/textures/krest_1.png", 
+                        "../resources/textures/krest_2.png",
+                        "../resources/textures/krest_3.png");
+
+
+
 
     mat4 projectionMatrix;
     glm_ortho(0.f, windowSizeX, 0.f, windowSizeY, -100.f, 100.f, projectionMatrix);
@@ -79,15 +89,16 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT);
         
         if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS){
-            sp->rotate = sp->rotate += 1.;
+            sp->rotate += 1.;
+            sp1->rotate -= 1.;
         }
         if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS){
-            //renderSprite(sp, shaderProg, SECOND_TEXTURE);
-            sp->rotate = sp->rotate -= 1.;
+            sp->rotate -= 1.;
+            sp1->rotate += 1.;
         }
-        renderSprite(sp, shaderProg, FIRST_TEXTURE);
         renderSprite(sp1, shaderProg, FIRST_TEXTURE);
-
+        renderSprite(sp, shaderProg, FIRST_TEXTURE);
+        renderAnimSprite(monks, shaderProg, time(NULL), 1.0);
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 

@@ -13,7 +13,9 @@ add_executable(${PROJECT_NAME} src/main.c
                                src/render/renderUtils.c
                                src/render/renderUtils.h
                                src/render/sprite.c
-                               src/render/sprite.h)
+                               src/render/sprite.h
+                               src/render/AnimSprite.c
+                               src/render/AnimSprite.h)
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
