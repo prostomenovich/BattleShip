@@ -6,8 +6,11 @@
 #include "render/renderUtils.h"
 #include "render/sprite.h"
 #include "render/AnimSprite.h"
+#include "render/text.h"
 #include <cglm/mat4.h>
 #include <cglm/call.h>
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 int windowSizeX = 1280;
 int windowSizeY = 720;
@@ -56,11 +59,21 @@ int main(void)
     printf("Renderer: %s\n", glGetString(GL_RENDERER));
     printf("OpenGL Version: %s\n", glGetString(GL_VERSION));
 
+    FT_Library ft;
+    if (FT_Init_FreeType(&ft)){
+        printf("ERROR::FREETYPE: Could not init FreeType Library\n");
+    }
+
+    Text* textParams = makeNewText(&ft, "../resources/fonts/UnformitalRegula.ttf", 48);
+
+
+
 	glClearColor(0, 1, 0, 1);
 
     GLuint shaderProg = MakeShaderProgram("../resources/shaders/SpriteVertex.glsl", "../resources/shaders/SpriteFragment.glsl");
-    glUseProgram(shaderProg); 
-
+    //glUseProgram(shaderProg);
+    GLuint TextShaderProg = MakeShaderProgram("../resources/shaders/textVertex.glsl", "../resources/shaders/textFragment.glsl");
+    
     Sprite* sp = initSprite();
     setSpriteTexture(sp, "../resources/textures/3.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
     setStartSpriteParams(sp, 800, 708, 10, 10, 0);
@@ -80,8 +93,12 @@ int main(void)
 
     mat4 projectionMatrix;
     glm_ortho(0.f, windowSizeX, 0.f, windowSizeY, -100.f, 100.f, projectionMatrix);
+    glUseProgram(shaderProg);
     sendMatrix4ToShader("projectionMat", &projectionMatrix, shaderProg);
+    glUseProgram(TextShaderProg);
+    sendMatrix4ToShader("projection", &projectionMatrix, TextShaderProg);
 
+    glUseProgram(shaderProg);
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
@@ -96,9 +113,12 @@ int main(void)
             sp->rotate -= 1.;
             sp1->rotate += 1.;
         }
+        
         renderSprite(sp1, shaderProg, FIRST_TEXTURE);
         renderSprite(sp, shaderProg, FIRST_TEXTURE);
         renderAnimSprite(monks, shaderProg, time(NULL), 1.0);
+        renderText(textParams, TextShaderProg, "Hello izyan", 200.f, 250.f, 4.0f, 1.0f, 0.0f, 0.0f);
+        renderText(textParams, TextShaderProg, "Penis", 1000.f, 100.f, 1.0f, 0.0f, 0.0f, 1.0f);
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 
@@ -106,8 +126,10 @@ int main(void)
         glfwPollEvents();
     }
 
+    freeAnimSprite(monks);
     freeSprite(sp1);
     freeSprite(sp);
+    freeText(textParams);
 
     glfwTerminate();
     return EXIT_SUCCESS;

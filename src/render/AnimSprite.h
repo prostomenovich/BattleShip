@@ -59,4 +59,6 @@ void setAnimSpriteFrames(AnimatedSprite* animSprite,
 
 void renderAnimSprite(AnimatedSprite* sprite, GLuint shaderProgram, time_t currentTime, double delay);
 
+void freeAnimSprite(AnimatedSprite* animSprite);
+
 #endif

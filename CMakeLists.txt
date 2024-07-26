@@ -15,7 +15,9 @@ add_executable(${PROJECT_NAME} src/main.c
                                src/render/sprite.c
                                src/render/sprite.h
                                src/render/AnimSprite.c
-                               src/render/AnimSprite.h)
+                               src/render/AnimSprite.h
+                               src/render/text.c
+                               src/render/text.h)
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
@@ -27,8 +29,11 @@ target_link_libraries(${PROJECT_NAME} glfw)
 
 add_subdirectory(external/cglm)
 target_link_libraries(${PROJECT_NAME} cglm)
-
 include_directories(external/cglm)
 
 add_subdirectory(external/glad)
 target_link_libraries(${PROJECT_NAME} glad)
+
+add_subdirectory(external/freetype)
+target_link_libraries(${PROJECT_NAME} freetype)
+include_directories(external/freetype)

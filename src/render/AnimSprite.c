@@ -123,7 +123,9 @@ void setAnimSpriteFrames(AnimatedSprite* animSprite,
 }
 
 void renderAnimSprite(AnimatedSprite* sprite, GLuint shaderProgram, time_t currentTime, double delay)
-{
+{   
+    glUseProgram(shaderProgram);
+
     if (sprite->state == ANIM_SPRITE_NOT_USED){
         sprite->state = ANIM_SPRITE_IS_NOW_BEING_DISPLAYED;
     }
@@ -179,6 +181,20 @@ void renderAnimSprite(AnimatedSprite* sprite, GLuint shaderProgram, time_t curre
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
+    glUseProgram(0);
 }
 
+void freeAnimSprite(AnimatedSprite* animSprite)
+{
+    glDeleteBuffers(1, &animSprite->texCoordsVBO);
+    glDeleteBuffers(1, &animSprite->vertCoordsVBO);
+    glDeleteVertexArrays(1, &animSprite->VAO);
+
+    for (int i = 0; i < animSprite->texturesCount; i++){
+        glDeleteTextures(1, &animSprite->frameBuffer[i]);
+    }
+
+    free(animSprite->frameBuffer);
+    free(animSprite);
+}
 #endif

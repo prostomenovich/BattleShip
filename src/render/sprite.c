@@ -118,6 +118,8 @@ void setSpriteTexture(Sprite* sprite, char* pathToTexture, GLenum filter, GLenum
 
 void renderSprite(Sprite* sprite, GLuint shaderProgram, GLint textureNumber)
 {
+    glUseProgram(shaderProgram);
+    
     mat4 modelMatrix = {
         1, 0, 0, 0,
         0, 1, 0, 0,
@@ -163,6 +165,7 @@ void renderSprite(Sprite* sprite, GLuint shaderProgram, GLint textureNumber)
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
+    glUseProgram(0);
 }
 
 void changeSpritePosX(Sprite* sprite, GLfloat newPosX)
@@ -186,13 +189,13 @@ void freeSprite(Sprite* sprite)
     if (sprite->Texture1 != 0){
         glDeleteTextures(1, &sprite->Texture1);
     }
-    else if (sprite->Texture2 != 0){
+    if (sprite->Texture2 != 0){
         glDeleteTextures(1, &sprite->Texture2);
     }
-    else if (sprite->Texture3 != 0){
+    if (sprite->Texture3 != 0){
         glDeleteTextures(1, &sprite->Texture3);
     }
-    else if (sprite->Texture4 != 0){
+    if (sprite->Texture4 != 0){
         glDeleteTextures(1, &sprite->Texture4);
     }
 
