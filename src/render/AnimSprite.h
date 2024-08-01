@@ -61,4 +61,6 @@ void renderAnimSprite(AnimatedSprite* sprite, GLuint shaderProgram, time_t curre
 
 void freeAnimSprite(AnimatedSprite* animSprite);
 
+void changeAnimSpriteSize(AnimatedSprite* sprite, GLfloat newSizeX, GLfloat newSizeY);
+
 #endif

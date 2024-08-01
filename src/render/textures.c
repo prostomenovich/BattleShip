@@ -2,6 +2,7 @@
 
 #ifndef TEXTURES_C
 #define TEXTURES_C
+#include "../../external/stb_image.h"
 
 void printTextureInfo(GLuint* width, GLuint* height, GLuint* channels)
 {

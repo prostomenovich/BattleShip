@@ -184,6 +184,12 @@ void renderAnimSprite(AnimatedSprite* sprite, GLuint shaderProgram, time_t curre
     glUseProgram(0);
 }
 
+void changeAnimSpriteSize(AnimatedSprite* sprite, GLfloat newSizeX, GLfloat newSizeY)
+{
+    sprite->sizeX = newSizeX;
+    sprite->sizeY = newSizeY;
+}
+
 void freeAnimSprite(AnimatedSprite* animSprite)
 {
     glDeleteBuffers(1, &animSprite->texCoordsVBO);

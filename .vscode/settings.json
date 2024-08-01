@@ -1,5 +1,8 @@
 {
     "files.associations": {
-        "text.h": "c"
+        "text.h": "c",
+        "stb_image.h": "c",
+        "mat4.h": "c",
+        "call.h": "c"
     }
 }
