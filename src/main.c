@@ -15,6 +15,7 @@
 int windowSizeX = 1280;
 int windowSizeY = 720;
 
+
 GLuint SpriteShaderProgram;
 GLuint TextShaderProgram;
 
@@ -74,7 +75,6 @@ int main(void)
         printf("ERROR::FREETYPE: Could not init FreeType Library\n");
     }
 
-    //Text* textParams = makeNewText(&ft, "../resources/fonts/UnformitalRegula.ttf", 48);
 
 
     SpriteShaderProgram = MakeShaderProgram("../resources/shaders/SpriteVertex.glsl",
@@ -85,24 +85,10 @@ int main(void)
     initMainMenu();
     initAbout();
     initNewLoadMenu();
+    initGameSettingsMenu();
 
 	glClearColor(0, 1, 0, 1);
     
-    Sprite* sp = initSprite();
-    setSpriteTexture(sp, "../resources/textures/3.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
-    setStartSpriteParams(sp, 800, 708, 10, 10, 0);
-    Sprite* sp1 = initSprite();
-    setSpriteTexture(sp1, "../resources/textures/2.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
-    setStartSpriteParams(sp1, 600, 600, 600, 100, 0);
-
-    /*AnimatedSprite* mainMenuBackground = initAnimatedSprite();
-    setStartAnimSpriteParams(mainMenuBackground, 1280, 720, 0, 0, 0);
-    setAnimSpriteFrames(mainMenuBackground, 4, REPEAT_TRUE, GL_NEAREST, GL_CLAMP_TO_EDGE,
-                        "../resources/textures/mainMenu/background/mainMenuBackgroundFrame1.png",
-                        "../resources/textures/mainMenu/background/mainMenuBackgroundFrame2.png",
-                        "../resources/textures/mainMenu/background/mainMenuBackgroundFrame3.png",
-                        "../resources/textures/mainMenu/background/mainMenuBackgroundFrame4.png");
-    */
     mat4 projectionMatrix;
     glm_ortho(0.f, windowSizeX, 0.f, windowSizeY, -100.f, 100.f, projectionMatrix);
     glUseProgram(SpriteShaderProgram);
@@ -116,14 +102,17 @@ int main(void)
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
         
-        if (playerInfo.state == MAIN_MENU_SCENES){
+        if (playerInfo.scene == MAIN_MENU_SCENES){
             renderMainMenu(window);
         }
-        if (playerInfo.state == ABOUT_AUTHORS_SCENES || playerInfo.state == ABOUT_LORE_SCENES || playerInfo.state == ABOUT_RULES_SCENES){
+        if (playerInfo.scene == ABOUT_AUTHORS_SCENES || playerInfo.scene == ABOUT_LORE_SCENES || playerInfo.scene == ABOUT_RULES_SCENES){
             renderAbout(window);
         }
-        if(playerInfo.state == NEW_LOAD_MENU_SCENES){
+        if(playerInfo.scene == NEW_LOAD_MENU_SCENES){
             renderNewLoadMenu(window);
+        }
+        if(playerInfo.scene == GAME_SETTING_MENU){
+            renderGameSettingsMenu(window);
         }
         
         
@@ -139,10 +128,6 @@ int main(void)
         glfwPollEvents();
     }
 
-    //freeAnimSprite(mainMenuBackground);
-    freeSprite(sp1);
-    freeSprite(sp);
-    //freeText(textParams);
 
     glfwTerminate();
     return EXIT_SUCCESS;

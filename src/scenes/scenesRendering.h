@@ -18,4 +18,6 @@ void renderAbout(GLFWwindow* window);
 
 void renderNewLoadMenu(GLFWwindow* window);
 
+void renderGameSettingsMenu(GLFWwindow* window);
+
 #endif
