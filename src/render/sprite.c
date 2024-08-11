@@ -175,7 +175,7 @@ void changeSpritePosX(Sprite* sprite, GLfloat newPosX)
 
 void changeSpritePosY(Sprite* sprite, GLfloat newPosY)
 {
-    sprite->positionX = newPosY;
+    sprite->positionY = newPosY;
 }
 
 void changeSpriteSize(Sprite* sprite, GLfloat newSizeX, GLfloat newSizeY)

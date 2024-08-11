@@ -24,6 +24,7 @@ FT_Library ft;
 
 void glfwWindowSizeCallback(GLFWwindow* window, int width, int height);
 void glfwKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
+void character_callback( GLFWwindow * window, unsigned  int codepoint);
 
 int main(void)
 {   
@@ -40,6 +41,8 @@ int main(void)
         return EXIT_FAILURE;
     }
     
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
     //Setting an OpenGL context
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
@@ -48,9 +51,13 @@ int main(void)
     //Creating a Window
     window = glfwCreateWindow(windowSizeX, windowSizeY, "BattleShip", NULL, NULL);
 
+    glfwSetWindowAttrib(window, GLFW_RESIZABLE, GLFW_FALSE);
+    glfwSetWindowSizeLimits(window, 1280, 720, 1280, 720);
+
     //Callbacks
     glfwSetWindowSizeCallback(window, glfwWindowSizeCallback);
     glfwSetKeyCallback(window, glfwKeyCallback);
+    glfwSetCharCallback (window, character_callback);
 
     if (!window)
     {
@@ -86,6 +93,8 @@ int main(void)
     initAbout();
     initNewLoadMenu();
     initGameSettingsMenu();
+    initRaftPlacement10x10();
+    initRaftPlacement15x15();
 
 	glClearColor(0, 1, 0, 1);
     
@@ -114,20 +123,20 @@ int main(void)
         if(playerInfo.scene == GAME_SETTING_MENU){
             renderGameSettingsMenu(window);
         }
+        if (playerInfo.scene == RAFT_PLACEMENT_10_X_10){
+            renderRaftPlacement10x10(window);
+        }
+        if (playerInfo.scene == RAFT_PLACEMENT_15_X_15){
+            renderRaftPlacement15x15(window);
+        }
         
-        
-        //renderSprite(sp1, shaderProg, FIRST_TEXTURE);
-        //renderSprite(sp, shaderProg, FIRST_TEXTURE);
-        //renderAnimSprite(mainMenuBackground, shaderProg, time(NULL), 1.0);
-        //renderText(textParams, TextShaderProg, "Hello izyan", 200.f, 250.f, 4.0f, 1.0f, 0.0f, 0.0f);
-        //renderText(textParams, TextShaderProg, "Penis", 1000.f, 100.f, 1.0f, 0.0f, 0.0f, 1.0f);
+    
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 
         /* Poll for and process events */
         glfwPollEvents();
     }
-
 
     glfwTerminate();
     return EXIT_SUCCESS;
@@ -151,6 +160,11 @@ void glfwKeyCallback(GLFWwindow* window, int key, int scancode, int action, int 
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
         glfwSetWindowShouldClose(window, GL_TRUE);
     }
+}
+
+void character_callback( GLFWwindow * window, unsigned  int codepoint)
+{
+    printf("%c", codepoint);
 }
 
 void changeSpriteRotation(Sprite* sprite, GLfloat newRotate)

@@ -7,6 +7,7 @@
 #include "../render/text.h"
 #include "scenesInitial.h"
 #include "processingUtils.h"
+#include "../game/ShipBase.h"
 
 
 #ifndef SCENESRENDERING_H
@@ -19,5 +20,9 @@ void renderAbout(GLFWwindow* window);
 void renderNewLoadMenu(GLFWwindow* window);
 
 void renderGameSettingsMenu(GLFWwindow* window);
+
+void renderRaftPlacement10x10(GLFWwindow* window);
+
+void renderRaftPlacement15x15(GLFWwindow* window);
 
 #endif

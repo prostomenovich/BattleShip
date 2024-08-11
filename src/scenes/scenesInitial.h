@@ -5,6 +5,8 @@
 #include "../render/sprite.h"
 #include "../render/AnimSprite.h"
 #include "../render/text.h"
+#include "processingUtils.h"
+#include "../game/ShipBase.h"
 
 
 #ifndef SCENESINITIAL_H
@@ -17,6 +19,8 @@
 #define ABOUT_AUTHORS_SCENES 4
 #define NEW_LOAD_MENU_SCENES 5
 #define GAME_SETTING_MENU 6
+#define RAFT_PLACEMENT_10_X_10 7
+#define RAFT_PLACEMENT_15_X_15 8
 
 //Before filling
 #define NOT_FILLED_IN 0
@@ -25,15 +29,23 @@
 #define BOTS_FIGHT_MODE 11
 #define BASIC_MODE 12
 
-//Map size
-#define MAP_SIZE_10_X_10 31
-#define MAP_SIZE_15_X_15 32
+//Bot level
+#define EASY_BOT_LEVEL 41
+#define NORMAL_BOT_LEVEL 42
+#define HARD_BOT_LEVEL 43
+
+//states
+#define IN_EDIT_MODE 51
+#define NOT_IN_EDIT_MODE 52
+#define PLATE_SUCCES 53
+#define PLATE_ERROR 54
 
 typedef struct Player
 {
     GLuint scene;
     GLuint GameMode;
     GLuint MapSize;
+    GLuint BotLevel;
 
 } Player;
 
@@ -70,12 +82,41 @@ typedef struct GameSettingsMenu
     AnimatedSprite* Background;
     Sprite* ButtonPlatesChooseGM;
     Sprite* ButtonPlatesChooseBFS;
+    Sprite* ButtonPlatesChooseBL;
     Sprite* PirateWMGM;
     Sprite* PirateWMBFS;
+    Sprite* PirateWMBL;
     Text* TextParams;
     GLuint state;
 
 } GameSettingsMenu;
+
+typedef struct RaftPlacement10x10
+{
+    Sprite* Background;
+    Sprite* ButtonPlates;
+    Sprite* Map10x10;
+    Sprite* QuestionMarkBtn;
+    MapSprite MapArray[10][10];
+    Text* TextParams;
+    Sprite* ExitBtn;
+    GLuint state;
+
+} RaftPlacement10x10;
+
+typedef struct RaftPlacement15x15
+{
+    Sprite* Background;
+    Sprite* ButtonPlates;
+    Sprite* Map15x15;
+    Sprite* QuestionMarkBtn;
+    MapSprite MapArray[15][15];
+    Text* TextParams;
+    Sprite* ExitBtn;
+    GLuint state;
+
+} RaftPlacement15x15;
+
 
 void initMainMenu();
 
@@ -84,6 +125,10 @@ void initAbout();
 void initNewLoadMenu();
 
 void initGameSettingsMenu();
+
+void initRaftPlacement10x10();
+
+void initRaftPlacement15x15();
 
 
 #endif
