@@ -313,6 +313,7 @@ void getRemainedShips(ShipBase* shipBase, int shipType, char* shipsCountStr)
 int AllShipsInMap(ShipBase* shipBase)
 {
     ShipBase* sb = shipBase;
+    if (sb == NULL) return NOT_ALL_SHIPS_IN_MAP;
     while(sb != NULL){
         if (sb->shipsCount != sb->shipsInMap) return NOT_ALL_SHIPS_IN_MAP;
         sb = sb->nextShip;

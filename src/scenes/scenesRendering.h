@@ -25,4 +25,8 @@ void renderRaftPlacement10x10(GLFWwindow* window);
 
 void renderRaftPlacement15x15(GLFWwindow* window);
 
+void renderRaftPlacement10x10BF(GLFWwindow* window);
+
+void renderRaftPlacement15x15BF(GLFWwindow* window);
+
 #endif

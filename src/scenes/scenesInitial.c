@@ -8,6 +8,8 @@ Player playerInfo;
 
 //map
 int map[18][18] = {0, };
+int mapBot1[18][18] = {0, };
+int mapBot2[18][18] = {0, };
 
 //Scenes
 MainMenu sMainMenu;
@@ -16,9 +18,13 @@ NewLoadMenu sNewLoadMenu;
 GameSettingsMenu sGameSettingsMenu;
 RaftPlacement10x10 sRaftPlacement10X10;
 RaftPlacement15x15 sRaftPlacement15X15;
+RaftPlacement10x10BF sRaftPlacement10X10BF;
+RaftPlacement15x15BF sRaftPlacement15X15BF;
 
 //ShipBase
-ShipBase* shipBase;
+ShipBase* shipBase = NULL;
+ShipBase* shipBaseBFBot1 = NULL;
+ShipBase* shipBaseBFBot2 = NULL;
 Coordinates* coords[5] = {NULL, };
 
 //Other veriables
@@ -210,7 +216,6 @@ void initRaftPlacement10x10()
         yPos -= 60.8;
     }
 
-    //if (shipBase == NULL) shipBase = initShipBase(MAP_SIZE_10_X_10);
     
     if (coords[0] == NULL){
 
@@ -287,8 +292,6 @@ void initRaftPlacement15x15()
         xPos = 550.0;
         yPos -= 42.0;
     }
-
-    //if (shipBase == NULL) shipBase = initShipBase(MAP_SIZE_15_X_15);
     
     if (coords[0] == NULL){
         
@@ -305,6 +308,168 @@ void initRaftPlacement15x15()
     sRaftPlacement15X15.QuestionMarkBtn = questionMarkBtn;
     sRaftPlacement15X15.state = NOT_IN_EDIT_MODE;
     sRaftPlacement15X15.ExitBtn = exitBtn;
+}
+
+void initRaftPlacement10x10BF()
+{
+    extern MainMenu sMainMenu;
+    extern RaftPlacement10x10 sRaftPlacement10X10;
+    extern RaftPlacement10x10BF sRaftPlacement10X10BF;
+    extern ShipBase* shipBaseBFBot1;
+    extern ShipBase* shipBaseBFBot2;
+    extern Coordinates* coords[5];
+
+    Sprite* buttonsPlate = initSprite();
+    setStartSpriteParams(buttonsPlate, 1280, 720, 0, 0, 0);
+    setSpriteTexture(buttonsPlate, "../resources/textures/raftPuttingMenu/10x10/buttonsPlateForBF.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
+    double xPos = 558.0,
+        yPos = 582.0;
+
+    for (int i = 0; i < 10; i++){
+        for (int j = 0; j < 10; j++){
+            Sprite* mapPlate = initSprite();
+            setStartSpriteParams(mapPlate, 57, 57, xPos, yPos, 0);
+            if (i == 0 && j == 0){
+                setSpriteTexture(mapPlate, "../resources/textures/raftPuttingMenu/10x10/red.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+                setSpriteTexture(mapPlate, "../resources/textures/raftPuttingMenu/10x10/green.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
+                setSpriteTexture(mapPlate, "../resources/textures/raftPuttingMenu/10x10/yellow.png", GL_NEAREST, GL_CLAMP_TO_EDGE, THIRD_TEXTURE);
+            }
+            else {
+                mapPlate->Texture1 = sRaftPlacement10X10BF.MapArrayBot1[0][0].sprite->Texture1;
+                mapPlate->Texture2 = sRaftPlacement10X10BF.MapArrayBot1[0][0].sprite->Texture2;
+                mapPlate->Texture3 = sRaftPlacement10X10BF.MapArrayBot1[0][0].sprite->Texture3;
+            }
+            xPos += 60;
+
+            sRaftPlacement10X10BF.MapArrayBot1[i][j].sprite = mapPlate;
+            sRaftPlacement10X10BF.MapArrayBot1[i][j].spriteState = PLATE_NOT_PRESSED;
+        }
+        xPos = 558.0;
+        yPos -= 60.8;
+    }
+
+    yPos = 582.0;
+
+    for (int i = 0; i < 10; i++){
+        for (int j = 0; j < 10; j++){
+            Sprite* mapPlate = initSprite();
+            setStartSpriteParams(mapPlate, 57, 57, xPos, yPos, 0);
+            if (i == 0 && j == 0){
+                setSpriteTexture(mapPlate, "../resources/textures/raftPuttingMenu/10x10/red.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+                setSpriteTexture(mapPlate, "../resources/textures/raftPuttingMenu/10x10/green.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
+                setSpriteTexture(mapPlate, "../resources/textures/raftPuttingMenu/10x10/yellow.png", GL_NEAREST, GL_CLAMP_TO_EDGE, THIRD_TEXTURE);
+            }
+            else {
+                mapPlate->Texture1 = sRaftPlacement10X10BF.MapArrayBot2[0][0].sprite->Texture1;
+                mapPlate->Texture2 = sRaftPlacement10X10BF.MapArrayBot2[0][0].sprite->Texture2;
+                mapPlate->Texture3 = sRaftPlacement10X10BF.MapArrayBot2[0][0].sprite->Texture3;
+            }
+            xPos += 60;
+
+            sRaftPlacement10X10BF.MapArrayBot2[i][j].sprite = mapPlate;
+            sRaftPlacement10X10BF.MapArrayBot2[i][j].spriteState = PLATE_NOT_PRESSED;
+        }
+        xPos = 558.0;
+        yPos -= 60.8;
+    }
+    
+    if (coords[0] == NULL){
+
+        for (int i = 0; i < 5; i++){
+            coords[i] = (Coordinates*)malloc(sizeof(Coordinates));
+        }
+
+    }
+
+    sRaftPlacement10X10BF.TextParams = sMainMenu.TextParams;
+    sRaftPlacement10X10BF.Background = sRaftPlacement10X10.Background;
+    sRaftPlacement10X10BF.ButtonPlates = buttonsPlate;
+    sRaftPlacement10X10BF.Map10x10 = sRaftPlacement10X10.Map10x10;
+    sRaftPlacement10X10BF.QuestionMarkBtn = sRaftPlacement10X10.QuestionMarkBtn;
+    sRaftPlacement10X10BF.state = NOT_IN_EDIT_MODE;
+    sRaftPlacement10X10BF.ExitBtn = sRaftPlacement10X10.ExitBtn;
+}
+
+void initRaftPlacement15x15BF()
+{
+    extern MainMenu sMainMenu;
+    extern RaftPlacement15x15 sRaftPlacement15X15;
+    extern RaftPlacement15x15BF sRaftPlacement15X15BF;
+    extern ShipBase* shipBaseBFBot1;
+    extern ShipBase* shipBaseBFBot2;
+    extern Coordinates* coords[5];
+
+    Sprite* buttonsPlate = initSprite();
+    setStartSpriteParams(buttonsPlate, 1280, 720, 0, 0, 0);
+    setSpriteTexture(buttonsPlate, "../resources/textures/raftPuttingMenu/15x15/buttonsPlateForBF.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
+    double xPos = 549.8,
+           yPos = 621.0;
+
+    for (int i = 0; i < 15; i++){
+        for (int j = 0; j < 15; j++){
+            Sprite* mapPlate = initSprite();
+            setStartSpriteParams(mapPlate, 41, 41, xPos, yPos, 0);
+            if (i == 0 && j == 0){
+                setSpriteTexture(mapPlate, "../resources/textures/raftPuttingMenu/10x10/red.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+                setSpriteTexture(mapPlate, "../resources/textures/raftPuttingMenu/10x10/green.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
+                setSpriteTexture(mapPlate, "../resources/textures/raftPuttingMenu/10x10/yellow.png", GL_NEAREST, GL_CLAMP_TO_EDGE, THIRD_TEXTURE);
+            }
+            else {
+                mapPlate->Texture1 = sRaftPlacement15X15BF.MapArrayBot1[0][0].sprite->Texture1;
+                mapPlate->Texture2 = sRaftPlacement15X15BF.MapArrayBot1[0][0].sprite->Texture2;
+                mapPlate->Texture3 = sRaftPlacement15X15BF.MapArrayBot1[0][0].sprite->Texture3;
+            }
+            xPos += 41.72;
+
+            sRaftPlacement15X15BF.MapArrayBot1[i][j].sprite = mapPlate;
+            sRaftPlacement15X15BF.MapArrayBot1[i][j].spriteState = PLATE_NOT_PRESSED;
+        }
+        xPos = 550.0;
+        yPos -= 42.0;
+    }
+    
+    yPos = 621.0;
+
+    for (int i = 0; i < 15; i++){
+        for (int j = 0; j < 15; j++){
+            Sprite* mapPlate = initSprite();
+            setStartSpriteParams(mapPlate, 41, 41, xPos, yPos, 0);
+            if (i == 0 && j == 0){
+                setSpriteTexture(mapPlate, "../resources/textures/raftPuttingMenu/10x10/red.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+                setSpriteTexture(mapPlate, "../resources/textures/raftPuttingMenu/10x10/green.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
+                setSpriteTexture(mapPlate, "../resources/textures/raftPuttingMenu/10x10/yellow.png", GL_NEAREST, GL_CLAMP_TO_EDGE, THIRD_TEXTURE);
+            }
+            else {
+                mapPlate->Texture1 = sRaftPlacement15X15BF.MapArrayBot2[0][0].sprite->Texture1;
+                mapPlate->Texture2 = sRaftPlacement15X15BF.MapArrayBot2[0][0].sprite->Texture2;
+                mapPlate->Texture3 = sRaftPlacement15X15BF.MapArrayBot2[0][0].sprite->Texture3;
+            }
+            xPos += 41.72;
+
+            sRaftPlacement15X15BF.MapArrayBot2[i][j].sprite = mapPlate;
+            sRaftPlacement15X15BF.MapArrayBot2[i][j].spriteState = PLATE_NOT_PRESSED;
+        }
+        xPos = 550.0;
+        yPos -= 42.0;
+    }
+
+    if (coords[0] == NULL){
+
+        for (int i = 0; i < 5; i++){
+            coords[i] = (Coordinates*)malloc(sizeof(Coordinates));
+        }
+
+    }
+
+    sRaftPlacement15X15BF.TextParams = sMainMenu.TextParams;
+    sRaftPlacement15X15BF.Background = sRaftPlacement15X15.Background;
+    sRaftPlacement15X15BF.ButtonPlates = buttonsPlate;
+    sRaftPlacement15X15BF.Map15x15 = sRaftPlacement15X15.Map15x15;
+    sRaftPlacement15X15BF.QuestionMarkBtn = sRaftPlacement15X15.QuestionMarkBtn;
+    sRaftPlacement15X15BF.state = NOT_IN_EDIT_MODE;
+    sRaftPlacement15X15BF.ExitBtn = sRaftPlacement15X15.ExitBtn;
 }
 
 #endif

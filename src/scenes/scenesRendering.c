@@ -354,10 +354,14 @@ void renderGameSettingsMenu(GLFWwindow* window)
         }
         
         if (playerInfo.BotLevel != NOT_FILLED_IN){
-            if (playerInfo.MapSize == MAP_SIZE_10_X_10)
-                playerInfo.scene = RAFT_PLACEMENT_10_X_10;
-            else 
-                playerInfo.scene = RAFT_PLACEMENT_15_X_15; 
+            if (playerInfo.MapSize == MAP_SIZE_10_X_10 && playerInfo.GameMode == BASIC_MODE)
+                playerInfo.scene = RAFT_PLACEMENT_10_X_10_BASE;
+            else if (playerInfo.MapSize == MAP_SIZE_15_X_15 && playerInfo.GameMode == BASIC_MODE)
+                playerInfo.scene = RAFT_PLACEMENT_15_X_15_BASE; 
+            else if (playerInfo.MapSize == MAP_SIZE_10_X_10 && playerInfo.GameMode == BOTS_FIGHT_MODE)
+                playerInfo.scene = RAFT_PLACEMENT_10_X_10_BOTS_FIGHT_BOT_1;
+            else if (playerInfo.MapSize == MAP_SIZE_15_X_15 && playerInfo.GameMode == BOTS_FIGHT_MODE)
+                playerInfo.scene = RAFT_PLACEMENT_15_X_15_BOTS_FIGHT_BOT_1;    
         }
     }
     
@@ -897,6 +901,981 @@ void renderRaftPlacement15x15(GLFWwindow* window)
         renderSprite(sRaftPlacement15X15.QuestionMarkBtn, SpriteShaderProgram, FIRST_TEXTURE);
     }
 
+}
+
+void renderRaftPlacement10x10BF(GLFWwindow* window)
+{
+    extern GLuint SpriteShaderProgram;
+    extern GLuint TextShaderProgram;
+    extern RaftPlacement10x10BF sRaftPlacement10X10BF;
+    extern Player playerInfo;
+    extern ShipBase* shipBaseBFBot1;
+    extern ShipBase* shipBaseBFBot2;
+    extern Coordinates* coords[5];
+
+    extern int mapBot1[18][18];
+    extern int mapBot2[18][18];
+
+    extern int windowSizeX;
+    extern int windowSizeY;
+
+    extern double lastClickTime;
+
+    double xMousePos,
+           yMousePos;
+
+    char CanPutShips[2] = {'\0',};
+
+    glfwGetCursorPos(window, &xMousePos, &yMousePos);
+    printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
+    printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
+
+    static int elemCount = 0;
+    int maxElemCount;
+    
+    changeSpriteSize(sRaftPlacement10X10BF.Background, windowSizeX, windowSizeY);
+    changeSpriteSize(sRaftPlacement10X10BF.ButtonPlates, windowSizeX, windowSizeY);
+    changeSpriteSize(sRaftPlacement10X10BF.Map10x10, windowSizeX, windowSizeY);
+
+    if (playerInfo.scene == RAFT_PLACEMENT_10_X_10_BOTS_FIGHT_BOT_1){
+
+        maxElemCount = maxPlatesShip(shipBaseBFBot1);
+
+        //Если сцена открывается повторно нужно снова выделить память под данные о кораблях
+        if (shipBaseBFBot1 == NULL){
+            shipBaseBFBot1 = initShipBase(MAP_SIZE_10_X_10);
+        }
+
+        //Подгон под размер окна каждой клетки на поле
+        for (int i = 0 ; i < 10; i++){
+            for (int j = 0; j < 10; j++){
+                Sprite* sp = sRaftPlacement10X10BF.MapArrayBot1[i][j].sprite;
+                changeCorrectSpriteParams(sp, windowSizeX, windowSizeY);
+            }
+        }
+        
+        
+        renderSprite(sRaftPlacement10X10BF.Background, SpriteShaderProgram, FIRST_TEXTURE);
+        
+        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+            if (sRaftPlacement10X10BF.state == IN_EDIT_MODE){
+                sRaftPlacement10X10BF.state = NOT_IN_EDIT_MODE;
+                if (shipIsCorrect(mapBot1, shipBaseBFBot1, elemCount, MAP_SIZE_10_X_10, coords) == SHIP_IS_CORRECT){
+                    printf("IS_CORRECT!\n");
+                    putShipInBase(shipBaseBFBot1, coords, elemCount);
+                    putShipInMap(mapBot1, coords, elemCount);
+                    for (int i = 0 ; i < 10; i++){
+                        for (int j = 0; j < 10; j++){
+                            if (sRaftPlacement10X10BF.MapArrayBot1[i][j].spriteState == PLATE_PRESSED){
+                                sRaftPlacement10X10BF.MapArrayBot1[i][j].spriteState = PLATE_SUCCES;
+                                    
+                            }
+                        }
+                    }
+                    elemCount = 0;
+                    //Все клетки, где нельзя ставить корабль помечаются красным
+                    for (int i = 1; i <= 10; i++){
+                        for (int j = 1; j <= 10; j++){
+                            if (mapBot1[i][j] == 1){
+                                sRaftPlacement10X10BF.MapArrayBot1[i - 1][j - 1].spriteState = PLATE_ERROR;
+                            }
+                        }
+                    }
+
+                }
+                else {
+                    printf("IS_NOT_CORRECT!\n");
+                    for (int i = 0 ; i < 10; i++){
+                        for (int j = 0; j < 10; j++){
+                            if (sRaftPlacement10X10BF.MapArrayBot1[i][j].spriteState == PLATE_PRESSED){
+                                sRaftPlacement10X10BF.MapArrayBot1[i][j].spriteState = PLATE_NOT_PRESSED;    
+                            }
+                        }
+                    }
+                }
+                elemCount = 0;
+            }
+            else sRaftPlacement10X10BF.state = IN_EDIT_MODE;
+            lastClickTime = glfwGetTime();
+        }
+
+
+        if (sRaftPlacement10X10BF.state == IN_EDIT_MODE){
+
+            for (int i = 0; i < 10; i++){
+                for (int j = 0; j < 10; j++){
+                    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && cursorInArea(xMousePos, yMousePos, sRaftPlacement10X10BF.MapArrayBot1[i][j].sprite->positionX, windowSizeY - sRaftPlacement10X10BF.MapArrayBot1[i][j].sprite->positionY, sRaftPlacement10X10BF.MapArrayBot1[i][j].sprite->positionX + sRaftPlacement10X10BF.MapArrayBot1[i][j].sprite->sizeX, windowSizeY - sRaftPlacement10X10BF.MapArrayBot1[i][j].sprite->positionY - sRaftPlacement10X10BF.MapArrayBot1[i][j].sprite->sizeY, windowSizeX, windowSizeY) && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                        if (sRaftPlacement10X10BF.MapArrayBot1[i][j].spriteState == PLATE_PRESSED){
+                            sRaftPlacement10X10BF.MapArrayBot1[i][j].spriteState = PLATE_NOT_PRESSED;
+                            elemCount--;
+                        }
+                        else {
+                            if (elemCount < maxElemCount && sRaftPlacement10X10BF.MapArrayBot1[i][j].spriteState != PLATE_SUCCES && sRaftPlacement10X10BF.MapArrayBot1[i][j].spriteState != PLATE_ERROR){
+                                sRaftPlacement10X10BF.MapArrayBot1[i][j].spriteState = PLATE_PRESSED;
+                                coords[elemCount]->x = j;
+                                coords[elemCount]->y = i;
+                                elemCount++;
+                            }
+                        }
+
+                        lastClickTime = glfwGetTime();
+                    }
+
+                    if (sRaftPlacement10X10BF.MapArrayBot1[i][j].spriteState == PLATE_PRESSED){
+                        renderSprite(sRaftPlacement10X10BF.MapArrayBot1[i][j].sprite, SpriteShaderProgram, THIRD_TEXTURE);
+                    }
+                    else if (sRaftPlacement10X10BF.MapArrayBot1[i][j].spriteState == PLATE_SUCCES){
+                        renderSprite(sRaftPlacement10X10BF.MapArrayBot1[i][j].sprite, SpriteShaderProgram, SECOND_TEXTURE);
+                    }
+                    else if (sRaftPlacement10X10BF.MapArrayBot1[i][j].spriteState == PLATE_ERROR){
+                        renderSprite(sRaftPlacement10X10BF.MapArrayBot1[i][j].sprite, SpriteShaderProgram, FIRST_TEXTURE);
+                    }
+                }
+            }
+
+        }
+        else {
+            for (int i = 0; i < 10; i++){
+                for (int j = 0; j < 10; j++){
+                    if (sRaftPlacement10X10BF.MapArrayBot1[i][j].spriteState == PLATE_SUCCES){
+                        renderSprite(sRaftPlacement10X10BF.MapArrayBot1[i][j].sprite, SpriteShaderProgram, SECOND_TEXTURE);
+                    }
+                    else if (sRaftPlacement10X10BF.MapArrayBot1[i][j].spriteState == PLATE_ERROR){
+                        renderSprite(sRaftPlacement10X10BF.MapArrayBot1[i][j].sprite, SpriteShaderProgram, FIRST_TEXTURE);
+                    }
+                }
+            }
+        }
+
+        changeCorrectSpriteParams(sRaftPlacement10X10BF.Map10x10, windowSizeX, windowSizeY);
+
+        renderSprite(sRaftPlacement10X10BF.Map10x10, SpriteShaderProgram, FIRST_TEXTURE);
+        renderSprite(sRaftPlacement10X10BF.ButtonPlates, SpriteShaderProgram, FIRST_TEXTURE);
+
+        //Количество кораблей, которые можно установить на поле
+        getRemainedShips(shipBaseBFBot1, ONE_BLOCK_SHIP, CanPutShips);
+        renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, CanPutShips, correctXcoords(185.0, windowSizeX) , correctYcoords(615, windowSizeY), correctTextSize(0.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        getRemainedShips(shipBaseBFBot1, TWO_BLOCKS_SHIP, CanPutShips);
+        renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, CanPutShips, correctXcoords(166.0, windowSizeX) , correctYcoords(588, windowSizeY), correctTextSize(0.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        getRemainedShips(shipBaseBFBot1, THREE_BLOCKS_SHIP, CanPutShips);
+        renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, CanPutShips, correctXcoords(184.0, windowSizeX) , correctYcoords(561, windowSizeY), correctTextSize(0.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        getRemainedShips(shipBaseBFBot1, FOUR_BLOCKS_SHIP, CanPutShips);
+        renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, CanPutShips, correctXcoords(172.0, windowSizeX) , correctYcoords(537, windowSizeY), correctTextSize(0.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+
+        //Обработка кнопки CLEAR
+        if (cursorInArea(xMousePos, yMousePos, 36, 682, 361, 599, windowSizeX, windowSizeY)){
+            renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "Clear", correctXcoords(108.0, windowSizeX) , correctYcoords(58.0, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                clearMap(mapBot1);
+                clearShipBase(shipBaseBFBot1);
+
+                for (int i = 0; i < 10; i++){
+                    for (int j = 0; j < 10; j++){
+                        sRaftPlacement10X10BF.MapArrayBot1[i][j].spriteState = PLATE_NOT_PRESSED;
+                    }
+                }
+                
+                lastClickTime = glfwGetTime();
+            }  
+        }
+        else {
+            renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "Clear", correctXcoords(108.0, windowSizeX) , correctYcoords(58.0, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }
+
+        //Обработка кнопки AutoGen
+        if (cursorInArea(xMousePos, yMousePos, 37, 572, 362, 492, windowSizeX, windowSizeY)){
+            renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "AutoGen", correctXcoords(66.0, windowSizeX) , correctYcoords(168.0, windowSizeY), correctTextSize(1.7, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                clearMap(mapBot1);
+                clearShipBase(shipBaseBFBot1);
+
+                for (int i = 0; i < 10; i++){
+                    for (int j = 0; j < 10; j++){
+                        sRaftPlacement10X10BF.MapArrayBot1[i][j].spriteState = PLATE_NOT_PRESSED;
+                    }
+                }
+                
+                genRandShips(mapBot1, shipBaseBFBot1, MAP_SIZE_10_X_10);
+
+                for (int i = 0; i < 10; i++){
+                    for (int j = 0; j < 10; j++){
+                        if (mapBot1[i + 1][j + 1] == 2){
+                            sRaftPlacement10X10BF.MapArrayBot1[i][j].spriteState = PLATE_SUCCES;
+                        }
+                    }
+                }
+
+                lastClickTime = glfwGetTime();
+            }  
+        }
+        else {
+            renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "AutoGen", correctXcoords(66.0, windowSizeX) , correctYcoords(168.0, windowSizeY), correctTextSize(1.7, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }
+    }
+    else if (playerInfo.scene == RAFT_PLACEMENT_10_X_10_BOTS_FIGHT_BOT_2){
+
+        maxElemCount = maxPlatesShip(shipBaseBFBot2);
+
+        //Если сцена открывается повторно нужно снова выделить память под данные о кораблях
+        if (shipBaseBFBot2 == NULL){
+            shipBaseBFBot2 = initShipBase(MAP_SIZE_10_X_10);
+        }
+
+        //Подгон под размер окна каждой клетки на поле
+        for (int i = 0 ; i < 10; i++){
+            for (int j = 0; j < 10; j++){
+                Sprite* sp = sRaftPlacement10X10BF.MapArrayBot2[i][j].sprite;
+                changeCorrectSpriteParams(sp, windowSizeX, windowSizeY);
+            }
+        }
+        
+        
+        renderSprite(sRaftPlacement10X10BF.Background, SpriteShaderProgram, FIRST_TEXTURE);
+        
+        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+            if (sRaftPlacement10X10BF.state == IN_EDIT_MODE){
+                sRaftPlacement10X10BF.state = NOT_IN_EDIT_MODE;
+                if (shipIsCorrect(mapBot2, shipBaseBFBot2, elemCount, MAP_SIZE_10_X_10, coords) == SHIP_IS_CORRECT){
+                    printf("IS_CORRECT!\n");
+                    putShipInBase(shipBaseBFBot2, coords, elemCount);
+                    putShipInMap(mapBot2, coords, elemCount);
+                    for (int i = 0 ; i < 10; i++){
+                        for (int j = 0; j < 10; j++){
+                            if (sRaftPlacement10X10BF.MapArrayBot2[i][j].spriteState == PLATE_PRESSED){
+                                sRaftPlacement10X10BF.MapArrayBot2[i][j].spriteState = PLATE_SUCCES;  
+                            }
+                        }
+                    }
+                    elemCount = 0;
+                    //Все клетки, где нельзя ставить корабль помечаются красным
+                    for (int i = 1; i <= 10; i++){
+                        for (int j = 1; j <= 10; j++){
+                            if (mapBot2[i][j] == 1){
+                                sRaftPlacement10X10BF.MapArrayBot2[i - 1][j - 1].spriteState = PLATE_ERROR;
+                            }
+                        }
+                    }
+
+                }
+                else {
+                    printf("IS_NOT_CORRECT!\n");
+                    for (int i = 0 ; i < 10; i++){
+                        for (int j = 0; j < 10; j++){
+                            if (sRaftPlacement10X10BF.MapArrayBot2[i][j].spriteState == PLATE_PRESSED){
+                                sRaftPlacement10X10BF.MapArrayBot2[i][j].spriteState = PLATE_NOT_PRESSED;    
+                            }
+                        }
+                    }
+                }
+                elemCount = 0;
+            }
+            else sRaftPlacement10X10BF.state = IN_EDIT_MODE;
+            lastClickTime = glfwGetTime();
+        }
+
+
+        if (sRaftPlacement10X10BF.state == IN_EDIT_MODE){
+
+            for (int i = 0; i < 10; i++){
+                for (int j = 0; j < 10; j++){
+                    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && cursorInArea(xMousePos, yMousePos, sRaftPlacement10X10BF.MapArrayBot2[i][j].sprite->positionX, windowSizeY - sRaftPlacement10X10BF.MapArrayBot2[i][j].sprite->positionY, sRaftPlacement10X10BF.MapArrayBot2[i][j].sprite->positionX + sRaftPlacement10X10BF.MapArrayBot2[i][j].sprite->sizeX, windowSizeY - sRaftPlacement10X10BF.MapArrayBot2[i][j].sprite->positionY - sRaftPlacement10X10BF.MapArrayBot2[i][j].sprite->sizeY, windowSizeX, windowSizeY) && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                        if (sRaftPlacement10X10BF.MapArrayBot2[i][j].spriteState == PLATE_PRESSED){
+                            sRaftPlacement10X10BF.MapArrayBot2[i][j].spriteState = PLATE_NOT_PRESSED;
+                            elemCount--;
+                        }
+                        else {
+                            if (elemCount < maxElemCount && sRaftPlacement10X10BF.MapArrayBot2[i][j].spriteState != PLATE_SUCCES && sRaftPlacement10X10BF.MapArrayBot2[i][j].spriteState != PLATE_ERROR){
+                                sRaftPlacement10X10BF.MapArrayBot2[i][j].spriteState = PLATE_PRESSED;
+                                coords[elemCount]->x = j;
+                                coords[elemCount]->y = i;
+                                elemCount++;
+                            }
+                        }
+
+                        lastClickTime = glfwGetTime();
+                    }
+
+                    if (sRaftPlacement10X10BF.MapArrayBot2[i][j].spriteState == PLATE_PRESSED){
+                        renderSprite(sRaftPlacement10X10BF.MapArrayBot2[i][j].sprite, SpriteShaderProgram, THIRD_TEXTURE);
+                    }
+                    else if (sRaftPlacement10X10BF.MapArrayBot2[i][j].spriteState == PLATE_SUCCES){
+                        renderSprite(sRaftPlacement10X10BF.MapArrayBot2[i][j].sprite, SpriteShaderProgram, SECOND_TEXTURE);
+                    }
+                    else if (sRaftPlacement10X10BF.MapArrayBot2[i][j].spriteState == PLATE_ERROR){
+                        renderSprite(sRaftPlacement10X10BF.MapArrayBot2[i][j].sprite, SpriteShaderProgram, FIRST_TEXTURE);
+                    }
+                }
+            }
+
+        }
+        else {
+            for (int i = 0; i < 10; i++){
+                for (int j = 0; j < 10; j++){
+                    if (sRaftPlacement10X10BF.MapArrayBot2[i][j].spriteState == PLATE_SUCCES){
+                        renderSprite(sRaftPlacement10X10BF.MapArrayBot2[i][j].sprite, SpriteShaderProgram, SECOND_TEXTURE);
+                    }
+                    else if (sRaftPlacement10X10BF.MapArrayBot2[i][j].spriteState == PLATE_ERROR){
+                        renderSprite(sRaftPlacement10X10BF.MapArrayBot2[i][j].sprite, SpriteShaderProgram, FIRST_TEXTURE);
+                    }
+                }
+            }
+        }
+
+        changeCorrectSpriteParams(sRaftPlacement10X10BF.Map10x10, windowSizeX, windowSizeY);
+
+        renderSprite(sRaftPlacement10X10BF.Map10x10, SpriteShaderProgram, FIRST_TEXTURE);
+        renderSprite(sRaftPlacement10X10BF.ButtonPlates, SpriteShaderProgram, FIRST_TEXTURE);
+
+        //Количество кораблей, которые можно установить на поле
+        getRemainedShips(shipBaseBFBot2, ONE_BLOCK_SHIP, CanPutShips);
+        renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, CanPutShips, correctXcoords(185.0, windowSizeX) , correctYcoords(615, windowSizeY), correctTextSize(0.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        getRemainedShips(shipBaseBFBot2, TWO_BLOCKS_SHIP, CanPutShips);
+        renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, CanPutShips, correctXcoords(166.0, windowSizeX) , correctYcoords(588, windowSizeY), correctTextSize(0.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        getRemainedShips(shipBaseBFBot2, THREE_BLOCKS_SHIP, CanPutShips);
+        renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, CanPutShips, correctXcoords(184.0, windowSizeX) , correctYcoords(561, windowSizeY), correctTextSize(0.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        getRemainedShips(shipBaseBFBot2, FOUR_BLOCKS_SHIP, CanPutShips);
+        renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, CanPutShips, correctXcoords(172.0, windowSizeX) , correctYcoords(537, windowSizeY), correctTextSize(0.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+
+        //Обработка кнопки CLEAR
+        if (cursorInArea(xMousePos, yMousePos, 36, 682, 361, 599, windowSizeX, windowSizeY)){
+            renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "Clear", correctXcoords(108.0, windowSizeX) , correctYcoords(58.0, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                clearMap(mapBot2);
+                clearShipBase(shipBaseBFBot2);
+
+                for (int i = 0; i < 10; i++){
+                    for (int j = 0; j < 10; j++){
+                        sRaftPlacement10X10BF.MapArrayBot2[i][j].spriteState = PLATE_NOT_PRESSED;
+                    }
+                }
+                
+                lastClickTime = glfwGetTime();
+            }  
+        }
+        else {
+            renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "Clear", correctXcoords(108.0, windowSizeX) , correctYcoords(58.0, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }
+
+        //Обработка кнопки AutoGen
+        if (cursorInArea(xMousePos, yMousePos, 37, 572, 362, 492, windowSizeX, windowSizeY)){
+            renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "AutoGen", correctXcoords(66.0, windowSizeX) , correctYcoords(168.0, windowSizeY), correctTextSize(1.7, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                clearMap(mapBot2);
+                clearShipBase(shipBaseBFBot2);
+
+                for (int i = 0; i < 10; i++){
+                    for (int j = 0; j < 10; j++){
+                        sRaftPlacement10X10BF.MapArrayBot2[i][j].spriteState = PLATE_NOT_PRESSED;
+                    }
+                }
+                
+                genRandShips(mapBot2, shipBaseBFBot2, MAP_SIZE_10_X_10);
+
+                for (int i = 0; i < 10; i++){
+                    for (int j = 0; j < 10; j++){
+                        if (mapBot2[i + 1][j + 1] == 2){
+                            sRaftPlacement10X10BF.MapArrayBot2[i][j].spriteState = PLATE_SUCCES;
+                        }
+                    }
+                }
+
+                lastClickTime = glfwGetTime();
+            }  
+        }
+        else {
+            renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "AutoGen", correctXcoords(66.0, windowSizeX) , correctYcoords(168.0, windowSizeY), correctTextSize(1.7, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }
+    }
+
+    //Индикатор режима редактирования
+    if(sRaftPlacement10X10BF.state == IN_EDIT_MODE){           
+        renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "e", correctXcoords(1218.0, windowSizeX) , correctYcoords(523.0, windowSizeY), correctTextSize(1.5, windowSizeX, windowSizeY), 1.0f, 1.0f, 0.0f);
+    }
+    else{
+        renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "e", correctXcoords(1218.0, windowSizeX) , correctYcoords(523.0, windowSizeY), correctTextSize(1.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        renderSprite(sRaftPlacement10X10BF.ExitBtn, SpriteShaderProgram, FIRST_TEXTURE);
+    }
+
+    //Обработка кнопки Exit
+    if (cursorInArea(xMousePos, yMousePos, 1202, 64, 1262, 17, windowSizeX, windowSizeY)){
+        renderSprite(sRaftPlacement10X10BF.ExitBtn, SpriteShaderProgram, SECOND_TEXTURE);
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+            
+            if (shipBaseBFBot1 != NULL) freeShipBase(shipBaseBFBot1);
+            if (shipBaseBFBot2 != NULL) freeShipBase(shipBaseBFBot2);
+
+            shipBaseBFBot1 = NULL;
+            shipBaseBFBot2 = NULL;
+
+            clearMap(mapBot1);
+            clearMap(mapBot2);
+
+            for (int i = 0; i < 10; i++){
+                for (int j = 0; j < 10; j++){
+                    sRaftPlacement10X10BF.MapArrayBot1[i][j].spriteState = PLATE_NOT_PRESSED;
+                    sRaftPlacement10X10BF.MapArrayBot2[i][j].spriteState = PLATE_NOT_PRESSED;
+                }
+            }
+
+            playerInfo.scene = MAIN_MENU_SCENES;
+            playerInfo.BotLevel = NOT_FILLED_IN;
+            playerInfo.GameMode = NOT_FILLED_IN;
+            playerInfo.MapSize = NOT_FILLED_IN;
+            lastClickTime = glfwGetTime();
+        }
+    }
+    else{
+        renderSprite(sRaftPlacement10X10BF.ExitBtn, SpriteShaderProgram, FIRST_TEXTURE);
+    }
+
+    //Обработка кнопки подсказки
+    if (cursorInArea(xMousePos, yMousePos, 1200, 139, 1264, 89, windowSizeX, windowSizeY)){
+        renderSprite(sRaftPlacement10X10BF.QuestionMarkBtn, SpriteShaderProgram, SECOND_TEXTURE);
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+            
+            lastClickTime = glfwGetTime();
+        }
+    }
+    else {
+        renderSprite(sRaftPlacement10X10BF.QuestionMarkBtn, SpriteShaderProgram, FIRST_TEXTURE);
+    }
+
+    //Обработка конпки B1
+    if (cursorInArea(xMousePos, yMousePos, 1200, 277, 1264, 227, windowSizeX, windowSizeY) || playerInfo.scene == RAFT_PLACEMENT_10_X_10_BOTS_FIGHT_BOT_1){
+        renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "B1", correctXcoords(1211.0, windowSizeX) , correctYcoords(453.0, windowSizeY), correctTextSize(1.1, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY && playerInfo.scene != RAFT_PLACEMENT_10_X_10_BOTS_FIGHT_BOT_1){
+            playerInfo.scene = RAFT_PLACEMENT_10_X_10_BOTS_FIGHT_BOT_1;
+            lastClickTime = glfwGetTime();
+            if (sRaftPlacement10X10BF.state == IN_EDIT_MODE){
+                sRaftPlacement10X10BF.state = NOT_IN_EDIT_MODE;
+            }
+        }
+    }
+    else {
+        renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "B1", correctXcoords(1211.0, windowSizeX) , correctYcoords(453.0, windowSizeY), correctTextSize(1.1, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+    }
+
+    //Обработка конпки B2
+    if (cursorInArea(xMousePos, yMousePos, 1200, 349, 1264, 294, windowSizeX, windowSizeY) || playerInfo.scene == RAFT_PLACEMENT_10_X_10_BOTS_FIGHT_BOT_2){
+        renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "B2", correctXcoords(1210.0, windowSizeX) , correctYcoords(385.0, windowSizeY), correctTextSize(1.0, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY &&  playerInfo.scene != RAFT_PLACEMENT_10_X_10_BOTS_FIGHT_BOT_2){
+            playerInfo.scene = RAFT_PLACEMENT_10_X_10_BOTS_FIGHT_BOT_2;
+            lastClickTime = glfwGetTime();
+            if (sRaftPlacement10X10BF.state == IN_EDIT_MODE){
+                sRaftPlacement10X10BF.state = NOT_IN_EDIT_MODE;
+            }
+        }
+    }
+    else {
+        renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "B2", correctXcoords(1210.0, windowSizeX) , correctYcoords(385.0, windowSizeY), correctTextSize(1.0, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+    }
+
+    //Обработка кнопки PLAY
+        if (cursorInArea(xMousePos, yMousePos, 42, 464, 359, 385, windowSizeX, windowSizeY)){
+            if (AllShipsInMap(shipBaseBFBot2) == NOT_ALL_SHIPS_IN_MAP){
+                renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "Play", correctXcoords(120.0, windowSizeX) , correctYcoords(274, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 1.0f, 0.0f, 0.0f);
+            }
+            else {
+                renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "Play", correctXcoords(120.0, windowSizeX) , correctYcoords(274, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 0.0f, 1.0f, 0.0f);
+            }
+
+            if (AllShipsInMap(shipBaseBFBot2) == ALL_SHIPS_IN_MAP && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                    
+                lastClickTime = glfwGetTime();
+            }  
+        }
+        else {
+            renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "Play", correctXcoords(120.0, windowSizeX) , correctYcoords(274, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }
+        
+}
+
+void renderRaftPlacement15x15BF(GLFWwindow* window)
+{
+    extern GLuint SpriteShaderProgram;
+    extern GLuint TextShaderProgram;
+    extern RaftPlacement15x15BF sRaftPlacement15X15BF;
+    extern Player playerInfo;
+    extern ShipBase* shipBaseBFBot1;
+    extern ShipBase* shipBaseBFBot2;
+    extern Coordinates* coords[5];
+
+    extern int mapBot1[18][18];
+    extern int mapBot2[18][18];
+
+    extern int windowSizeX;
+    extern int windowSizeY;
+
+    extern double lastClickTime;
+
+    double xMousePos,
+           yMousePos;
+
+    char CanPutShips[2] = {'\0',};
+
+    glfwGetCursorPos(window, &xMousePos, &yMousePos);
+    printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
+    printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
+
+    static int elemCount = 0;
+    int maxElemCount;
+    
+    changeSpriteSize(sRaftPlacement15X15BF.Background, windowSizeX, windowSizeY);
+    changeSpriteSize(sRaftPlacement15X15BF.ButtonPlates, windowSizeX, windowSizeY);
+    changeSpriteSize(sRaftPlacement15X15BF.Map15x15, windowSizeX, windowSizeY);
+
+    if (playerInfo.scene == RAFT_PLACEMENT_15_X_15_BOTS_FIGHT_BOT_1){
+    
+        //Если сцена открывается повторно нужно снова выделить память под данные о кораблях
+        if (shipBaseBFBot1 == NULL){
+            shipBaseBFBot1 = initShipBase(MAP_SIZE_15_X_15);
+        }
+        
+        maxElemCount = maxPlatesShip(shipBaseBFBot1);
+        printf("2\n");
+        //Подгон под размер окна каждой клетки на поле
+        for (int i = 0 ; i < 15; i++){
+            for (int j = 0; j < 15; j++){
+                Sprite* sp = sRaftPlacement15X15BF.MapArrayBot1[i][j].sprite;
+                changeCorrectSpriteParams(sp, windowSizeX, windowSizeY);
+            }
+        }
+        
+        
+        renderSprite(sRaftPlacement15X15BF.Background, SpriteShaderProgram, FIRST_TEXTURE);
+        
+        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+            if (sRaftPlacement15X15BF.state == IN_EDIT_MODE){
+                sRaftPlacement15X15BF.state = NOT_IN_EDIT_MODE;
+                if (shipIsCorrect(mapBot1, shipBaseBFBot1, elemCount, MAP_SIZE_15_X_15, coords) == SHIP_IS_CORRECT){
+                    printf("IS_CORRECT!\n");
+                    putShipInBase(shipBaseBFBot1, coords, elemCount);
+                    putShipInMap(mapBot1, coords, elemCount);
+                    for (int i = 0 ; i < 15; i++){
+                        for (int j = 0; j < 15; j++){
+                            if (sRaftPlacement15X15BF.MapArrayBot1[i][j].spriteState == PLATE_PRESSED){
+                                sRaftPlacement15X15BF.MapArrayBot1[i][j].spriteState = PLATE_SUCCES;
+                            }
+                        }
+                    }
+                    elemCount = 0;
+                    //Все клетки, где нельзя ставить корабль помечаются красным
+                    for (int i = 1; i <= 15; i++){
+                        for (int j = 1; j <= 15; j++){
+                            if (mapBot1[i][j] == 1){
+                                sRaftPlacement15X15BF.MapArrayBot1[i - 1][j - 1].spriteState = PLATE_ERROR;
+                            }
+                        }
+                    }
+
+                }
+                else {
+                    printf("IS_NOT_CORRECT!\n");
+                    for (int i = 0 ; i < 15; i++){
+                        for (int j = 0; j < 15; j++){
+                            if (sRaftPlacement15X15BF.MapArrayBot1[i][j].spriteState == PLATE_PRESSED){
+                                sRaftPlacement15X15BF.MapArrayBot1[i][j].spriteState = PLATE_NOT_PRESSED;    
+                            }
+                        }
+                    }
+                }
+                elemCount = 0;
+            }
+            else sRaftPlacement15X15BF.state = IN_EDIT_MODE;
+            lastClickTime = glfwGetTime();
+        }
+
+
+        if (sRaftPlacement15X15BF.state == IN_EDIT_MODE){
+
+            for (int i = 0; i < 15; i++){
+                for (int j = 0; j < 15; j++){
+                    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && cursorInArea(xMousePos, yMousePos, sRaftPlacement15X15BF.MapArrayBot1[i][j].sprite->positionX, windowSizeY - sRaftPlacement15X15BF.MapArrayBot1[i][j].sprite->positionY, sRaftPlacement15X15BF.MapArrayBot1[i][j].sprite->positionX + sRaftPlacement15X15BF.MapArrayBot1[i][j].sprite->sizeX, windowSizeY - sRaftPlacement15X15BF.MapArrayBot1[i][j].sprite->positionY - sRaftPlacement15X15BF.MapArrayBot1[i][j].sprite->sizeY, windowSizeX, windowSizeY) && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                        if (sRaftPlacement15X15BF.MapArrayBot1[i][j].spriteState == PLATE_PRESSED){
+                            sRaftPlacement15X15BF.MapArrayBot1[i][j].spriteState = PLATE_NOT_PRESSED;
+                            elemCount--;
+                        }
+                        else {
+                            if (elemCount < maxElemCount && sRaftPlacement15X15BF.MapArrayBot1[i][j].spriteState != PLATE_SUCCES && sRaftPlacement15X15BF.MapArrayBot1[i][j].spriteState != PLATE_ERROR){
+                                sRaftPlacement15X15BF.MapArrayBot1[i][j].spriteState = PLATE_PRESSED;
+                                coords[elemCount]->x = j;
+                                coords[elemCount]->y = i;
+                                elemCount++;
+                            }
+                        }
+
+                        lastClickTime = glfwGetTime();
+                    }
+
+                    if (sRaftPlacement15X15BF.MapArrayBot1[i][j].spriteState == PLATE_PRESSED){
+                        renderSprite(sRaftPlacement15X15BF.MapArrayBot1[i][j].sprite, SpriteShaderProgram, THIRD_TEXTURE);
+                    }
+                    else if (sRaftPlacement15X15BF.MapArrayBot1[i][j].spriteState == PLATE_SUCCES){
+                        renderSprite(sRaftPlacement15X15BF.MapArrayBot1[i][j].sprite, SpriteShaderProgram, SECOND_TEXTURE);
+                    }
+                    else if (sRaftPlacement15X15BF.MapArrayBot1[i][j].spriteState == PLATE_ERROR){
+                        renderSprite(sRaftPlacement15X15BF.MapArrayBot1[i][j].sprite, SpriteShaderProgram, FIRST_TEXTURE);
+                    }
+                }
+            }
+
+        }
+        else {
+            for (int i = 0; i < 15; i++){
+                for (int j = 0; j < 15; j++){
+                    if (sRaftPlacement15X15BF.MapArrayBot1[i][j].spriteState == PLATE_SUCCES){
+                        renderSprite(sRaftPlacement15X15BF.MapArrayBot1[i][j].sprite, SpriteShaderProgram, SECOND_TEXTURE);
+                    }
+                    else if (sRaftPlacement15X15BF.MapArrayBot1[i][j].spriteState == PLATE_ERROR){
+                        renderSprite(sRaftPlacement15X15BF.MapArrayBot1[i][j].sprite, SpriteShaderProgram, FIRST_TEXTURE);
+                    }
+                }
+            }
+        }
+
+        changeCorrectSpriteParams(sRaftPlacement15X15BF.Map15x15, windowSizeX, windowSizeY);
+
+        renderSprite(sRaftPlacement15X15BF.Map15x15, SpriteShaderProgram, FIRST_TEXTURE);
+        renderSprite(sRaftPlacement15X15BF.ButtonPlates, SpriteShaderProgram, FIRST_TEXTURE);
+
+         //Количество кораблей, которые можно установить на поле
+        getRemainedShips(shipBaseBFBot1, ONE_BLOCK_SHIP, CanPutShips);
+        renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, CanPutShips, correctXcoords(189.0, windowSizeX) , correctYcoords(623, windowSizeY), correctTextSize(0.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        getRemainedShips(shipBaseBFBot1, TWO_BLOCKS_SHIP, CanPutShips);
+        renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, CanPutShips, correctXcoords(170.0, windowSizeX) , correctYcoords(597, windowSizeY), correctTextSize(0.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        getRemainedShips(shipBaseBFBot1, THREE_BLOCKS_SHIP, CanPutShips);
+        renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, CanPutShips, correctXcoords(189.0, windowSizeX) , correctYcoords(571, windowSizeY), correctTextSize(0.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        getRemainedShips(shipBaseBFBot1, FOUR_BLOCKS_SHIP, CanPutShips);
+        renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, CanPutShips, correctXcoords(176.0, windowSizeX) , correctYcoords(547, windowSizeY), correctTextSize(0.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        getRemainedShips(shipBaseBFBot1, FIVE_BLOCKS_SHIP, CanPutShips);
+        renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, CanPutShips, correctXcoords(173.0, windowSizeX) , correctYcoords(521, windowSizeY), correctTextSize(0.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+
+        //Обработка кнопки CLEAR
+        if (cursorInArea(xMousePos, yMousePos, 36, 682, 361, 599, windowSizeX, windowSizeY)){
+            renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, "Clear", correctXcoords(111.0, windowSizeX) , correctYcoords(54.0, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                clearMap(mapBot1);
+                clearShipBase(shipBaseBFBot1);
+
+                for (int i = 0; i < 15; i++){
+                    for (int j = 0; j < 15; j++){
+                        sRaftPlacement15X15BF.MapArrayBot1[i][j].spriteState = PLATE_NOT_PRESSED;
+                    }
+                }
+                
+                lastClickTime = glfwGetTime();
+            }  
+        }
+        else {
+            renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, "Clear", correctXcoords(111.0, windowSizeX) , correctYcoords(54.0, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }
+
+        //Обработка кнопки AutoGen
+        if (cursorInArea(xMousePos, yMousePos, 37, 572, 362, 492, windowSizeX, windowSizeY)){
+            renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, "AutoGen", correctXcoords(66.0, windowSizeX) , correctYcoords(164.0, windowSizeY), correctTextSize(1.7, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                clearMap(mapBot1);
+                clearShipBase(shipBaseBFBot1);
+
+                for (int i = 0; i < 15; i++){
+                    for (int j = 0; j < 15; j++){
+                        sRaftPlacement15X15BF.MapArrayBot1[i][j].spriteState = PLATE_NOT_PRESSED;
+                    }
+                }
+                
+                genRandShips(mapBot1, shipBaseBFBot1, MAP_SIZE_15_X_15);
+
+                for (int i = 0; i < 15; i++){
+                    for (int j = 0; j < 15; j++){
+                        if (mapBot1[i + 1][j + 1] == 2){
+                            sRaftPlacement15X15BF.MapArrayBot1[i][j].spriteState = PLATE_SUCCES;
+                        }
+                    }
+                }
+
+                lastClickTime = glfwGetTime();
+            }  
+        }
+        else {
+            renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, "AutoGen", correctXcoords(66.0, windowSizeX) , correctYcoords(164.0, windowSizeY), correctTextSize(1.7, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }
+    }
+    else if (playerInfo.scene == RAFT_PLACEMENT_15_X_15_BOTS_FIGHT_BOT_2){
+
+        maxElemCount = maxPlatesShip(shipBaseBFBot2);
+
+        //Если сцена открывается повторно нужно снова выделить память под данные о кораблях
+        if (shipBaseBFBot2 == NULL){
+            shipBaseBFBot2 = initShipBase(MAP_SIZE_15_X_15);
+        }
+
+        //Подгон под размер окна каждой клетки на поле
+        for (int i = 0 ; i < 15; i++){
+            for (int j = 0; j < 15; j++){
+                Sprite* sp = sRaftPlacement15X15BF.MapArrayBot2[i][j].sprite;
+                changeCorrectSpriteParams(sp, windowSizeX, windowSizeY);
+            }
+        } 
+        
+        renderSprite(sRaftPlacement15X15BF.Background, SpriteShaderProgram, FIRST_TEXTURE);
+        
+        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+            if (sRaftPlacement15X15BF.state == IN_EDIT_MODE){
+                sRaftPlacement15X15BF.state = NOT_IN_EDIT_MODE;
+                if (shipIsCorrect(mapBot2, shipBaseBFBot2, elemCount, MAP_SIZE_15_X_15, coords) == SHIP_IS_CORRECT){
+                    printf("IS_CORRECT!\n");
+                    putShipInBase(shipBaseBFBot2, coords, elemCount);
+                    putShipInMap(mapBot2, coords, elemCount);
+                    for (int i = 0 ; i < 15; i++){
+                        for (int j = 0; j < 15; j++){
+                            if (sRaftPlacement15X15BF.MapArrayBot2[i][j].spriteState == PLATE_PRESSED){
+                                sRaftPlacement15X15BF.MapArrayBot2[i][j].spriteState = PLATE_SUCCES;  
+                            }
+                        }
+                    }
+                    elemCount = 0;
+                    //Все клетки, где нельзя ставить корабль помечаются красным
+                    for (int i = 1; i <= 15; i++){
+                        for (int j = 1; j <= 15; j++){
+                            if (mapBot2[i][j] == 1){
+                                sRaftPlacement15X15BF.MapArrayBot2[i - 1][j - 1].spriteState = PLATE_ERROR;
+                            }
+                        }
+                    }
+
+                }
+                else {
+                    printf("IS_NOT_CORRECT!\n");
+                    for (int i = 0 ; i < 15; i++){
+                        for (int j = 0; j < 15; j++){
+                            if (sRaftPlacement15X15BF.MapArrayBot2[i][j].spriteState == PLATE_PRESSED){
+                                sRaftPlacement15X15BF.MapArrayBot2[i][j].spriteState = PLATE_NOT_PRESSED;    
+                            }
+                        }
+                    }
+                }
+                elemCount = 0;
+            }
+            else sRaftPlacement15X15BF.state = IN_EDIT_MODE;
+            lastClickTime = glfwGetTime();
+        }
+
+
+        if (sRaftPlacement15X15BF.state == IN_EDIT_MODE){
+            for (int i = 0; i < 15; i++){
+                for (int j = 0; j < 15; j++){
+                    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && cursorInArea(xMousePos, yMousePos, sRaftPlacement15X15BF.MapArrayBot2[i][j].sprite->positionX, windowSizeY - sRaftPlacement15X15BF.MapArrayBot2[i][j].sprite->positionY, sRaftPlacement15X15BF.MapArrayBot2[i][j].sprite->positionX + sRaftPlacement15X15BF.MapArrayBot2[i][j].sprite->sizeX, windowSizeY - sRaftPlacement15X15BF.MapArrayBot2[i][j].sprite->positionY - sRaftPlacement15X15BF.MapArrayBot2[i][j].sprite->sizeY, windowSizeX, windowSizeY) && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                        if (sRaftPlacement15X15BF.MapArrayBot2[i][j].spriteState == PLATE_PRESSED){
+                            sRaftPlacement15X15BF.MapArrayBot2[i][j].spriteState = PLATE_NOT_PRESSED;
+                            elemCount--;
+                        }
+                        else {
+                            if (elemCount < maxElemCount && sRaftPlacement15X15BF.MapArrayBot2[i][j].spriteState != PLATE_SUCCES && sRaftPlacement15X15BF.MapArrayBot2[i][j].spriteState != PLATE_ERROR){
+                                sRaftPlacement15X15BF.MapArrayBot2[i][j].spriteState = PLATE_PRESSED;
+                                coords[elemCount]->x = j;
+                                coords[elemCount]->y = i;
+                                elemCount++;
+                            }
+                        }
+
+                        lastClickTime = glfwGetTime();
+                    }
+
+                    if (sRaftPlacement15X15BF.MapArrayBot2[i][j].spriteState == PLATE_PRESSED){
+                        renderSprite(sRaftPlacement15X15BF.MapArrayBot2[i][j].sprite, SpriteShaderProgram, THIRD_TEXTURE);
+                    }
+                    else if (sRaftPlacement15X15BF.MapArrayBot2[i][j].spriteState == PLATE_SUCCES){
+                        renderSprite(sRaftPlacement15X15BF.MapArrayBot2[i][j].sprite, SpriteShaderProgram, SECOND_TEXTURE);
+                    }
+                    else if (sRaftPlacement15X15BF.MapArrayBot2[i][j].spriteState == PLATE_ERROR){
+                        renderSprite(sRaftPlacement15X15BF.MapArrayBot2[i][j].sprite, SpriteShaderProgram, FIRST_TEXTURE);
+                    }
+                }
+            }
+
+        }
+        else {
+            for (int i = 0; i < 15; i++){
+                for (int j = 0; j < 15; j++){
+                    if (sRaftPlacement15X15BF.MapArrayBot2[i][j].spriteState == PLATE_SUCCES){
+                        renderSprite(sRaftPlacement15X15BF.MapArrayBot2[i][j].sprite, SpriteShaderProgram, SECOND_TEXTURE);
+                    }
+                    else if (sRaftPlacement15X15BF.MapArrayBot2[i][j].spriteState == PLATE_ERROR){
+                        renderSprite(sRaftPlacement15X15BF.MapArrayBot2[i][j].sprite, SpriteShaderProgram, FIRST_TEXTURE);
+                    }
+                }
+            }
+        }
+
+        changeCorrectSpriteParams(sRaftPlacement15X15BF.Map15x15, windowSizeX, windowSizeY);
+
+        renderSprite(sRaftPlacement15X15BF.Map15x15, SpriteShaderProgram, FIRST_TEXTURE);
+        renderSprite(sRaftPlacement15X15BF.ButtonPlates, SpriteShaderProgram, FIRST_TEXTURE);
+
+         //Количество кораблей, которые можно установить на поле
+        getRemainedShips(shipBaseBFBot2, ONE_BLOCK_SHIP, CanPutShips);
+        renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, CanPutShips, correctXcoords(189.0, windowSizeX) , correctYcoords(623, windowSizeY), correctTextSize(0.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        getRemainedShips(shipBaseBFBot2, TWO_BLOCKS_SHIP, CanPutShips);
+        renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, CanPutShips, correctXcoords(170.0, windowSizeX) , correctYcoords(597, windowSizeY), correctTextSize(0.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        getRemainedShips(shipBaseBFBot2, THREE_BLOCKS_SHIP, CanPutShips);
+        renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, CanPutShips, correctXcoords(189.0, windowSizeX) , correctYcoords(571, windowSizeY), correctTextSize(0.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        getRemainedShips(shipBaseBFBot2, FOUR_BLOCKS_SHIP, CanPutShips);
+        renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, CanPutShips, correctXcoords(176.0, windowSizeX) , correctYcoords(547, windowSizeY), correctTextSize(0.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        getRemainedShips(shipBaseBFBot2, FIVE_BLOCKS_SHIP, CanPutShips);
+        renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, CanPutShips, correctXcoords(173.0, windowSizeX) , correctYcoords(521, windowSizeY), correctTextSize(0.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+
+        //Обработка кнопки CLEAR
+        if (cursorInArea(xMousePos, yMousePos, 36, 682, 361, 599, windowSizeX, windowSizeY)){
+            renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, "Clear", correctXcoords(111.0, windowSizeX) , correctYcoords(54.0, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                clearMap(mapBot2);
+                clearShipBase(shipBaseBFBot2);
+
+                for (int i = 0; i < 15; i++){
+                    for (int j = 0; j < 15; j++){
+                        sRaftPlacement15X15BF.MapArrayBot2[i][j].spriteState = PLATE_NOT_PRESSED;
+                    }
+                }
+                
+                lastClickTime = glfwGetTime();
+            }  
+        }
+        else {
+            renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, "Clear", correctXcoords(111.0, windowSizeX) , correctYcoords(54.0, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }
+
+        //Обработка кнопки AutoGen
+        if (cursorInArea(xMousePos, yMousePos, 37, 572, 362, 492, windowSizeX, windowSizeY)){
+            renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, "AutoGen", correctXcoords(66.0, windowSizeX) , correctYcoords(164.0, windowSizeY), correctTextSize(1.7, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                clearMap(mapBot2);
+                clearShipBase(shipBaseBFBot2);
+
+                for (int i = 0; i < 15; i++){
+                    for (int j = 0; j < 15; j++){
+                        sRaftPlacement15X15BF.MapArrayBot2[i][j].spriteState = PLATE_NOT_PRESSED;
+                    }
+                }
+                
+                genRandShips(mapBot2, shipBaseBFBot2, MAP_SIZE_15_X_15);
+
+                for (int i = 0; i < 15; i++){
+                    for (int j = 0; j < 15; j++){
+                        if (mapBot2[i + 1][j + 1] == 2){
+                            sRaftPlacement15X15BF.MapArrayBot2[i][j].spriteState = PLATE_SUCCES;
+                        }
+                    }
+                }
+
+                lastClickTime = glfwGetTime();
+            }  
+        }
+        else {
+            renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, "AutoGen", correctXcoords(66.0, windowSizeX) , correctYcoords(164.0, windowSizeY), correctTextSize(1.7, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }
+    }
+
+    //Индикатор режима редактирования
+    if(sRaftPlacement15X15BF.state == IN_EDIT_MODE){           
+        renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, "e", correctXcoords(1222.0, windowSizeX) , correctYcoords(521.0, windowSizeY), correctTextSize(1.5, windowSizeX, windowSizeY), 1.0f, 1.0f, 0.0f);
+    }
+    else{
+        renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, "e", correctXcoords(1222.0, windowSizeX) , correctYcoords(521.0, windowSizeY), correctTextSize(1.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        renderSprite(sRaftPlacement15X15BF.ExitBtn, SpriteShaderProgram, FIRST_TEXTURE);
+    }
+
+    //Обработка кнопки Exit
+    if (cursorInArea(xMousePos, yMousePos, 1202, 64, 1262, 17, windowSizeX, windowSizeY)){
+        renderSprite(sRaftPlacement15X15BF.ExitBtn, SpriteShaderProgram, SECOND_TEXTURE);
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+            
+            if (shipBaseBFBot1 != NULL) freeShipBase(shipBaseBFBot1);
+            if (shipBaseBFBot2 != NULL) freeShipBase(shipBaseBFBot2);
+
+            shipBaseBFBot1 = NULL;
+            shipBaseBFBot2 = NULL;
+
+            clearMap(mapBot1);
+            clearMap(mapBot2);
+
+            for (int i = 0; i < 15; i++){
+                for (int j = 0; j < 15; j++){
+                    sRaftPlacement15X15BF.MapArrayBot1[i][j].spriteState = PLATE_NOT_PRESSED;
+                    sRaftPlacement15X15BF.MapArrayBot2[i][j].spriteState = PLATE_NOT_PRESSED;
+                }
+            }
+
+            playerInfo.scene = MAIN_MENU_SCENES;
+            playerInfo.BotLevel = NOT_FILLED_IN;
+            playerInfo.GameMode = NOT_FILLED_IN;
+            playerInfo.MapSize = NOT_FILLED_IN;
+            lastClickTime = glfwGetTime();
+        }
+    }
+    else{
+        renderSprite(sRaftPlacement15X15BF.ExitBtn, SpriteShaderProgram, FIRST_TEXTURE);
+    }
+
+    //Обработка кнопки подсказки
+    if (cursorInArea(xMousePos, yMousePos, 1200, 139, 1264, 89, windowSizeX, windowSizeY)){
+        renderSprite(sRaftPlacement15X15BF.QuestionMarkBtn, SpriteShaderProgram, SECOND_TEXTURE);
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+            
+            lastClickTime = glfwGetTime();
+        }
+    }
+    else {
+        renderSprite(sRaftPlacement15X15BF.QuestionMarkBtn, SpriteShaderProgram, FIRST_TEXTURE);
+    }
+
+    //Обработка конпки B1
+    if (cursorInArea(xMousePos, yMousePos, 1200, 277, 1264, 227, windowSizeX, windowSizeY) || playerInfo.scene == RAFT_PLACEMENT_15_X_15_BOTS_FIGHT_BOT_1){
+        renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, "B1", correctXcoords(1215.0, windowSizeX) , correctYcoords(452.0, windowSizeY), correctTextSize(1.1, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY && playerInfo.scene != RAFT_PLACEMENT_15_X_15_BOTS_FIGHT_BOT_1){
+            playerInfo.scene = RAFT_PLACEMENT_15_X_15_BOTS_FIGHT_BOT_1;
+            lastClickTime = glfwGetTime();
+            if (sRaftPlacement15X15BF.state == IN_EDIT_MODE){
+                sRaftPlacement15X15BF.state = NOT_IN_EDIT_MODE;
+            }
+        }
+    }
+    else {
+        renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, "B1", correctXcoords(1215.0, windowSizeX) , correctYcoords(452.0, windowSizeY), correctTextSize(1.1, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+    }
+
+    //Обработка конпки B2
+    if (cursorInArea(xMousePos, yMousePos, 1200, 349, 1264, 294, windowSizeX, windowSizeY) || playerInfo.scene == RAFT_PLACEMENT_15_X_15_BOTS_FIGHT_BOT_2){
+        renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, "B2", correctXcoords(1212.0, windowSizeX) , correctYcoords(382.0, windowSizeY), correctTextSize(1.0, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY &&  playerInfo.scene != RAFT_PLACEMENT_15_X_15_BOTS_FIGHT_BOT_2){
+            playerInfo.scene = RAFT_PLACEMENT_15_X_15_BOTS_FIGHT_BOT_2;
+            lastClickTime = glfwGetTime();
+            if (sRaftPlacement15X15BF.state == IN_EDIT_MODE){
+                sRaftPlacement15X15BF.state = NOT_IN_EDIT_MODE;
+            }
+        }
+    }
+    else {
+        renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, "B2", correctXcoords(1212.0, windowSizeX) , correctYcoords(382.0, windowSizeY), correctTextSize(1.0, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+    }
+
+    //Обработка кнопки PLAY
+    if (cursorInArea(xMousePos, yMousePos, 42, 464, 359, 385, windowSizeX, windowSizeY)){
+        if (AllShipsInMap(shipBaseBFBot2) == NOT_ALL_SHIPS_IN_MAP){
+            renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, "Play", correctXcoords(124.0, windowSizeX) , correctYcoords(274, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 1.0f, 0.0f, 0.0f);
+        }
+        else {
+            renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, "Play", correctXcoords(124.0, windowSizeX) , correctYcoords(274, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 0.0f, 1.0f, 0.0f);
+        }
+
+        if (AllShipsInMap(shipBaseBFBot2) == ALL_SHIPS_IN_MAP && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                
+            lastClickTime = glfwGetTime();
+        }  
+    }
+    else {
+        renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, "Play", correctXcoords(124.0, windowSizeX) , correctYcoords(274, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+    }
+        
 }
 
 #endif

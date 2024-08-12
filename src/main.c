@@ -95,6 +95,8 @@ int main(void)
     initGameSettingsMenu();
     initRaftPlacement10x10();
     initRaftPlacement15x15();
+    initRaftPlacement10x10BF();
+    initRaftPlacement15x15BF();
 
 	glClearColor(0, 1, 0, 1);
     
@@ -123,11 +125,17 @@ int main(void)
         if(playerInfo.scene == GAME_SETTING_MENU){
             renderGameSettingsMenu(window);
         }
-        if (playerInfo.scene == RAFT_PLACEMENT_10_X_10){
+        if (playerInfo.scene == RAFT_PLACEMENT_10_X_10_BASE){
             renderRaftPlacement10x10(window);
         }
-        if (playerInfo.scene == RAFT_PLACEMENT_15_X_15){
+        if (playerInfo.scene == RAFT_PLACEMENT_15_X_15_BASE){
             renderRaftPlacement15x15(window);
+        }
+        if (playerInfo.scene == RAFT_PLACEMENT_10_X_10_BOTS_FIGHT_BOT_1 || playerInfo.scene == RAFT_PLACEMENT_10_X_10_BOTS_FIGHT_BOT_2){
+            renderRaftPlacement10x10BF(window);
+        }
+        if (playerInfo.scene == RAFT_PLACEMENT_15_X_15_BOTS_FIGHT_BOT_1 || playerInfo.scene == RAFT_PLACEMENT_15_X_15_BOTS_FIGHT_BOT_2){
+            renderRaftPlacement15x15BF(window);
         }
         
     

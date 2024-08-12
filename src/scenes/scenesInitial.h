@@ -19,8 +19,13 @@
 #define ABOUT_AUTHORS_SCENES 4
 #define NEW_LOAD_MENU_SCENES 5
 #define GAME_SETTING_MENU 6
-#define RAFT_PLACEMENT_10_X_10 7
-#define RAFT_PLACEMENT_15_X_15 8
+#define RAFT_PLACEMENT_10_X_10_BASE 7
+#define RAFT_PLACEMENT_15_X_15_BASE 8
+#define RAFT_PLACEMENT_10_X_10_BOTS_FIGHT_BOT_1 9
+#define RAFT_PLACEMENT_10_X_10_BOTS_FIGHT_BOT_2 10
+#define RAFT_PLACEMENT_15_X_15_BOTS_FIGHT 11
+#define RAFT_PLACEMENT_15_X_15_BOTS_FIGHT_BOT_1 12
+#define RAFT_PLACEMENT_15_X_15_BOTS_FIGHT_BOT_2 13
 
 //Before filling
 #define NOT_FILLED_IN 0
@@ -117,6 +122,34 @@ typedef struct RaftPlacement15x15
 
 } RaftPlacement15x15;
 
+typedef struct RaftPlacement10x10BF
+{
+    Sprite* Background;
+    Sprite* ButtonPlates;
+    Sprite* Map10x10;
+    Sprite* QuestionMarkBtn;
+    MapSprite MapArrayBot1[10][10];
+    MapSprite MapArrayBot2[10][10];
+    Text* TextParams;
+    Sprite* ExitBtn;
+    GLuint state;
+
+} RaftPlacement10x10BF;
+
+typedef struct RaftPlacement15x15BF
+{
+    Sprite* Background;
+    Sprite* ButtonPlates;
+    Sprite* Map15x15;
+    Sprite* QuestionMarkBtn;
+    MapSprite MapArrayBot1[15][15];
+    MapSprite MapArrayBot2[15][15];
+    Text* TextParams;
+    Sprite* ExitBtn;
+    GLuint state;
+
+} RaftPlacement15x15BF;
+
 
 void initMainMenu();
 
@@ -129,6 +162,10 @@ void initGameSettingsMenu();
 void initRaftPlacement10x10();
 
 void initRaftPlacement15x15();
+
+void initRaftPlacement10x10BF();
+
+void initRaftPlacement15x15BF();
 
 
 #endif
