@@ -2,12 +2,16 @@
 #include <GLFW/glfw3.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "../render/sprite.h"
 #include "../render/AnimSprite.h"
 #include "../render/text.h"
 #include "scenesInitial.h"
 #include "processingUtils.h"
 #include "../game/ShipBase.h"
+#include "otherScenesUtils.h"
+#include "defines.h"
+#include "../game/bots.h"
 
 
 #ifndef SCENESRENDERING_H
@@ -28,5 +32,7 @@ void renderRaftPlacement15x15(GLFWwindow* window);
 void renderRaftPlacement10x10BF(GLFWwindow* window);
 
 void renderRaftPlacement15x15BF(GLFWwindow* window);
+
+void renderMainGameBase10x10(GLFWwindow* window);
 
 #endif

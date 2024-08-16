@@ -8,6 +8,7 @@ Player playerInfo;
 
 //map
 int map[18][18] = {0, };
+int mapBot[18][18] = {0, };
 int mapBot1[18][18] = {0, };
 int mapBot2[18][18] = {0, };
 
@@ -20,14 +21,17 @@ RaftPlacement10x10 sRaftPlacement10X10;
 RaftPlacement15x15 sRaftPlacement15X15;
 RaftPlacement10x10BF sRaftPlacement10X10BF;
 RaftPlacement15x15BF sRaftPlacement15X15BF;
+MainGameBase10x10 sMainGameBase10x10;
 
 //ShipBase
 ShipBase* shipBase = NULL;
+ShipBase* botShipBase = NULL;
 ShipBase* shipBaseBFBot1 = NULL;
 ShipBase* shipBaseBFBot2 = NULL;
 Coordinates* coords[5] = {NULL, };
 
 //Other veriables
+PiratesSprites PiratesSpritesBase;
 double lastClickTime = 0;
 
 void initMainMenu()
@@ -470,6 +474,125 @@ void initRaftPlacement15x15BF()
     sRaftPlacement15X15BF.QuestionMarkBtn = sRaftPlacement15X15.QuestionMarkBtn;
     sRaftPlacement15X15BF.state = NOT_IN_EDIT_MODE;
     sRaftPlacement15X15BF.ExitBtn = sRaftPlacement15X15.ExitBtn;
+}
+
+void initMainGameBase10x10()
+{
+    extern MainMenu sMainMenu;
+    extern MainGameBase10x10 sMainGameBase10x10;
+    extern ShipBase* shipBase;
+    extern ShipBase* botShipBase;
+
+    Sprite* background = initSprite();
+    setStartSpriteParams(background, 1280, 720, 0, 0, 0);
+    setSpriteTexture(background, "../resources/textures/raftPuttingMenu/10x10/background.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
+    Sprite* buttonsPlates = initSprite();
+    setStartSpriteParams(buttonsPlates, 1280, 720, 0, 0, 0);
+    setSpriteTexture(buttonsPlates, "../resources/textures/mainGame/Base10x10/mainBtnPlates10x10.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
+    Sprite* map = initSprite();
+    setStartSpriteParams(map, 1280, 720, 0, 0, 0);
+    setSpriteTexture(map, "../resources/textures/mainGame/Base10x10/MainMap10x10.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+    
+    Sprite* exitBtn = initSprite();
+    setStartSpriteParams(exitBtn,  60, 60, 1207, 651, 0);
+    setSpriteTexture(exitBtn, "../resources/textures/raftPuttingMenu/10x10/exit_black1.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+    setSpriteTexture(exitBtn, "../resources/textures/raftPuttingMenu/10x10/exit_red1.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
+
+    Sprite* questionMarkBtn = initSprite();
+    setStartSpriteParams(questionMarkBtn, 60, 60, 1206 , 580, 0);
+    setSpriteTexture(questionMarkBtn, "../resources/textures/raftPuttingMenu/10x10/qMark_black.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+    setSpriteTexture(questionMarkBtn, "../resources/textures/raftPuttingMenu/10x10/qMark_white.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
+    
+    double xPos = 70.0,
+           yPos = 510.0;
+
+    for (int i = 0; i < 10; i++){
+        for (int j = 0; j < 10; j++){
+            Sprite* mapPlate = initSprite();
+            setStartSpriteParams(mapPlate, 50, 50, xPos, yPos, 0);
+            xPos += 52;
+
+            sMainGameBase10x10.PlayerMapArray[i][j].sprite = mapPlate;
+            sMainGameBase10x10.PlayerMapArray[i][j].spriteState = THIS_IS_NOT_SHIP_PLATE;
+            sMainGameBase10x10.PlayerMapArray[i][j].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+
+        }
+        xPos = 70.0;
+        yPos -= 52.0;
+    }
+    
+    xPos = 722.0;
+    yPos = 510.0;
+
+    for (int i = 0; i < 10; i++){
+        for (int j = 0; j < 10; j++){
+            Sprite* mapPlate = initSprite();
+            setStartSpriteParams(mapPlate, 50, 50, xPos, yPos, 0);
+            setSpriteTexture(mapPlate, "../resources/textures/raftPuttingMenu/10x10/red.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+            setSpriteTexture(mapPlate, "../resources/textures/raftPuttingMenu/10x10/yellow.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
+            xPos += 52;
+            
+            sMainGameBase10x10.BotMapArray[i][j].sprite = mapPlate;
+            sMainGameBase10x10.BotMapArray[i][j].spriteState = THIS_IS_NOT_SHIP_PLATE;
+            sMainGameBase10x10.BotMapArray[i][j].sprite->Texture1 = PiratesSpritesBase.redCross;
+            sMainGameBase10x10.BotMapArray[i][j].sprite->Texture2 = PiratesSpritesBase.waterSplash;
+
+        }
+        xPos = 722.0;
+        yPos -= 52.0;
+    }
+
+    if (botShipBase == NULL) botShipBase = initShipBase(MAP_SIZE_10_X_10);
+
+    sMainGameBase10x10.TextParams = sMainMenu.TextParams;
+    sMainGameBase10x10.Background = background;
+    sMainGameBase10x10.ButtonPlates = buttonsPlates;
+    sMainGameBase10x10.MainMap10x10 = map;
+    sMainGameBase10x10.ExitBtn = exitBtn;
+    sMainGameBase10x10.QuestionMarkBtn = questionMarkBtn;
+}
+
+void initPiratesSprites()
+{
+    extern PiratesSprites PiratesSpritesBase;
+
+    PiratesSpritesBase.blueBasePBL = MakeNewTexture("../resources/textures/pirates/blue_base_pirate_badana_turn_left.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+    PiratesSpritesBase.blueBasePBR = MakeNewTexture("../resources/textures/pirates/blue_base_pirate_badana_turn_right.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+    PiratesSpritesBase.blueBasePPL = MakeNewTexture("../resources/textures/pirates/blue_base_pirate_turn_left.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+    PiratesSpritesBase.blueBasePPR = MakeNewTexture("../resources/textures/pirates/blue_base_pirate_turn_right.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+    PiratesSpritesBase.blueMainPL = MakeNewTexture("../resources/textures/pirates/blue_main_pirate_turn_left.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+    PiratesSpritesBase.blueMainPR = MakeNewTexture("../resources/textures/pirates/blue_main_pirate_turn_right.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+
+    PiratesSpritesBase.greenBasePBL = MakeNewTexture("../resources/textures/pirates/green_base_pirate_badana_turn_left.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+    PiratesSpritesBase.greenBasePBR = MakeNewTexture("../resources/textures/pirates/green_base_pirate_badana_turn_right.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+    PiratesSpritesBase.greenBasePPL = MakeNewTexture("../resources/textures/pirates/green_base_pirate_turn_left.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+    PiratesSpritesBase.greenBasePPR = MakeNewTexture("../resources/textures/pirates/green_base_pirate_turn_right.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+    PiratesSpritesBase.greenMainPL = MakeNewTexture("../resources/textures/pirates/green_main_pirate_turn_left.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+    PiratesSpritesBase.greenMainPR = MakeNewTexture("../resources/textures/pirates/green_main_pirate_turn_right.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+
+    PiratesSpritesBase.redBasePBL = MakeNewTexture("../resources/textures/pirates/red_base_pirate_badana_turn_left.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+    PiratesSpritesBase.redBasePBR = MakeNewTexture("../resources/textures/pirates/red_base_pirate_badana_turn_right.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+    PiratesSpritesBase.redBasePPL = MakeNewTexture("../resources/textures/pirates/red_base_pirate_turn_left.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+    PiratesSpritesBase.redBasePPR = MakeNewTexture("../resources/textures/pirates/red_base_pirate_turn_right.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+    PiratesSpritesBase.redMainPL = MakeNewTexture("../resources/textures/pirates/red_main_pirate_turn_left.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+    PiratesSpritesBase.redMainPR = MakeNewTexture("../resources/textures/pirates/red_main_pirate_turn_right.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+    
+    PiratesSpritesBase.yellowBasePBL = MakeNewTexture("../resources/textures/pirates/yellow_base_pirate_badana_turn_left.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+    PiratesSpritesBase.yellowBasePBR = MakeNewTexture("../resources/textures/pirates/yellow_base_pirate_badana_turn_right.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+    PiratesSpritesBase.yellowMainPL = MakeNewTexture("../resources/textures/pirates/yellow_main_pirate_turn_left.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+    PiratesSpritesBase.yellowMainPR = MakeNewTexture("../resources/textures/pirates/yellow_main_pirate_turn_right.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+
+    PiratesSpritesBase.noCapBasePL1 = MakeNewTexture("../resources/textures/pirates/no_cap_base_pirate_turn_left.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+    PiratesSpritesBase.noCapBasePR1 = MakeNewTexture("../resources/textures/pirates/no_cap_base_pirate_turn_right.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+    PiratesSpritesBase.noCapBasePL2 = MakeNewTexture("../resources/textures/pirates/no_cap_base_pirate2_turn_left.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+    PiratesSpritesBase.noCapBasePR2 = MakeNewTexture("../resources/textures/pirates/no_cap_base_pirate2_turn_right.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+
+    PiratesSpritesBase.dead = MakeNewTexture("../resources/textures/pirates/dead.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+    PiratesSpritesBase.waterSplash = MakeNewTexture("../resources/textures/pirates/dot.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+    PiratesSpritesBase.redCross = MakeNewTexture("../resources/textures/pirates/exit_red.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
+
 }
 
 #endif

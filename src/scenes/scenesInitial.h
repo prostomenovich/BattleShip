@@ -3,47 +3,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../render/sprite.h"
+#include "../render/textures.h"
 #include "../render/AnimSprite.h"
 #include "../render/text.h"
 #include "processingUtils.h"
 #include "../game/ShipBase.h"
+#include "defines.h"
 
 
 #ifndef SCENESINITIAL_H
 #define SCENESINITIAL_H
 
-//Scenes defines
-#define MAIN_MENU_SCENES 1
-#define ABOUT_LORE_SCENES 2
-#define ABOUT_RULES_SCENES 3
-#define ABOUT_AUTHORS_SCENES 4
-#define NEW_LOAD_MENU_SCENES 5
-#define GAME_SETTING_MENU 6
-#define RAFT_PLACEMENT_10_X_10_BASE 7
-#define RAFT_PLACEMENT_15_X_15_BASE 8
-#define RAFT_PLACEMENT_10_X_10_BOTS_FIGHT_BOT_1 9
-#define RAFT_PLACEMENT_10_X_10_BOTS_FIGHT_BOT_2 10
-#define RAFT_PLACEMENT_15_X_15_BOTS_FIGHT 11
-#define RAFT_PLACEMENT_15_X_15_BOTS_FIGHT_BOT_1 12
-#define RAFT_PLACEMENT_15_X_15_BOTS_FIGHT_BOT_2 13
-
-//Before filling
-#define NOT_FILLED_IN 0
-
-//Game mode defines
-#define BOTS_FIGHT_MODE 11
-#define BASIC_MODE 12
-
-//Bot level
-#define EASY_BOT_LEVEL 41
-#define NORMAL_BOT_LEVEL 42
-#define HARD_BOT_LEVEL 43
-
-//states
-#define IN_EDIT_MODE 51
-#define NOT_IN_EDIT_MODE 52
-#define PLATE_SUCCES 53
-#define PLATE_ERROR 54
 
 typedef struct Player
 {
@@ -150,7 +120,60 @@ typedef struct RaftPlacement15x15BF
 
 } RaftPlacement15x15BF;
 
+typedef struct MainGameBase10x10
+{
+    Sprite* Background;
+    Sprite* ButtonPlates;
+    Sprite* MainMap10x10;
+    Sprite* QuestionMarkBtn;
+    MapSprite PlayerMapArray[10][10];
+    MapSprite BotMapArray[10][10];
+    Text* TextParams;
+    Sprite* ExitBtn;
+    GLuint state;
 
+} MainGameBase10x10;
+
+typedef struct PiratesSprites 
+{
+    GLuint blueBasePBL;
+    GLuint blueBasePBR;
+    GLuint blueBasePPL;
+    GLuint blueBasePPR;
+    GLuint blueMainPL;
+    GLuint blueMainPR;
+
+    GLuint greenBasePBL;
+    GLuint greenBasePBR;
+    GLuint greenBasePPL;
+    GLuint greenBasePPR;
+    GLuint greenMainPL;
+    GLuint greenMainPR;
+
+    GLuint redBasePBL;
+    GLuint redBasePBR;
+    GLuint redBasePPL;
+    GLuint redBasePPR;
+    GLuint redMainPL;
+    GLuint redMainPR;
+
+    GLuint yellowBasePBL;
+    GLuint yellowBasePBR;
+    GLuint yellowMainPL;
+    GLuint yellowMainPR;
+
+    GLuint noCapBasePL1;
+    GLuint noCapBasePR1;
+    GLuint noCapBasePL2;
+    GLuint noCapBasePR2;
+
+    GLuint dead;
+    GLuint waterSplash;
+    GLuint redCross;
+
+} PiratesSprites;
+
+//scenes Initial
 void initMainMenu();
 
 void initAbout();
@@ -167,5 +190,9 @@ void initRaftPlacement10x10BF();
 
 void initRaftPlacement15x15BF();
 
+void initMainGameBase10x10();
+
+//Other
+void initPiratesSprites();
 
 #endif

@@ -89,6 +89,7 @@ int main(void)
     TextShaderProgram = MakeShaderProgram("../resources/shaders/textVertex.glsl",
                                             "../resources/shaders/textFragment.glsl");
 
+    initPiratesSprites();
     initMainMenu();
     initAbout();
     initNewLoadMenu();
@@ -97,6 +98,7 @@ int main(void)
     initRaftPlacement15x15();
     initRaftPlacement10x10BF();
     initRaftPlacement15x15BF();
+    initMainGameBase10x10();
 
 	glClearColor(0, 1, 0, 1);
     
@@ -136,6 +138,9 @@ int main(void)
         }
         if (playerInfo.scene == RAFT_PLACEMENT_15_X_15_BOTS_FIGHT_BOT_1 || playerInfo.scene == RAFT_PLACEMENT_15_X_15_BOTS_FIGHT_BOT_2){
             renderRaftPlacement15x15BF(window);
+        }
+        if (playerInfo.scene == MAIN_GAME_BASE_10_X_10){
+            renderMainGameBase10x10(window);
         }
         
     

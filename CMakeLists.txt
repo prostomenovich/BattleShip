@@ -25,7 +25,12 @@ add_executable(${PROJECT_NAME} src/main.c
                                src/scenes/processingUtils.c
                                src/scenes/processingUtils.h
                                src/game/ShipBase.c
-                               src/game/ShipBase.h)
+                               src/game/ShipBase.h
+                               src/scenes/otherScenesUtils.c
+                               src/scenes/otherScenesUtils.c
+                               src/scenes/defines.h
+                               src/game/bots.c
+                               src/game/bots.h)
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)

@@ -1,6 +1,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <string.h>
 #include "../render/sprite.h"
+//#include "../game/ShipBase.h"
 
 
 #ifndef PROCESSINGUTILS_H
@@ -18,6 +20,10 @@
 //Map size
 #define MAP_SIZE_10_X_10 10
 #define MAP_SIZE_15_X_15 15
+
+//textures turns
+#define TEXTURES_TURN_RIGHT 1
+#define TEXTURES_TURN_LEFT 2
 
 typedef struct MapSprite
 {
@@ -37,5 +43,9 @@ void changeCorrectSpriteParams(Sprite* sprite, int windowSizeX, int windowSizeY)
 int cursorInArea(int mousePosX, int mousePosY, int lowerLeftX, int lowerLeftY, int higherRightX, int higherRightY, int windowSizeX, int windowSizeY);
 
 int plateIsPressed10x10(int i, int j, int xMousePos, int yMousePos);
+
+void intToString(char* str, int digit);
+
+
 
 #endif

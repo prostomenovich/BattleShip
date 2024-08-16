@@ -88,5 +88,17 @@ int plateIsPressed10x10(int i, int j, int xMousePos, int yMousePos)
             
 }
 
+void intToString(char* str, int digit)
+{
+    char tmp[3] = {'\0', };
+    for (int i = 0; i < 2 && digit != 0; i++){
+        tmp[i] = '0' + (digit % 10);
+        digit /= 10;
+    }
 
+    for (int i = 1, j = 0; i >= 0; i--){
+        str[j++] = tmp[i];
+    }
+
+}
 #endif

@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include "../scenes/processingUtils.h"
+#include "../scenes/defines.h"
 
 #ifndef SHIPBASE_H
 #define SHIPBASE_H
@@ -37,6 +38,10 @@
 
 #define ALL_SHIPS_IN_MAP 1
 #define NOT_ALL_SHIPS_IN_MAP 2
+
+#define SHIP_WAS_HIT 1
+#define SHIP_KILLED 2
+#define SHIP_NOT_FOUND 3
 
 typedef struct Coordinates
 {
@@ -92,5 +97,13 @@ static int canPutThisShip(int map[18][18], int shipType, int MapSize, Coordinate
 void genRandShips(int map[18][18], ShipBase* shipBase, int MapSize);
 
 void freeShipBase(ShipBase* shipBase);
+
+void clearTrashFromMap(int map[18][18]);
+
+int killShipInShipBase(ShipBase* shipBase, int x, int y);
+
+void putMisses(int map[18][18], ShipBase* shipBase, int x, int y, int digit);
+
+int getShipsLeft(ShipBase* shipBase);
 
 #endif

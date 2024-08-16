@@ -1,0 +1,60 @@
+#ifndef DEFINES_H
+#define DEFINES_H
+
+//Scenes defines
+#define MAIN_MENU_SCENES 1
+#define ABOUT_LORE_SCENES 2
+#define ABOUT_RULES_SCENES 3
+#define ABOUT_AUTHORS_SCENES 4
+#define NEW_LOAD_MENU_SCENES 5
+#define GAME_SETTING_MENU 6
+#define RAFT_PLACEMENT_10_X_10_BASE 7
+#define RAFT_PLACEMENT_15_X_15_BASE 8
+#define RAFT_PLACEMENT_10_X_10_BOTS_FIGHT_BOT_1 9
+#define RAFT_PLACEMENT_10_X_10_BOTS_FIGHT_BOT_2 10
+#define RAFT_PLACEMENT_15_X_15_BOTS_FIGHT 11
+#define RAFT_PLACEMENT_15_X_15_BOTS_FIGHT_BOT_1 12
+#define RAFT_PLACEMENT_15_X_15_BOTS_FIGHT_BOT_2 13
+#define MAIN_GAME_BASE_10_X_10 14
+
+//Before filling
+#define NOT_FILLED_IN 0
+
+//Game mode defines
+#define BOTS_FIGHT_MODE 11
+#define BASIC_MODE 12
+
+//Bot level
+#define EASY_BOT_LEVEL 41
+#define NORMAL_BOT_LEVEL 42
+#define HARD_BOT_LEVEL 43
+
+//states
+#define IN_EDIT_MODE 51
+#define NOT_IN_EDIT_MODE 52
+#define PLATE_SUCCES 53
+#define PLATE_ERROR 54
+#define BOT_SHOT 55
+#define PLAYER_SHOT 56
+
+//states for main game
+#define THIS_IS_SHIP_PLATE_LIVE 1
+#define THIS_IS_SHIP_PLATE_DEAD 1
+#define THIS_IS_NOT_SHIP_PLATE 3
+
+//Map states
+#define EMPTY_PLATE 0
+#define MISS_PLATE 1
+#define SHIP_PLATE 2
+#define HIT_PLATE 3
+#define AROUND_SHIP_PLATE 4
+
+//bot mode
+#define FINISHING_OFF_MODE 1
+#define ATTACK_MODE 2
+
+//Game Status
+#define GAME_END 1
+#define GAME_PROCESS 2
+
+#endif
