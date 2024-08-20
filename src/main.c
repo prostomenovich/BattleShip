@@ -99,6 +99,7 @@ int main(void)
     initRaftPlacement10x10BF();
     initRaftPlacement15x15BF();
     initMainGameBase10x10();
+    initMainGameBase15x15();
 
 	glClearColor(0, 1, 0, 1);
     
@@ -141,6 +142,9 @@ int main(void)
         }
         if (playerInfo.scene == MAIN_GAME_BASE_10_X_10){
             renderMainGameBase10x10(window);
+        }
+        if (playerInfo.scene == MAIN_GAME_BASE_15_X_15){
+            renderMainGameBase15x15(window);
         }
         
     

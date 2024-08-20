@@ -130,9 +130,25 @@ typedef struct MainGameBase10x10
     MapSprite BotMapArray[10][10];
     Text* TextParams;
     Sprite* ExitBtn;
+    Sprite* FAQPlate;
     GLuint state;
 
 } MainGameBase10x10;
+
+typedef struct MainGameBase15x15
+{
+    Sprite* Background;
+    Sprite* ButtonPlates;
+    Sprite* MainMap15x15;
+    Sprite* QuestionMarkBtn;
+    MapSprite PlayerMapArray[15][15];
+    MapSprite BotMapArray[15][15];
+    Text* TextParams;
+    Sprite* ExitBtn;
+    Sprite* FAQPlate;
+    GLuint state;
+
+} MainGameBase15x15;
 
 typedef struct PiratesSprites 
 {
@@ -191,6 +207,8 @@ void initRaftPlacement10x10BF();
 void initRaftPlacement15x15BF();
 
 void initMainGameBase10x10();
+
+void initMainGameBase15x15();
 
 //Other
 void initPiratesSprites();

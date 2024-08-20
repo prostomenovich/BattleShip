@@ -60,6 +60,7 @@ ShipBase* initShipBase(int mapSize)
 		for (int j = 0; j < sb->shipsCount; j++) {
 			sb->ships[j] = (Ship*)malloc(sizeof(Ship));
 			sb->shipsInMap = NOT_IN_MAP;
+            sb->ships[j]->lives = FIVE_BLOCKS_SHIP;
 			sb->ships[j]->coords = (Coordinates**)malloc(sizeof(Coordinates*) * sb->shipType);
 			for (int k = 0; k < sb->shipType; k++) {
 				sb->ships[j]->coords[k] = (Coordinates*)malloc(sizeof(Coordinates));
@@ -399,7 +400,6 @@ static int canPutThisShip(int map[18][18], int shipType, int MapSize, Coordinate
                 return SHIP_NOT_CORRECT;
             }
         }
-
         return SHIP_IS_CORRECT;
     }
 }
@@ -521,7 +521,7 @@ int killShipInShipBase(ShipBase* shipBase, int x, int y)
             for (int j = 0; j < sb->shipType; j++){
                 if (sb->ships[i]->coords[j]->x == x && sb->ships[i]->coords[j]->y == y){
                     sb->ships[i]->lives -= 1;
-                    if (sb->ships[i]->lives != 0){
+                    if (sb->ships[i]->lives > 0){
                         return HIT_PLATE;
                     }
                     else{
@@ -549,35 +549,35 @@ void putMisses(int map[18][18], ShipBase* shipBase, int x, int y, int digit)
                     if (sb->ships[i]->coords[j]->x == x && sb->ships[i]->coords[j]->y == y){
                         for (int k = 0; k < sb->shipType; k++){
                             printf("1\n");
-                            if (map[sb->ships[i]->coords[k]->y + 1][sb->ships[i]->coords[k]->x + 1 - 1] != 3 && map[sb->ships[i]->coords[k]->y + 1][sb->ships[i]->coords[k]->x + 1 - 1] != 1){
+                            if (map[sb->ships[i]->coords[k]->y + 1][sb->ships[i]->coords[k]->x + 1 - 1] != 3 && map[sb->ships[i]->coords[k]->y + 1][sb->ships[i]->coords[k]->x + 1 - 1] != 1 && map[sb->ships[i]->coords[k]->y + 1][sb->ships[i]->coords[k]->x + 1 - 1] != 2){
                                 map[sb->ships[i]->coords[k]->y + 1][sb->ships[i]->coords[k]->x + 1 - 1] = digit;
                             }
                             printf("2\n");
-                            if (map[sb->ships[i]->coords[k]->y + 1][sb->ships[i]->coords[k]->x + 1 + 1] != 3 && map[sb->ships[i]->coords[k]->y + 1][sb->ships[i]->coords[k]->x + 1 + 1] != 1){
+                            if (map[sb->ships[i]->coords[k]->y + 1][sb->ships[i]->coords[k]->x + 1 + 1] != 3 && map[sb->ships[i]->coords[k]->y + 1][sb->ships[i]->coords[k]->x + 1 + 1] != 1 && map[sb->ships[i]->coords[k]->y + 1][sb->ships[i]->coords[k]->x + 1 + 1] != 2){
                                 map[sb->ships[i]->coords[k]->y + 1][sb->ships[i]->coords[k]->x + 1 + 1] = digit;
                             }
                             printf("3\n");
-                            if (map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1] != 3 && map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1] != 1){
+                            if (map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1] != 3 && map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1] != 1 && map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1] != 2){
                                 map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1] = digit;
                             }
                             printf("4\n");
-                            if (map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1 + 1] != 3 && map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1 + 1] != 1){
+                            if (map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1 + 1] != 3 && map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1 + 1] != 1 && map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1 + 1] != 2){
                                 map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1 + 1] = digit;
                             }
                             printf("5\n");
-                            if (map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1 - 1] != 3 && map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1 - 1] != 1){
+                            if (map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1 - 1] != 3 && map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1 - 1] != 1 && map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1 - 1] != 2){
                                 map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1 - 1] = digit;
                             }
                             printf("6\n");
-                            if (map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1] != 3 && map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1] != 1){
+                            if (map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1] != 3 && map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1] != 1 && map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1] != 2){
                                 map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1] = digit;
                             }
                             printf("7\n");
-                            if (map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1 + 1] != 3 && map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1 + 1] != 1){
+                            if (map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1 + 1] != 3 && map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1 + 1] != 1 && map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1 + 1] != 2){
                                 map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1 + 1] = digit;
                             }
                             printf("8\n");
-                            if (map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1 - 1] != 3 && map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1 - 1] != 1){
+                            if (map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1 - 1] != 3 && map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1 - 1] != 1 && map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1 - 1] != 2){
                                 map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1 - 1] = digit;
                             } 
                         }

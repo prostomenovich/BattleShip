@@ -22,6 +22,8 @@ RaftPlacement15x15 sRaftPlacement15X15;
 RaftPlacement10x10BF sRaftPlacement10X10BF;
 RaftPlacement15x15BF sRaftPlacement15X15BF;
 MainGameBase10x10 sMainGameBase10x10;
+MainGameBase15x15 sMainGameBase15x15;
+
 
 //ShipBase
 ShipBase* shipBase = NULL;
@@ -33,6 +35,20 @@ Coordinates* coords[5] = {NULL, };
 //Other veriables
 PiratesSprites PiratesSpritesBase;
 double lastClickTime = 0;
+
+//FAQ Text
+char FAQMainGame10x10Basic [7][MAX_STRING_SIZE] = 
+{
+    "In the basic mode you have to fight against a bot.",
+    "The number of your living rafts is displayed above",
+    "your field and the number of his living rafts",
+    "is displayed above the opponents field. The winner",
+    "is the one who first eliminates all the enemys",
+    "rafts. To fire a shot left click on the desired",
+    "cell on the enemys field."
+};
+
+const int FAQMainGame10x10BasicStringCount = 7;
 
 void initMainMenu()
 {
@@ -501,9 +517,14 @@ void initMainGameBase10x10()
     setSpriteTexture(exitBtn, "../resources/textures/raftPuttingMenu/10x10/exit_red1.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
 
     Sprite* questionMarkBtn = initSprite();
-    setStartSpriteParams(questionMarkBtn, 60, 60, 1206 , 580, 0);
+    setStartSpriteParams(questionMarkBtn, 60, 60, 1109 , 644, 0);
     setSpriteTexture(questionMarkBtn, "../resources/textures/raftPuttingMenu/10x10/qMark_black.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
     setSpriteTexture(questionMarkBtn, "../resources/textures/raftPuttingMenu/10x10/qMark_white.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
+
+    Sprite* FAQPlate = initSprite();
+    setStartSpriteParams(FAQPlate, 1280, 720, 0 , 0, 0);
+    setSpriteTexture(FAQPlate, "../resources/textures/mainGame/FAQPlateBasicGame10x10.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
     
     double xPos = 70.0,
            yPos = 510.0;
@@ -544,7 +565,7 @@ void initMainGameBase10x10()
         yPos -= 52.0;
     }
 
-    if (botShipBase == NULL) botShipBase = initShipBase(MAP_SIZE_10_X_10);
+    //if (botShipBase == NULL) botShipBase = initShipBase(MAP_SIZE_10_X_10);
 
     sMainGameBase10x10.TextParams = sMainMenu.TextParams;
     sMainGameBase10x10.Background = background;
@@ -552,6 +573,7 @@ void initMainGameBase10x10()
     sMainGameBase10x10.MainMap10x10 = map;
     sMainGameBase10x10.ExitBtn = exitBtn;
     sMainGameBase10x10.QuestionMarkBtn = questionMarkBtn;
+    sMainGameBase10x10.FAQPlate = FAQPlate;
 }
 
 void initPiratesSprites()
@@ -594,5 +616,89 @@ void initPiratesSprites()
     PiratesSpritesBase.redCross = MakeNewTexture("../resources/textures/pirates/exit_red.png", GL_NEAREST, GL_CLAMP_TO_EDGE);
 
 }
+
+void initMainGameBase15x15()
+{
+    extern MainMenu sMainMenu;
+    extern MainGameBase15x15 sMainGameBase15x15;
+    extern ShipBase* shipBase;
+    extern ShipBase* botShipBase;
+
+    Sprite* background = initSprite();
+    setStartSpriteParams(background, 1280, 720, 0, 0, 0);
+    setSpriteTexture(background, "../resources/textures/raftPuttingMenu/10x10/background.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
+    Sprite* buttonsPlates = initSprite();
+    setStartSpriteParams(buttonsPlates, 1280, 720, 0, 0, 0);
+    setSpriteTexture(buttonsPlates, "../resources/textures/mainGame/Base10x10/mainBtnPlates10x10.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
+    Sprite* map = initSprite();
+    setStartSpriteParams(map, 1280, 720, 0, 0, 0);
+    setSpriteTexture(map, "../resources/textures/mainGame/Base15x15/MainMap15x15Basic.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+    
+    Sprite* exitBtn = initSprite();
+    setStartSpriteParams(exitBtn,  60, 60, 1207, 651, 0);
+    setSpriteTexture(exitBtn, "../resources/textures/raftPuttingMenu/10x10/exit_black1.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+    setSpriteTexture(exitBtn, "../resources/textures/raftPuttingMenu/10x10/exit_red1.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
+
+    Sprite* questionMarkBtn = initSprite();
+    setStartSpriteParams(questionMarkBtn, 60, 60, 1109 , 644, 0);
+    setSpriteTexture(questionMarkBtn, "../resources/textures/raftPuttingMenu/10x10/qMark_black.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+    setSpriteTexture(questionMarkBtn, "../resources/textures/raftPuttingMenu/10x10/qMark_white.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
+
+    Sprite* FAQPlate = initSprite();
+    setStartSpriteParams(FAQPlate, 1280, 720, 0 , 0, 0);
+    setSpriteTexture(FAQPlate, "../resources/textures/mainGame/FAQPlateBasicGame10x10.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
+    
+    double xPos = 61.43,
+           yPos = 540.0;
+
+    for (int i = 0; i < 15; i++){
+        for (int j = 0; j < 15; j++){
+            Sprite* mapPlate = initSprite();
+            setStartSpriteParams(mapPlate, 34, 34, xPos, yPos, 0);
+            xPos += 36.53;
+
+            sMainGameBase15x15.PlayerMapArray[i][j].sprite = mapPlate;
+            sMainGameBase15x15.PlayerMapArray[i][j].spriteState = THIS_IS_NOT_SHIP_PLATE;
+            sMainGameBase15x15.PlayerMapArray[i][j].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+
+        }
+        xPos = 61.43;
+        yPos -= 36.52;
+    }
+    
+    xPos = 704.0;
+    yPos = 542.0;
+
+    for (int i = 0; i < 15; i++){
+        for (int j = 0; j < 15; j++){
+            Sprite* mapPlate = initSprite();
+            setStartSpriteParams(mapPlate, 34, 34, xPos, yPos, 0);
+            setSpriteTexture(mapPlate, "../resources/textures/raftPuttingMenu/10x10/red.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+            setSpriteTexture(mapPlate, "../resources/textures/raftPuttingMenu/10x10/yellow.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
+            xPos += 36.5;
+            
+            sMainGameBase15x15.BotMapArray[i][j].sprite = mapPlate;
+            sMainGameBase15x15.BotMapArray[i][j].spriteState = THIS_IS_NOT_SHIP_PLATE;
+            sMainGameBase15x15.BotMapArray[i][j].sprite->Texture1 = PiratesSpritesBase.redCross;
+            sMainGameBase15x15.BotMapArray[i][j].sprite->Texture2 = PiratesSpritesBase.waterSplash;
+
+        }
+        xPos = 705.0;
+        yPos -= 36.7;
+    }
+
+
+    sMainGameBase15x15.TextParams = sMainMenu.TextParams;
+    sMainGameBase15x15.Background = background;
+    sMainGameBase15x15.ButtonPlates = buttonsPlates;
+    sMainGameBase15x15.MainMap15x15 = map;
+    sMainGameBase15x15.ExitBtn = exitBtn;
+    sMainGameBase15x15.QuestionMarkBtn = questionMarkBtn;
+    sMainGameBase15x15.FAQPlate = FAQPlate;
+}
+
 
 #endif

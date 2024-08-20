@@ -10,8 +10,8 @@ int AttackDirection = -1;
 
 int easyLevelBot(int* x, int* y, int map[18][18], int mapSize)
 {
-    int xTmp = rand() % MAP_SIZE_10_X_10 + 1,
-        yTmp = rand() % MAP_SIZE_10_X_10 + 1,
+    int xTmp = rand() % mapSize + 1,
+        yTmp = rand() % mapSize + 1,
         endGameFlag = 0;
 
 
@@ -27,8 +27,8 @@ int easyLevelBot(int* x, int* y, int map[18][18], int mapSize)
     if (!endGameFlag) return GAME_END;
 
     while (map[yTmp][xTmp] == HIT_PLATE || map[yTmp][xTmp] == MISS_PLATE){
-        xTmp = rand() % MAP_SIZE_10_X_10 + 1,
-        yTmp = rand() % MAP_SIZE_10_X_10 + 1;
+        xTmp = rand() % mapSize + 1,
+        yTmp = rand() % mapSize + 1;
     }
 
     if (map[yTmp][xTmp] == EMPTY_PLATE){
@@ -67,7 +67,7 @@ int mediumLevelBot(int* x, int* y, int map[18][18], int mapSize, int gameStatus)
 
         if (!endGameFlag) return GAME_END;
 
-        if (step == 0) step = rand() % 10 + 1;
+        if (step == 0) step = rand() % 8 + 2;
         if (direction == -1) direction = rand() % 2;
         if (lastX == -1 && lastY == -1){
             if (direction == TOP_DOWN){
@@ -107,12 +107,12 @@ int mediumLevelBot(int* x, int* y, int map[18][18], int mapSize, int gameStatus)
                         lastX = 1;
                         lastY = mapSize;
                     }
-                    step = rand() % 10 + 1;   
+                    step = rand() % 8 + 2;  
                 }
             }
         }
-        printf("%d, %d ", lastX, lastY);
-        printf("%d\n", step);
+        printf("x: %d, y: %d ", lastX, lastY);
+        printf("step %d\n", step);
         if (map[lastY][lastX] == EMPTY_PLATE){
             map[lastY][lastX] = MISS_PLATE;
             *x = lastX;
@@ -147,55 +147,63 @@ int finishingOff(int x, int y, int map[18][18], ShipBase* shipBase, int AttackSt
         if (lastAttackCoordX == -1) lastAttackCoordX = x;
         if (lastAttackCoordY == -1) lastAttackCoordY = y;
 
-        if (AttackDirection == UP && (map[lastAttackCoordY - 1][lastAttackCoordX] == MISS_PLATE || map[lastAttackCoordY - 1][lastAttackCoordX] == AROUND_SHIP_PLATE || lastAttackCoordY - 1 < 1)){
+        /*
+            Выбор корректного направления для атаки
+            Проверяется:
+                1. Не стреляли ли уже в клетку, в которуб планируется сделать атаку
+                2. Не выходит ли атака за границы поля
+        
+        */
+        if (AttackDirection == UP && (map[lastAttackCoordY - 1][lastAttackCoordX] == HIT_PLATE || map[lastAttackCoordY - 1][lastAttackCoordX] == MISS_PLATE || map[lastAttackCoordY - 1][lastAttackCoordX] == AROUND_SHIP_PLATE || lastAttackCoordY - 1 < 1)){
             AttackDirection = DOWN;
-            if (AttackDirection == DOWN && (map[lastAttackCoordY + 1][lastAttackCoordX] == MISS_PLATE || map[lastAttackCoordY + 1][lastAttackCoordX] == AROUND_SHIP_PLATE || lastAttackCoordY + 1 > MapSize)){
+            if (AttackDirection == DOWN && (map[lastAttackCoordY + 1][lastAttackCoordX] == HIT_PLATE || map[lastAttackCoordY + 1][lastAttackCoordX] == MISS_PLATE || map[lastAttackCoordY + 1][lastAttackCoordX] == AROUND_SHIP_PLATE || lastAttackCoordY + 1 > MapSize)){
                 AttackDirection = rand() % 2 + 2;
-                if (AttackDirection == RIGHT && (map[lastAttackCoordY][lastAttackCoordX + 1] == MISS_PLATE || map[lastAttackCoordY][lastAttackCoordX + 1] == AROUND_SHIP_PLATE || lastAttackCoordX + 1 > MapSize)){
+                if (AttackDirection == RIGHT && (map[lastAttackCoordY][lastAttackCoordX + 1] == HIT_PLATE || map[lastAttackCoordY][lastAttackCoordX + 1] == MISS_PLATE || map[lastAttackCoordY][lastAttackCoordX + 1] == AROUND_SHIP_PLATE || lastAttackCoordX + 1 > MapSize)){
                     AttackDirection = LEFT;
                 }
-                if (AttackDirection == LEFT && (map[lastAttackCoordY][lastAttackCoordX - 1] == MISS_PLATE || map[lastAttackCoordY][lastAttackCoordX - 1] == AROUND_SHIP_PLATE || lastAttackCoordX - 1 < 1)){
+                if (AttackDirection == LEFT && (map[lastAttackCoordY][lastAttackCoordX - 1] == HIT_PLATE || map[lastAttackCoordY][lastAttackCoordX - 1] == MISS_PLATE || map[lastAttackCoordY][lastAttackCoordX - 1] == AROUND_SHIP_PLATE || lastAttackCoordX - 1 < 1)){
                     AttackDirection = RIGHT;
                 }
             }
             
         }
-        else if (AttackDirection == DOWN && (map[lastAttackCoordY + 1][lastAttackCoordX] == MISS_PLATE || map[lastAttackCoordY + 1][lastAttackCoordX] == AROUND_SHIP_PLATE || lastAttackCoordY + 1 > MapSize)){
+        else if (AttackDirection == DOWN && (map[lastAttackCoordY + 1][lastAttackCoordX] == HIT_PLATE || map[lastAttackCoordY + 1][lastAttackCoordX] == MISS_PLATE || map[lastAttackCoordY + 1][lastAttackCoordX] == AROUND_SHIP_PLATE || lastAttackCoordY + 1 > MapSize)){
             AttackDirection = UP;
-            if (AttackDirection == UP && (map[lastAttackCoordY - 1][lastAttackCoordX] == MISS_PLATE || map[lastAttackCoordY - 1][lastAttackCoordX] == AROUND_SHIP_PLATE || lastAttackCoordY - 1 < 1)){
+            if (AttackDirection == UP && (map[lastAttackCoordY - 1][lastAttackCoordX] == HIT_PLATE || map[lastAttackCoordY - 1][lastAttackCoordX] == MISS_PLATE || map[lastAttackCoordY - 1][lastAttackCoordX] == AROUND_SHIP_PLATE || lastAttackCoordY - 1 < 1)){
                 AttackDirection = rand() % 2 + 2;
-                if (AttackDirection == RIGHT && (map[lastAttackCoordY][lastAttackCoordX + 1] == MISS_PLATE || map[lastAttackCoordY][lastAttackCoordX + 1] == AROUND_SHIP_PLATE || lastAttackCoordX + 1 > MapSize)){
+                if (AttackDirection == RIGHT && (map[lastAttackCoordY][lastAttackCoordX + 1] == HIT_PLATE || map[lastAttackCoordY][lastAttackCoordX + 1] == MISS_PLATE || map[lastAttackCoordY][lastAttackCoordX + 1] == AROUND_SHIP_PLATE || lastAttackCoordX + 1 > MapSize)){
                     AttackDirection = LEFT;
                 }
-                if (AttackDirection == LEFT && (map[lastAttackCoordY][lastAttackCoordX - 1] == MISS_PLATE || map[lastAttackCoordY][lastAttackCoordX - 1] == AROUND_SHIP_PLATE || lastAttackCoordX - 1 < 1)){
+                if (AttackDirection == LEFT && (map[lastAttackCoordY][lastAttackCoordX - 1] == HIT_PLATE || map[lastAttackCoordY][lastAttackCoordX - 1] == MISS_PLATE || map[lastAttackCoordY][lastAttackCoordX - 1] == AROUND_SHIP_PLATE || lastAttackCoordX - 1 < 1)){
                     AttackDirection = RIGHT;
                 }
             }
         }
-        else if (AttackDirection == RIGHT && (map[lastAttackCoordY][lastAttackCoordX + 1] == MISS_PLATE || map[lastAttackCoordY][lastAttackCoordX + 1] == AROUND_SHIP_PLATE) || lastAttackCoordX + 1 > MapSize){
+        else if (AttackDirection == RIGHT && (map[lastAttackCoordY][lastAttackCoordX + 1] == HIT_PLATE || map[lastAttackCoordY][lastAttackCoordX + 1] == MISS_PLATE || map[lastAttackCoordY][lastAttackCoordX + 1] == AROUND_SHIP_PLATE) || lastAttackCoordX + 1 > MapSize){
             AttackDirection = LEFT;
-            if (AttackDirection == LEFT && (map[lastAttackCoordY][lastAttackCoordX - 1] == MISS_PLATE || map[lastAttackCoordY][lastAttackCoordX - 1] == AROUND_SHIP_PLATE || lastAttackCoordX - 1 < 1)){
+            if (AttackDirection == LEFT && (map[lastAttackCoordY][lastAttackCoordX - 1] == HIT_PLATE || map[lastAttackCoordY][lastAttackCoordX - 1] == MISS_PLATE || map[lastAttackCoordY][lastAttackCoordX - 1] == AROUND_SHIP_PLATE || lastAttackCoordX - 1 < 1)){
                 AttackDirection = rand() % 2;
-                if (AttackDirection == DOWN && (map[lastAttackCoordY + 1][lastAttackCoordX] == MISS_PLATE || map[lastAttackCoordY + 1][lastAttackCoordX] == AROUND_SHIP_PLATE || lastAttackCoordY + 1 > MapSize)){
+                if (AttackDirection == DOWN && (map[lastAttackCoordY + 1][lastAttackCoordX] == HIT_PLATE || map[lastAttackCoordY + 1][lastAttackCoordX] == MISS_PLATE || map[lastAttackCoordY + 1][lastAttackCoordX] == AROUND_SHIP_PLATE || lastAttackCoordY + 1 > MapSize)){
                     AttackDirection = UP;
                 }
-                if (AttackDirection == UP && (map[lastAttackCoordY - 1][lastAttackCoordX] == MISS_PLATE || map[lastAttackCoordY - 1][lastAttackCoordX] == AROUND_SHIP_PLATE || lastAttackCoordY - 1 < 1)){
+                if (AttackDirection == UP && (map[lastAttackCoordY - 1][lastAttackCoordX] == HIT_PLATE || map[lastAttackCoordY - 1][lastAttackCoordX] == MISS_PLATE || map[lastAttackCoordY - 1][lastAttackCoordX] == AROUND_SHIP_PLATE || lastAttackCoordY - 1 < 1)){
                     AttackDirection = DOWN;
                 }
             }
         }
-        else if (AttackDirection == LEFT && (map[lastAttackCoordY][lastAttackCoordX - 1] == MISS_PLATE || map[lastAttackCoordY][lastAttackCoordX - 1] == AROUND_SHIP_PLATE || lastAttackCoordX - 1 < 1)){
+        else if (AttackDirection == LEFT && (map[lastAttackCoordY][lastAttackCoordX - 1] == HIT_PLATE || map[lastAttackCoordY][lastAttackCoordX - 1] == MISS_PLATE || map[lastAttackCoordY][lastAttackCoordX - 1] == AROUND_SHIP_PLATE || lastAttackCoordX - 1 < 1)){
             AttackDirection = RIGHT;
-            if (AttackDirection == RIGHT && (map[lastAttackCoordY][lastAttackCoordX + 1] == MISS_PLATE || map[lastAttackCoordY][lastAttackCoordX + 1] == AROUND_SHIP_PLATE || lastAttackCoordX + 1 > MapSize)){
+            if (AttackDirection == RIGHT && (map[lastAttackCoordY][lastAttackCoordX + 1] == HIT_PLATE || map[lastAttackCoordY][lastAttackCoordX + 1] == MISS_PLATE || map[lastAttackCoordY][lastAttackCoordX + 1] == AROUND_SHIP_PLATE || lastAttackCoordX + 1 > MapSize)){
                 AttackDirection = rand() % 2;
-                if (AttackDirection == DOWN && (map[lastAttackCoordY + 1][lastAttackCoordX] == MISS_PLATE || map[lastAttackCoordY + 1][lastAttackCoordX] == AROUND_SHIP_PLATE || lastAttackCoordY + 1 > MapSize)){
+                if (AttackDirection == DOWN && (map[lastAttackCoordY + 1][lastAttackCoordX] == HIT_PLATE || map[lastAttackCoordY + 1][lastAttackCoordX] == MISS_PLATE || map[lastAttackCoordY + 1][lastAttackCoordX] == AROUND_SHIP_PLATE || lastAttackCoordY + 1 > MapSize)){
                     AttackDirection = UP;
                 }
-                if (AttackDirection == UP && (map[lastAttackCoordY - 1][lastAttackCoordX] == MISS_PLATE || map[lastAttackCoordY - 1][lastAttackCoordX] == AROUND_SHIP_PLATE || lastAttackCoordY - 1 < 1)){
+                if (AttackDirection == UP && (map[lastAttackCoordY - 1][lastAttackCoordX] == HIT_PLATE || map[lastAttackCoordY - 1][lastAttackCoordX] == MISS_PLATE || map[lastAttackCoordY - 1][lastAttackCoordX] == AROUND_SHIP_PLATE || lastAttackCoordY - 1 < 1)){
                     AttackDirection = DOWN;
                 }
             }
         }
+
         if (AttackDirection == UP){
             lastAttackCoordY--;
             if (map[lastAttackCoordY][lastAttackCoordX] == SHIP_PLATE){
@@ -203,7 +211,9 @@ int finishingOff(int x, int y, int map[18][18], ShipBase* shipBase, int AttackSt
                 if (killShipInShipBase(shipBase, lastAttackCoordX - 1, lastAttackCoordY - 1) == SHIP_KILLED){
                     return SHIP_KILLED;
                 }
-                else return HIT_PLATE;
+                else{
+                    return HIT_PLATE;
+                }
             }
             else {
                 map[lastAttackCoordY][lastAttackCoordX] = MISS_PLATE;
@@ -226,7 +236,9 @@ int finishingOff(int x, int y, int map[18][18], ShipBase* shipBase, int AttackSt
                 if (killShipInShipBase(shipBase, lastAttackCoordX - 1, lastAttackCoordY - 1) == SHIP_KILLED){
                     return SHIP_KILLED;
                 }
-                else return HIT_PLATE;
+                else {
+                    return HIT_PLATE;
+                }
             }
             else {
                 map[lastAttackCoordY][lastAttackCoordX] = MISS_PLATE;
@@ -249,7 +261,9 @@ int finishingOff(int x, int y, int map[18][18], ShipBase* shipBase, int AttackSt
                 if (killShipInShipBase(shipBase, lastAttackCoordX - 1, lastAttackCoordY - 1) == SHIP_KILLED){
                     return SHIP_KILLED;
                 }
-                else return HIT_PLATE;
+                else {
+                    return HIT_PLATE;
+                }
             }
             else {
                 map[lastAttackCoordY][lastAttackCoordX] = MISS_PLATE;
@@ -272,7 +286,9 @@ int finishingOff(int x, int y, int map[18][18], ShipBase* shipBase, int AttackSt
                 if (killShipInShipBase(shipBase, lastAttackCoordX - 1, lastAttackCoordY - 1) == SHIP_KILLED){
                     return SHIP_KILLED;
                 }
-                else return HIT_PLATE;
+                else {
+                    return HIT_PLATE;
+                }
             }
             else {
                 map[lastAttackCoordY][lastAttackCoordX] = MISS_PLATE;
@@ -295,5 +311,94 @@ int finishingOff(int x, int y, int map[18][18], ShipBase* shipBase, int AttackSt
         return ATTACK_END;
     }
 
+}
+
+int hardLevelBot(int* x, int* y, int map[18][18], int MapSize, ShipBase* shipBase, int gameStatus)
+{
+    static int lastX = -1,
+               lastY = -1,
+               direction = -1,
+               step = -1;
+    int endGameFlag = 0;
+            
+
+    if (gameStatus != GAME_END){
+        //Проверка, что игра не закончилась
+        for (int i = 1; i <= MapSize; i++){
+            for (int j = 1; j <= MapSize; j++){
+                if (map[i][j] == EMPTY_PLATE || map[i][j] == SHIP_PLATE){
+                    endGameFlag = 1;
+                }
+            }
+        }
+        if (!endGameFlag) return GAME_END;
+
+        if (direction == -1){
+            direction = rand() % 2;
+            if (direction == TOP_DOWN){
+                lastX = MapSize;
+                lastY = 1;
+            }
+            else {
+                lastX = 1;
+                lastY = MapSize;
+            }
+        }
+
+        while (map[lastY][lastX] != EMPTY_PLATE && map[lastY][lastX] != SHIP_PLATE){
+            if (direction == TOP_DOWN){
+                lastX--;
+                lastY++;
+            }
+            if (direction == DOWN_TOP){
+                lastX++;
+                lastY--;
+            }
+
+            if (direction == TOP_DOWN && (lastX < 1 || lastY > MapSize)){
+                direction = rand() % 2;
+                if (direction == TOP_DOWN){
+                    lastX = MapSize - (rand() % MapSize);
+                    lastY = 1;
+                }
+                else {
+                    lastX = 1 + (rand() % MapSize);
+                    lastY = MapSize; 
+                }
+            }
+            if (direction == DOWN_TOP && (lastX > MapSize || lastY < 1)){
+                direction = rand() % 2;
+                if (direction == TOP_DOWN){
+                    lastX = MapSize - (rand() % MapSize);
+                    lastY = 1;
+                }
+                else {
+                    lastX = 1 + (rand() % MapSize);
+                    lastY = MapSize; 
+                }
+            }
+        }
+        printf("%d, %d ", lastX, lastY);
+        printf("%d\n", step);
+        if (map[lastY][lastX] == EMPTY_PLATE){
+            map[lastY][lastX] = MISS_PLATE;
+            *x = lastX;
+            *y = lastY;
+            return MISS_PLATE;
+        }
+        else if (map[lastY][lastX] == SHIP_PLATE){
+            map[lastY][lastX] = HIT_PLATE;
+            *x = lastX;
+            *y = lastY;
+            return HIT_PLATE;
+        } 
+        
+    }
+    else {
+        direction = -1;
+        lastX = -1;
+        lastY = -1;
+    }
+    
 }
 #endif

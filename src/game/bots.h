@@ -34,6 +34,8 @@ int mediumLevelBot(int* x, int* y, int map[18][18], int mapSize, int gameStatus)
 
 int finishingOff(int x, int y, int map[18][18], ShipBase* shipBase, int AttackStatus, int MapSize);
 
+int hardLevelBot(int* x, int* y, int map[18][18], int MapSize, ShipBase* shipBase, int gameStatus);
+
 
 
 

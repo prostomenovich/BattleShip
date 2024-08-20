@@ -16,6 +16,7 @@
 #define RAFT_PLACEMENT_15_X_15_BOTS_FIGHT_BOT_1 12
 #define RAFT_PLACEMENT_15_X_15_BOTS_FIGHT_BOT_2 13
 #define MAIN_GAME_BASE_10_X_10 14
+#define MAIN_GAME_BASE_15_X_15 15
 
 //Before filling
 #define NOT_FILLED_IN 0
@@ -36,6 +37,7 @@
 #define PLATE_ERROR 54
 #define BOT_SHOT 55
 #define PLAYER_SHOT 56
+#define FAQ 57
 
 //states for main game
 #define THIS_IS_SHIP_PLATE_LIVE 1
@@ -54,7 +56,7 @@
 #define ATTACK_MODE 2
 
 //Game Status
-#define GAME_END 1
-#define GAME_PROCESS 2
+#define GAME_END 100
+#define GAME_PROCESS 200
 
 #endif

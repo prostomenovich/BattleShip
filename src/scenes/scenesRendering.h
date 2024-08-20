@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include "../render/sprite.h"
 #include "../render/AnimSprite.h"
 #include "../render/text.h"
@@ -34,5 +35,7 @@ void renderRaftPlacement10x10BF(GLFWwindow* window);
 void renderRaftPlacement15x15BF(GLFWwindow* window);
 
 void renderMainGameBase10x10(GLFWwindow* window);
+
+void renderMainGameBase15x15(GLFWwindow* window);
 
 #endif

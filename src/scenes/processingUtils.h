@@ -12,6 +12,7 @@
 #define BASE_SCREEN_SIZE_Y 720
 
 #define KEY_PRESSED_DELAY 0.4f
+#define BOT_SHOT_DELAY 0
 
 //map sprite state
 #define PLATE_NOT_PRESSED 1
@@ -24,6 +25,9 @@
 //textures turns
 #define TEXTURES_TURN_RIGHT 1
 #define TEXTURES_TURN_LEFT 2
+
+//For FAQ text
+#define MAX_STRING_SIZE 100
 
 typedef struct MapSprite
 {
