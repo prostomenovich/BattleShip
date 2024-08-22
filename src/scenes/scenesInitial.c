@@ -23,6 +23,7 @@ RaftPlacement10x10BF sRaftPlacement10X10BF;
 RaftPlacement15x15BF sRaftPlacement15X15BF;
 MainGameBase10x10 sMainGameBase10x10;
 MainGameBase15x15 sMainGameBase15x15;
+MainGameBotFight10x10 sMainGameBotFight10x10;
 
 
 //ShipBase
@@ -698,6 +699,88 @@ void initMainGameBase15x15()
     sMainGameBase15x15.ExitBtn = exitBtn;
     sMainGameBase15x15.QuestionMarkBtn = questionMarkBtn;
     sMainGameBase15x15.FAQPlate = FAQPlate;
+}
+
+void initMainGameBotFight10x10()
+{
+    extern MainMenu sMainMenu;
+    extern MainGameBotFight10x10 sMainGameBotFight10x10;
+    extern ShipBase* shipBaseBFBot1;
+    extern ShipBase* shipBaseBFBot2;
+
+    Sprite* background = initSprite();
+    setStartSpriteParams(background, 1280, 720, 0, 0, 0);
+    setSpriteTexture(background, "../resources/textures/raftPuttingMenu/10x10/background.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
+    Sprite* buttonsPlates = initSprite();
+    setStartSpriteParams(buttonsPlates, 1280, 720, 0, 0, 0);
+    setSpriteTexture(buttonsPlates, "../resources/textures/mainGame/mainBtnPlates10x10BF.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
+    Sprite* map = initSprite();
+    setStartSpriteParams(map, 1280, 720, 0, 0, 0);
+    setSpriteTexture(map, "../resources/textures/mainGame/Base10x10/MainMap10x10.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+    
+    Sprite* exitBtn = initSprite();
+    setStartSpriteParams(exitBtn,  60, 60, 1207, 651, 0);
+    setSpriteTexture(exitBtn, "../resources/textures/raftPuttingMenu/10x10/exit_black1.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+    setSpriteTexture(exitBtn, "../resources/textures/raftPuttingMenu/10x10/exit_red1.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
+
+    Sprite* questionMarkBtn = initSprite();
+    setStartSpriteParams(questionMarkBtn, 60, 60, 1109 , 644, 0);
+    setSpriteTexture(questionMarkBtn, "../resources/textures/raftPuttingMenu/10x10/qMark_black.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+    setSpriteTexture(questionMarkBtn, "../resources/textures/raftPuttingMenu/10x10/qMark_white.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
+
+    Sprite* FAQPlate = initSprite();
+    setStartSpriteParams(FAQPlate, 1280, 720, 0 , 0, 0);
+    setSpriteTexture(FAQPlate, "../resources/textures/mainGame/FAQPlateBasicGame10x10.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
+    
+    double xPos = 70.0,
+           yPos = 510.0;
+
+    //Клетки поля для Bot1
+    for (int i = 0; i < 10; i++){
+        for (int j = 0; j < 10; j++){
+            Sprite* mapPlate = initSprite();
+            setStartSpriteParams(mapPlate, 50, 50, xPos, yPos, 0);
+            xPos += 52;
+
+            sMainGameBotFight10x10.Bot1MapArray[i][j].sprite = mapPlate;
+            sMainGameBotFight10x10.Bot1MapArray[i][j].spriteState = THIS_IS_NOT_SHIP_PLATE;
+            sMainGameBotFight10x10.Bot1MapArray[i][j].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+
+        }
+        xPos = 70.0;
+        yPos -= 52.0;
+    }
+    
+    xPos = 722.0;
+    yPos = 510.0;
+
+    //Клетки поля для Bot2
+    for (int i = 0; i < 10; i++){
+        for (int j = 0; j < 10; j++){
+            Sprite* mapPlate = initSprite();
+            setStartSpriteParams(mapPlate, 50, 50, xPos, yPos, 0);
+            xPos += 52;
+            
+            sMainGameBotFight10x10.Bot2MapArray[i][j].sprite = mapPlate;
+            sMainGameBotFight10x10.Bot2MapArray[i][j].spriteState = THIS_IS_NOT_SHIP_PLATE;
+            sMainGameBotFight10x10.Bot2MapArray[i][j].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+        }
+        xPos = 722.0;
+        yPos -= 52.0;
+    }
+
+    //if (botShipBase == NULL) botShipBase = initShipBase(MAP_SIZE_10_X_10);
+
+    sMainGameBotFight10x10.TextParams = sMainMenu.TextParams;
+    sMainGameBotFight10x10.Background = background;
+    sMainGameBotFight10x10.ButtonPlates = buttonsPlates;
+    sMainGameBotFight10x10.MainMap10x10 = map;
+    sMainGameBotFight10x10.ExitBtn = exitBtn;
+    sMainGameBotFight10x10.QuestionMarkBtn = questionMarkBtn;
+    sMainGameBotFight10x10.FAQPlate = FAQPlate;
 }
 
 

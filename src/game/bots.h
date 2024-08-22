@@ -21,12 +21,7 @@
 #define ATTACK_PROCESS 1
 #define ATTACK_END 2
 
-typedef struct MediumLevelBotDataBase 
-{
-
-
-
-} MediumLevelBotDataBase;
+//Bot levels for Base Mode
 
 int easyLevelBot(int* x, int* y, int map[18][18], int mapSize);
 
@@ -36,6 +31,13 @@ int finishingOff(int x, int y, int map[18][18], ShipBase* shipBase, int AttackSt
 
 int hardLevelBot(int* x, int* y, int map[18][18], int MapSize, ShipBase* shipBase, int gameStatus);
 
+//Bot levels for Bot Fight Mode
+
+int mediumLevelBotBF(int* x, int* y, int map[18][18], int mapSize, int botCount, int gameStatus);
+
+int hardLevelBotBF(int* x, int* y, int map[18][18], int MapSize, ShipBase* shipBase, int botCount, int gameStatus);
+
+int finishingOffBF(int x, int y, int map[18][18], ShipBase* shipBase, int AttackStatus, int MapSize, int botCount);
 
 
 

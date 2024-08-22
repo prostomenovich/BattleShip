@@ -120,8 +120,117 @@ void fillShipsTextures10x10(MapSprite SpriteArray[10][10], ShipBase* shipBase, i
         }
         
     }
-    else {
+    else if (turn == TEXTURES_TURN_LEFT) {
+        while (sb != NULL)
+        {   
+            currentShipsCount = sb->shipsCount;
+            if (sb->shipType == ONE_BLOCK_SHIP){
+                for (int i = 0; i < currentShipsCount; i++){
+                    if (rand() % 2 == 0)
+                        SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture1 = PiratesSpritesBase.noCapBasePL1;
+                    else 
+                        SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture1 = PiratesSpritesBase.noCapBasePL2;
+                    
+                    SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture2 = PiratesSpritesBase.dead;
 
+                    SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                }
+            }
+            else if (sb->shipType == TWO_BLOCKS_SHIP){
+                for (int i = 0; i < currentShipsCount; i++){
+                    SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture1 = PiratesSpritesBase.yellowMainPL;
+                    SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture1 = PiratesSpritesBase.yellowBasePBL;
+                    
+                    SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture2 = PiratesSpritesBase.dead;
+                    SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture2 = PiratesSpritesBase.dead;
+
+                    SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                    SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                }
+            }
+            else if (sb->shipType == THREE_BLOCKS_SHIP){
+                for (int i = 0; i < currentShipsCount; i++){
+                    if (rand() % 2 == 0){
+                        SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture1 = PiratesSpritesBase.blueMainPL;
+                        SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture1 = PiratesSpritesBase.blueBasePBL;
+                        SpriteArray[sb->ships[i]->coords[2]->y][sb->ships[i]->coords[2]->x].sprite->Texture1 = PiratesSpritesBase.blueBasePBL;
+                    }
+                    else {
+                        SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture1 = PiratesSpritesBase.blueMainPL;
+                        SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture1 = PiratesSpritesBase.blueBasePPL;
+                        SpriteArray[sb->ships[i]->coords[2]->y][sb->ships[i]->coords[2]->x].sprite->Texture1 = PiratesSpritesBase.blueBasePPL;
+                    }
+                     
+                    SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture2 = PiratesSpritesBase.dead;
+                    SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture2 = PiratesSpritesBase.dead;
+                    SpriteArray[sb->ships[i]->coords[2]->y][sb->ships[i]->coords[2]->x].sprite->Texture2 = PiratesSpritesBase.dead;
+
+                    SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                    SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                    SpriteArray[sb->ships[i]->coords[2]->y][sb->ships[i]->coords[2]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                }
+            }
+            else if (sb->shipType == FOUR_BLOCKS_SHIP){
+                for (int i = 0; i < currentShipsCount; i++){
+                    if (rand() % 2 == 0){
+                        SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture1 = PiratesSpritesBase.redMainPL;
+                        SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture1 = PiratesSpritesBase.redBasePBL;
+                        SpriteArray[sb->ships[i]->coords[2]->y][sb->ships[i]->coords[2]->x].sprite->Texture1 = PiratesSpritesBase.redBasePBL;
+                        SpriteArray[sb->ships[i]->coords[3]->y][sb->ships[i]->coords[3]->x].sprite->Texture1 = PiratesSpritesBase.redBasePBL;
+                    }
+                    else {
+                        SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture1 = PiratesSpritesBase.redMainPL;
+                        SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture1 = PiratesSpritesBase.redBasePPL;
+                        SpriteArray[sb->ships[i]->coords[2]->y][sb->ships[i]->coords[2]->x].sprite->Texture1 = PiratesSpritesBase.redBasePPL;
+                        SpriteArray[sb->ships[i]->coords[3]->y][sb->ships[i]->coords[3]->x].sprite->Texture1 = PiratesSpritesBase.redBasePPL;
+                    }
+                     
+                    SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture2 = PiratesSpritesBase.dead;
+                    SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture2 = PiratesSpritesBase.dead;
+                    SpriteArray[sb->ships[i]->coords[2]->y][sb->ships[i]->coords[2]->x].sprite->Texture2 = PiratesSpritesBase.dead;
+                    SpriteArray[sb->ships[i]->coords[3]->y][sb->ships[i]->coords[3]->x].sprite->Texture2 = PiratesSpritesBase.dead;
+
+                    SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                    SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                    SpriteArray[sb->ships[i]->coords[2]->y][sb->ships[i]->coords[2]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                    SpriteArray[sb->ships[i]->coords[3]->y][sb->ships[i]->coords[3]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                }
+            }
+            else if (sb->shipType == FIVE_BLOCKS_SHIP){
+
+                for (int i = 0; i < currentShipsCount; i++){
+                    if (rand() % 2 == 0){
+                        SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture1 = PiratesSpritesBase.blueMainPL;
+                        SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture1 = PiratesSpritesBase.blueBasePBL;
+                        SpriteArray[sb->ships[i]->coords[2]->y][sb->ships[i]->coords[2]->x].sprite->Texture1 = PiratesSpritesBase.blueBasePBL;
+                        SpriteArray[sb->ships[i]->coords[3]->y][sb->ships[i]->coords[3]->x].sprite->Texture1 = PiratesSpritesBase.blueBasePBL;
+                        SpriteArray[sb->ships[i]->coords[4]->y][sb->ships[i]->coords[4]->x].sprite->Texture1 = PiratesSpritesBase.blueBasePBL;
+                    }
+                    else {
+                        SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture1 = PiratesSpritesBase.blueMainPL;
+                        SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture1 = PiratesSpritesBase.blueBasePPL;
+                        SpriteArray[sb->ships[i]->coords[2]->y][sb->ships[i]->coords[2]->x].sprite->Texture1 = PiratesSpritesBase.blueBasePPL;
+                        SpriteArray[sb->ships[i]->coords[3]->y][sb->ships[i]->coords[3]->x].sprite->Texture1 = PiratesSpritesBase.blueBasePPL;
+                        SpriteArray[sb->ships[i]->coords[4]->y][sb->ships[i]->coords[4]->x].sprite->Texture1 = PiratesSpritesBase.blueBasePBL;
+                    }
+                     
+                    SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture2 = PiratesSpritesBase.dead;
+                    SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture2 = PiratesSpritesBase.dead;
+                    SpriteArray[sb->ships[i]->coords[2]->y][sb->ships[i]->coords[2]->x].sprite->Texture2 = PiratesSpritesBase.dead;
+                    SpriteArray[sb->ships[i]->coords[3]->y][sb->ships[i]->coords[3]->x].sprite->Texture2 = PiratesSpritesBase.dead;
+                    SpriteArray[sb->ships[i]->coords[4]->y][sb->ships[i]->coords[4]->x].sprite->Texture2 = PiratesSpritesBase.dead;
+
+                    SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                    SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                    SpriteArray[sb->ships[i]->coords[2]->y][sb->ships[i]->coords[2]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                    SpriteArray[sb->ships[i]->coords[3]->y][sb->ships[i]->coords[3]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                    SpriteArray[sb->ships[i]->coords[4]->y][sb->ships[i]->coords[4]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                }
+            }
+
+            sb = sb->nextShip;
+            
+        }
     }
 }
 
@@ -244,8 +353,117 @@ void fillShipsTextures15x15(MapSprite SpriteArray[15][15], ShipBase* shipBase, i
         }
         
     }
-    else {
+    else if (turn == TEXTURES_TURN_LEFT) {
+        while (sb != NULL)
+        {   
+            currentShipsCount = sb->shipsCount;
+            if (sb->shipType == ONE_BLOCK_SHIP){
+                for (int i = 0; i < currentShipsCount; i++){
+                    if (rand() % 2 == 0)
+                        SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture1 = PiratesSpritesBase.noCapBasePL1;
+                    else 
+                        SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture1 = PiratesSpritesBase.noCapBasePL2;
+                    
+                    SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture2 = PiratesSpritesBase.dead;
 
+                    SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                }
+            }
+            else if (sb->shipType == TWO_BLOCKS_SHIP){
+                for (int i = 0; i < currentShipsCount; i++){
+                    SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture1 = PiratesSpritesBase.yellowMainPL;
+                    SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture1 = PiratesSpritesBase.yellowBasePBL;
+                    
+                    SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture2 = PiratesSpritesBase.dead;
+                    SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture2 = PiratesSpritesBase.dead;
+
+                    SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                    SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                }
+            }
+            else if (sb->shipType == THREE_BLOCKS_SHIP){
+                for (int i = 0; i < currentShipsCount; i++){
+                    if (rand() % 2 == 0){
+                        SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture1 = PiratesSpritesBase.blueMainPL;
+                        SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture1 = PiratesSpritesBase.blueBasePBL;
+                        SpriteArray[sb->ships[i]->coords[2]->y][sb->ships[i]->coords[2]->x].sprite->Texture1 = PiratesSpritesBase.blueBasePBL;
+                    }
+                    else {
+                        SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture1 = PiratesSpritesBase.blueMainPL;
+                        SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture1 = PiratesSpritesBase.blueBasePPL;
+                        SpriteArray[sb->ships[i]->coords[2]->y][sb->ships[i]->coords[2]->x].sprite->Texture1 = PiratesSpritesBase.blueBasePPL;
+                    }
+                     
+                    SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture2 = PiratesSpritesBase.dead;
+                    SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture2 = PiratesSpritesBase.dead;
+                    SpriteArray[sb->ships[i]->coords[2]->y][sb->ships[i]->coords[2]->x].sprite->Texture2 = PiratesSpritesBase.dead;
+
+                    SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                    SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                    SpriteArray[sb->ships[i]->coords[2]->y][sb->ships[i]->coords[2]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                }
+            }
+            else if (sb->shipType == FOUR_BLOCKS_SHIP){
+                for (int i = 0; i < currentShipsCount; i++){
+                    if (rand() % 2 == 0){
+                        SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture1 = PiratesSpritesBase.redMainPL;
+                        SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture1 = PiratesSpritesBase.redBasePBL;
+                        SpriteArray[sb->ships[i]->coords[2]->y][sb->ships[i]->coords[2]->x].sprite->Texture1 = PiratesSpritesBase.redBasePBL;
+                        SpriteArray[sb->ships[i]->coords[3]->y][sb->ships[i]->coords[3]->x].sprite->Texture1 = PiratesSpritesBase.redBasePBL;
+                    }
+                    else {
+                        SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture1 = PiratesSpritesBase.redMainPL;
+                        SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture1 = PiratesSpritesBase.redBasePPL;
+                        SpriteArray[sb->ships[i]->coords[2]->y][sb->ships[i]->coords[2]->x].sprite->Texture1 = PiratesSpritesBase.redBasePPL;
+                        SpriteArray[sb->ships[i]->coords[3]->y][sb->ships[i]->coords[3]->x].sprite->Texture1 = PiratesSpritesBase.redBasePPL;
+                    }
+                     
+                    SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture2 = PiratesSpritesBase.dead;
+                    SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture2 = PiratesSpritesBase.dead;
+                    SpriteArray[sb->ships[i]->coords[2]->y][sb->ships[i]->coords[2]->x].sprite->Texture2 = PiratesSpritesBase.dead;
+                    SpriteArray[sb->ships[i]->coords[3]->y][sb->ships[i]->coords[3]->x].sprite->Texture2 = PiratesSpritesBase.dead;
+
+                    SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                    SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                    SpriteArray[sb->ships[i]->coords[2]->y][sb->ships[i]->coords[2]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                    SpriteArray[sb->ships[i]->coords[3]->y][sb->ships[i]->coords[3]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                }
+            }
+            else if (sb->shipType == FIVE_BLOCKS_SHIP){
+
+                for (int i = 0; i < currentShipsCount; i++){
+                    if (rand() % 2 == 0){
+                        SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture1 = PiratesSpritesBase.blueMainPL;
+                        SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture1 = PiratesSpritesBase.blueBasePBL;
+                        SpriteArray[sb->ships[i]->coords[2]->y][sb->ships[i]->coords[2]->x].sprite->Texture1 = PiratesSpritesBase.blueBasePBL;
+                        SpriteArray[sb->ships[i]->coords[3]->y][sb->ships[i]->coords[3]->x].sprite->Texture1 = PiratesSpritesBase.blueBasePBL;
+                        SpriteArray[sb->ships[i]->coords[4]->y][sb->ships[i]->coords[4]->x].sprite->Texture1 = PiratesSpritesBase.blueBasePBL;
+                    }
+                    else {
+                        SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture1 = PiratesSpritesBase.blueMainPL;
+                        SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture1 = PiratesSpritesBase.blueBasePPL;
+                        SpriteArray[sb->ships[i]->coords[2]->y][sb->ships[i]->coords[2]->x].sprite->Texture1 = PiratesSpritesBase.blueBasePPL;
+                        SpriteArray[sb->ships[i]->coords[3]->y][sb->ships[i]->coords[3]->x].sprite->Texture1 = PiratesSpritesBase.blueBasePPL;
+                        SpriteArray[sb->ships[i]->coords[4]->y][sb->ships[i]->coords[4]->x].sprite->Texture1 = PiratesSpritesBase.blueBasePBL;
+                    }
+                     
+                    SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture2 = PiratesSpritesBase.dead;
+                    SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture2 = PiratesSpritesBase.dead;
+                    SpriteArray[sb->ships[i]->coords[2]->y][sb->ships[i]->coords[2]->x].sprite->Texture2 = PiratesSpritesBase.dead;
+                    SpriteArray[sb->ships[i]->coords[3]->y][sb->ships[i]->coords[3]->x].sprite->Texture2 = PiratesSpritesBase.dead;
+                    SpriteArray[sb->ships[i]->coords[4]->y][sb->ships[i]->coords[4]->x].sprite->Texture2 = PiratesSpritesBase.dead;
+
+                    SpriteArray[sb->ships[i]->coords[0]->y][sb->ships[i]->coords[0]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                    SpriteArray[sb->ships[i]->coords[1]->y][sb->ships[i]->coords[1]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                    SpriteArray[sb->ships[i]->coords[2]->y][sb->ships[i]->coords[2]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                    SpriteArray[sb->ships[i]->coords[3]->y][sb->ships[i]->coords[3]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                    SpriteArray[sb->ships[i]->coords[4]->y][sb->ships[i]->coords[4]->x].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+                }
+            }
+
+            sb = sb->nextShip;
+            
+        }
     }
 }
 

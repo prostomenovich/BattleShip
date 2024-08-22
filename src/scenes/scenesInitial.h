@@ -150,6 +150,21 @@ typedef struct MainGameBase15x15
 
 } MainGameBase15x15;
 
+typedef struct MainGameBotFight10x10
+{
+    Sprite* Background;
+    Sprite* ButtonPlates;
+    Sprite* MainMap10x10;
+    Sprite* QuestionMarkBtn;
+    MapSprite Bot1MapArray[10][10];
+    MapSprite Bot2MapArray[10][10];
+    Text* TextParams;
+    Sprite* ExitBtn;
+    Sprite* FAQPlate;
+    GLuint state;
+
+} MainGameBotFight10x10;
+
 typedef struct PiratesSprites 
 {
     GLuint blueBasePBL;
@@ -209,6 +224,8 @@ void initRaftPlacement15x15BF();
 void initMainGameBase10x10();
 
 void initMainGameBase15x15();
+
+void initMainGameBotFight10x10();
 
 //Other
 void initPiratesSprites();

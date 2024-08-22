@@ -17,6 +17,8 @@
 #define RAFT_PLACEMENT_15_X_15_BOTS_FIGHT_BOT_2 13
 #define MAIN_GAME_BASE_10_X_10 14
 #define MAIN_GAME_BASE_15_X_15 15
+#define MAIN_GAME_BOT_FIGHT_10_X_10 16
+#define MAIN_GAME_BOT_FIGHT_15_X_15 17
 
 //Before filling
 #define NOT_FILLED_IN 0
@@ -38,6 +40,8 @@
 #define BOT_SHOT 55
 #define PLAYER_SHOT 56
 #define FAQ 57
+#define BOT_1_SHOT 58
+#define BOT_2_SHOT 59
 
 //states for main game
 #define THIS_IS_SHIP_PLATE_LIVE 1
