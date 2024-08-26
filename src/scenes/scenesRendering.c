@@ -63,10 +63,21 @@ void renderAbout(GLFWwindow* window)
     extern About sAbout;
     extern Player playerInfo;
 
+    extern char AboutAuthors [][MAX_STRING_SIZE];
+    extern const int AboutAuthorsStringCount;
+
+    extern char AboutLore [][MAX_STRING_SIZE];
+    extern const int AboutLoreStringCount;
+
+    extern char AboutRules [][MAX_STRING_SIZE];
+    extern const int AboutRulesStringCount;
+
     extern int windowSizeX;
     extern int windowSizeY;
 
     extern double lastClickTime;
+
+    static int paginationStringStart = 0;
 
     double xMousePos,
            yMousePos;
@@ -83,39 +94,40 @@ void renderAbout(GLFWwindow* window)
     renderSprite(sAbout.MainPlace, SpriteShaderProgram, FIRST_TEXTURE);
 
     if (cursorInArea(xMousePos, yMousePos, 277, 116, 461, 58, windowSizeX, windowSizeY) || playerInfo.scene == ABOUT_LORE_SCENES){
-        renderText(sAbout.TextParams, TextShaderProgram, "Lore", correctXcoords(300.0, windowSizeX) , correctYcoords(612.0, windowSizeY), correctTextSize(1.5, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+        renderText(sAbout.TextParams1, TextShaderProgram, "Lore", correctXcoords(300.0, windowSizeX) , correctYcoords(612.0, windowSizeY), correctTextSize(1.5, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS){
             playerInfo.scene = ABOUT_LORE_SCENES;
         }
     }
     else{
-        renderText(sAbout.TextParams, TextShaderProgram, "Lore", correctXcoords(300.0, windowSizeX) , correctYcoords(612.0, windowSizeY), correctTextSize(1.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        renderText(sAbout.TextParams1, TextShaderProgram, "Lore", correctXcoords(300.0, windowSizeX) , correctYcoords(612.0, windowSizeY), correctTextSize(1.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
     }
 
     if (cursorInArea(xMousePos, yMousePos, 499, 116, 680, 60, windowSizeX, windowSizeY) || playerInfo.scene == ABOUT_RULES_SCENES){
-        renderText(sAbout.TextParams, TextShaderProgram, "Rules", correctXcoords(510.0, windowSizeX) , correctYcoords(612.0, windowSizeY), correctTextSize(1.5, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+        renderText(sAbout.TextParams1, TextShaderProgram, "Rules", correctXcoords(510.0, windowSizeX) , correctYcoords(612.0, windowSizeY), correctTextSize(1.5, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS){
             playerInfo.scene = ABOUT_RULES_SCENES;
         }
     }
     else{
-        renderText(sAbout.TextParams, TextShaderProgram, "Rules", correctXcoords(510.0, windowSizeX) , correctYcoords(612.0, windowSizeY), correctTextSize(1.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        renderText(sAbout.TextParams1, TextShaderProgram, "Rules", correctXcoords(510.0, windowSizeX) , correctYcoords(612.0, windowSizeY), correctTextSize(1.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
     }
 
     if (cursorInArea(xMousePos, yMousePos, 720, 116, 901, 60, windowSizeX, windowSizeY) || playerInfo.scene == ABOUT_AUTHORS_SCENES){
-        renderText(sAbout.TextParams, TextShaderProgram, "Authors", correctXcoords(733.0, windowSizeX) , correctYcoords(618.0, windowSizeY), correctTextSize(1.0, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+        renderText(sAbout.TextParams1, TextShaderProgram, "Authors", correctXcoords(733.0, windowSizeX) , correctYcoords(618.0, windowSizeY), correctTextSize(1.0, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS){
             playerInfo.scene = ABOUT_AUTHORS_SCENES;
         }
     }
     else{
-        renderText(sAbout.TextParams, TextShaderProgram, "Authors", correctXcoords(733.0, windowSizeX) , correctYcoords(618.0, windowSizeY), correctTextSize(1.0, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        renderText(sAbout.TextParams1, TextShaderProgram, "Authors", correctXcoords(733.0, windowSizeX) , correctYcoords(618.0, windowSizeY), correctTextSize(1.0, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
     }
 
 
     if (cursorInArea(xMousePos, yMousePos, 934, 116, 1013, 60, windowSizeX, windowSizeY)){
         renderSprite(sAbout.ExitButton, SpriteShaderProgram, SECOND_TEXTURE);
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS){
+            paginationStringStart = 0;
             playerInfo.scene = MAIN_MENU_SCENES;
         }
     }
@@ -125,15 +137,46 @@ void renderAbout(GLFWwindow* window)
 
 
     if (playerInfo.scene == ABOUT_LORE_SCENES){
-
+        for (int i = 0, startY = 530; i < AboutLoreStringCount; i++, startY -= 25){
+            renderText(sAbout.TextParams2, TextShaderProgram, AboutLore[i], correctXcoords(340.0, windowSizeX) , correctYcoords(startY, windowSizeY), correctTextSize(0.41, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }
 
     }
     else if (playerInfo.scene == ABOUT_RULES_SCENES){
+        renderSprite(sAbout.paginationPlates, SpriteShaderProgram, FIRST_TEXTURE);
+        //Обработка пагинации вверх
+        if (cursorInArea(xMousePos, yMousePos, 1068, 345, 1155, 277, windowSizeX, windowSizeY)){
+            renderSprite(sAbout.pagUp, SpriteShaderProgram, SECOND_TEXTURE);
+            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                if (paginationStringStart - 18 >= 0) paginationStringStart -= 18;
+                lastClickTime = glfwGetTime();
+            }
+        }
+        else{
+            renderSprite(sAbout.pagUp, SpriteShaderProgram, FIRST_TEXTURE);
+        }
 
+        //Обработка пагинации вниз
+        if (cursorInArea(xMousePos, yMousePos, 1068, 463, 1155, 375, windowSizeX, windowSizeY)){
+            renderSprite(sAbout.pagDown, SpriteShaderProgram, SECOND_TEXTURE);
+            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                if (paginationStringStart + 18 < AboutRulesStringCount) paginationStringStart += 18;
+                lastClickTime = glfwGetTime();
+            }
+        }
+        else{
+            renderSprite(sAbout.pagDown, SpriteShaderProgram, FIRST_TEXTURE);
+        }
+        int paginEnd = (paginationStringStart + 18 > AboutRulesStringCount) ? (AboutRulesStringCount) : (paginationStringStart + 18);
 
+        for (int i = paginationStringStart, startY = 530; i < paginEnd; i++, startY -= 25){
+            renderText(sAbout.TextParams2, TextShaderProgram, AboutRules[i], correctXcoords(340.0, windowSizeX) , correctYcoords(startY, windowSizeY), correctTextSize(0.41, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }
     }
     else if (playerInfo.scene == ABOUT_AUTHORS_SCENES){
-
+        for (int i = 0, startY = 530; i < AboutAuthorsStringCount; i++, startY -= 25){
+            renderText(sAbout.TextParams2, TextShaderProgram, AboutAuthors[i], correctXcoords(340.0, windowSizeX) , correctYcoords(startY, windowSizeY), correctTextSize(0.41, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }
 
     }
 
@@ -548,6 +591,12 @@ void renderRaftPlacement10x10(GLFWwindow* window)
                     }
                 }
             }
+
+            for (int i = 0; i < 10; i++){
+                for (int j = 0; j < 10; j++){
+                    sRaftPlacement10X10.MapArray[i][j].spriteState = PLATE_NOT_PRESSED;
+                }
+            }
             
             fillShipsTextures10x10(sMainGameBase10x10.PlayerMapArray, shipBase, map, TEXTURES_TURN_RIGHT);
 
@@ -833,13 +882,11 @@ void renderRaftPlacement15x15(GLFWwindow* window)
         if (AllShipsInMap(shipBase) == ALL_SHIPS_IN_MAP && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
             playerInfo.scene = MAIN_GAME_BASE_15_X_15;
            
-           /* for (int i = 0; i < 15; i++){
+           for (int i = 0; i < 15; i++){
                 for (int j = 0; j < 15; j++){
-                    if (map[i + 1][j + 1] == 2){
-                        sMainGameBase15x15.PlayerMapArray[i][j].spriteState = THIS_IS_SHIP_PLATE_LIVE;
-                    }
+                    sRaftPlacement15X15.MapArray[i][j].spriteState = PLATE_NOT_PRESSED;
                 }
-            }*/
+            }
 
             fillShipsTextures15x15(sMainGameBase15x15.PlayerMapArray, shipBase, map, TEXTURES_TURN_RIGHT);
             
@@ -1428,32 +1475,39 @@ void renderRaftPlacement10x10BF(GLFWwindow* window)
     }
 
     //Обработка кнопки PLAY
-        if (cursorInArea(xMousePos, yMousePos, 42, 464, 359, 385, windowSizeX, windowSizeY)){
-            if (AllShipsInMap(shipBaseBFBot2) == NOT_ALL_SHIPS_IN_MAP || AllShipsInMap(shipBaseBFBot1) == NOT_ALL_SHIPS_IN_MAP){
-                renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "Play", correctXcoords(120.0, windowSizeX) , correctYcoords(274, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 1.0f, 0.0f, 0.0f);
-            }
-            else {
-                renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "Play", correctXcoords(120.0, windowSizeX) , correctYcoords(274, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 0.0f, 1.0f, 0.0f);
-            }
-
-            if (AllShipsInMap(shipBaseBFBot2) == ALL_SHIPS_IN_MAP && AllShipsInMap(shipBaseBFBot2) == ALL_SHIPS_IN_MAP && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
-                playerInfo.scene = MAIN_GAME_BOT_FIGHT_10_X_10;
-
-                fillShipsTextures10x10(sMainGameBotFight10x10.Bot1MapArray, shipBaseBFBot1, mapBot1, TEXTURES_TURN_RIGHT);
-                fillShipsTextures10x10(sMainGameBotFight10x10.Bot2MapArray, shipBaseBFBot2, mapBot2, TEXTURES_TURN_LEFT);
-
-                clearTrashFromMap(mapBot1);
-                clearTrashFromMap(mapBot2);
-
-                if (rand() % 2 == 0) sMainGameBotFight10x10.state = BOT_2_SHOT;
-                else sMainGameBotFight10x10.state = BOT_1_SHOT;
-
-                lastClickTime = glfwGetTime();
-            }  
+    if (cursorInArea(xMousePos, yMousePos, 42, 464, 359, 385, windowSizeX, windowSizeY)){
+        if (AllShipsInMap(shipBaseBFBot2) == NOT_ALL_SHIPS_IN_MAP || AllShipsInMap(shipBaseBFBot1) == NOT_ALL_SHIPS_IN_MAP){
+            renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "Play", correctXcoords(120.0, windowSizeX) , correctYcoords(274, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 1.0f, 0.0f, 0.0f);
         }
         else {
-            renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "Play", correctXcoords(120.0, windowSizeX) , correctYcoords(274, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+            renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "Play", correctXcoords(120.0, windowSizeX) , correctYcoords(274, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 0.0f, 1.0f, 0.0f);
         }
+
+        if (AllShipsInMap(shipBaseBFBot2) == ALL_SHIPS_IN_MAP && AllShipsInMap(shipBaseBFBot2) == ALL_SHIPS_IN_MAP && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+            playerInfo.scene = MAIN_GAME_BOT_FIGHT_10_X_10;
+
+            fillShipsTextures10x10(sMainGameBotFight10x10.Bot1MapArray, shipBaseBFBot1, mapBot1, TEXTURES_TURN_RIGHT);
+            fillShipsTextures10x10(sMainGameBotFight10x10.Bot2MapArray, shipBaseBFBot2, mapBot2, TEXTURES_TURN_LEFT);
+
+            clearTrashFromMap(mapBot1);
+            clearTrashFromMap(mapBot2);
+
+            for (int i = 0; i < 10; i++){
+                for (int j = 0; j < 10; j++){
+                    sRaftPlacement10X10BF.MapArrayBot1[i][j].spriteState = PLATE_NOT_PRESSED;
+                    sRaftPlacement10X10BF.MapArrayBot2[i][j].spriteState = PLATE_NOT_PRESSED;
+                }
+            }
+
+            if (rand() % 2 == 0) sMainGameBotFight10x10.state = BOT_2_SHOT;
+            else sMainGameBotFight10x10.state = BOT_1_SHOT;
+
+            lastClickTime = glfwGetTime();
+        }  
+    }
+    else {
+        renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "Play", correctXcoords(120.0, windowSizeX) , correctYcoords(274, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+    }
         
 }
 
@@ -1462,6 +1516,7 @@ void renderRaftPlacement15x15BF(GLFWwindow* window)
     extern GLuint SpriteShaderProgram;
     extern GLuint TextShaderProgram;
     extern RaftPlacement15x15BF sRaftPlacement15X15BF;
+    extern MainGameBotFight15x15 sMainGameBotFight15x15;
     extern Player playerInfo;
     extern ShipBase* shipBaseBFBot1;
     extern ShipBase* shipBaseBFBot2;
@@ -1935,7 +1990,24 @@ void renderRaftPlacement15x15BF(GLFWwindow* window)
         }
 
         if (AllShipsInMap(shipBaseBFBot2) == ALL_SHIPS_IN_MAP && AllShipsInMap(shipBaseBFBot1) == ALL_SHIPS_IN_MAP && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
-                
+            playerInfo.scene = MAIN_GAME_BOT_FIGHT_15_X_15;
+
+            fillShipsTextures15x15(sMainGameBotFight15x15.Bot1MapArray, shipBaseBFBot1, mapBot1, TEXTURES_TURN_RIGHT);
+            fillShipsTextures15x15(sMainGameBotFight15x15.Bot2MapArray, shipBaseBFBot2, mapBot2, TEXTURES_TURN_LEFT);
+
+            clearTrashFromMap(mapBot1);
+            clearTrashFromMap(mapBot2);
+
+            if (rand() % 2 == 0) sMainGameBotFight15x15.state = BOT_2_SHOT;
+            else sMainGameBotFight15x15.state = BOT_1_SHOT;
+
+            for (int i = 0; i < 15; i++){
+                for (int j = 0; j < 15; j++){
+                    sRaftPlacement15X15BF.MapArrayBot1[i][j].spriteState = PLATE_NOT_PRESSED;
+                    sRaftPlacement15X15BF.MapArrayBot2[i][j].spriteState = PLATE_NOT_PRESSED;
+                }
+            }
+
             lastClickTime = glfwGetTime();
         }  
     }
@@ -1960,6 +2032,9 @@ void renderMainGameBase10x10(GLFWwindow* window)
     extern int windowSizeX;
     extern int windowSizeY;
 
+    extern int playerScore;
+    extern int botScore;
+
     extern double lastClickTime;
 
     extern char FAQMainGame10x10Basic [5][MAX_STRING_SIZE];
@@ -1976,9 +2051,12 @@ void renderMainGameBase10x10(GLFWwindow* window)
     
     int botAttackResult;
 
+    static int whoWin = 0;
+
     static int botMode = ATTACK_MODE;
 
     char shipsLeftStr[3] = {'\0',};
+    char botScoreStr[5] = {'\0',};
 
     glfwGetCursorPos(window, &xMousePos, &yMousePos);
     printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
@@ -2023,17 +2101,18 @@ void renderMainGameBase10x10(GLFWwindow* window)
                         if (killShipInShipBase(botShipBase, j, i) == SHIP_KILLED){
                             putMisses(mapBot, botShipBase, j, i, 1);
                         }
+                        playerScore++;
 
                     }
                     else if (mapBot[i + 1][j + 1] == EMPTY_PLATE){
                         mapBot[i + 1][j + 1] = MISS_PLATE;
                         sMainGameBase10x10.state = BOT_SHOT;
+                        playerScore++;
                     }
+                    
                 }
             }
         }
-
-
     }
     else if (sMainGameBase10x10.state == BOT_SHOT) {
         //Обработка выстрела бота
@@ -2048,33 +2127,13 @@ void renderMainGameBase10x10(GLFWwindow* window)
             }
         }
         else if (playerInfo.BotLevel == NORMAL_BOT_LEVEL){
-            if (botMode == ATTACK_MODE){
-                printf("\n");
-                if ((botAttackResult = mediumLevelBot(&x, &y, map, MAP_SIZE_10_X_10, GAME_PROCESS)) == HIT_PLATE){
-                    //Если корабль убит, то продолжаем базовый подбор клетки для атаки, в противном случае активируем режим добивания
-                    if (killShipInShipBase(shipBase, x - 1, y - 1) == SHIP_KILLED){
-                        putMisses(map, shipBase, x - 1, y - 1, 4);
-                    }
-                    else {
-                        botMode = FINISHING_OFF_MODE;
-                    }
-                }
-                else if (botAttackResult == MISS_PLATE){
-                    sMainGameBase10x10.state = PLAYER_SHOT;
-                }
-                else if (botAttackResult == GAME_END){
-                    sMainGameBase10x10.state = PLAYER_SHOT;
+            if ((botAttackResult = mediumLevelBot(&x, &y, map, MAP_SIZE_10_X_10, GAME_PROCESS)) == HIT_PLATE){
+                if (killShipInShipBase(shipBase, x - 1, y - 1) == SHIP_KILLED){
+                    putMisses(map, shipBase, x - 1, y - 1, 4);
                 }
             }
-            else {
-                if ((botAttackResult = finishingOff(x , y, map, shipBase, ATTACK_PROCESS, MAP_SIZE_10_X_10)) == MISS_PLATE){
-                    sMainGameBase10x10.state = PLAYER_SHOT;
-                }
-                else if (botAttackResult == SHIP_KILLED){
-                    finishingOff(x , y, map, shipBase, ATTACK_END, MAP_SIZE_10_X_10);
-                    putMisses(map, shipBase, x - 1, y - 1, 4);
-                    botMode = ATTACK_MODE;
-                }
+            else if (botAttackResult == MISS_PLATE){
+                sMainGameBase10x10.state = PLAYER_SHOT;
             }
         }
         else if (playerInfo.BotLevel == HARD_BOT_LEVEL){
@@ -2106,6 +2165,7 @@ void renderMainGameBase10x10(GLFWwindow* window)
                 }
             }
         }
+        botScore++;
         sleep(BOT_SHOT_DELAY);
     }
     else if (sMainGameBase10x10.state == FAQ){
@@ -2126,19 +2186,152 @@ void renderMainGameBase10x10(GLFWwindow* window)
         }    
         
     }
+    else if (sMainGameBase10x10.state == GAME_END){
+        //Обработка победы бота
+        if (whoWin == BOT_WIN){
+            renderSprite(sMainGameBase10x10.lostPlate, SpriteShaderProgram, FIRST_TEXTURE);
+            snprintf(botScoreStr, 4, "%d", botScore);
+            renderText(sMainGameBase10x10.TextParams, TextShaderProgram, botScoreStr, correctXcoords(705.0, windowSizeX) , correctYcoords(348, windowSizeY), correctTextSize(0.7, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+
+            if (cursorInArea(xMousePos, yMousePos, 442, 491, 831, 408, windowSizeX, windowSizeY)){
+                renderText(sMainGameBase10x10.TextParams, TextShaderProgram, "Back To Menu", correctXcoords(475.0, windowSizeX) , correctYcoords(256, windowSizeY), correctTextSize(1.2, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+                if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                    if (playerInfo.BotLevel == NORMAL_BOT_LEVEL){
+                        mediumLevelBot(&x, &y, mapBot, MAP_SIZE_10_X_10, GAME_END);
+                    }
+                    else if (playerInfo.BotLevel == HARD_BOT_LEVEL){
+                        hardLevelBot(&x, &y, mapBot, MAP_SIZE_10_X_10, botShipBase, GAME_END);
+                    }
+
+                    playerInfo.BotLevel = NOT_FILLED_IN;
+                    playerInfo.GameMode = NOT_FILLED_IN;
+                    playerInfo.MapSize = NOT_FILLED_IN;
+                    playerInfo.scene = MAIN_MENU_SCENES;
+
+                    if (shipBase != NULL){
+                        freeShipBase(shipBase);
+                        shipBase = NULL;
+                    }
+                    if (botShipBase != NULL){
+                        freeShipBase(botShipBase);
+                        botShipBase = NULL;
+                    }
+                    
+                    playerScore = 0;
+                    botScore = 0;
+
+                    clearMap(map);
+                    clearMap(mapBot);
+
+                    lastClickTime = glfwGetTime();
+                }
+            }
+            else {
+                renderText(sMainGameBase10x10.TextParams, TextShaderProgram, "Back To Menu", correctXcoords(475.0, windowSizeX) , correctYcoords(256, windowSizeY), correctTextSize(1.2, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);       
+            }  
+        }  
+        else if (whoWin == PLAYER_WIN){
+            //Обработка победы Игрока
+            renderSprite(sMainGameBase10x10.wonPlate, SpriteShaderProgram, FIRST_TEXTURE);
+            snprintf(botScoreStr, 4, "%d", playerScore);
+            renderText(sMainGameBase10x10.TextParams, TextShaderProgram, botScoreStr, correctXcoords(665.0, windowSizeX) , correctYcoords(411, windowSizeY), correctTextSize(0.7, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+
+            //Если игрок не захотел добавлять имя на доску лидеров, то просто выход в главное меню
+            if (cursorInArea(xMousePos, yMousePos, 428, 536, 859, 452, windowSizeX, windowSizeY)){
+                renderText(sMainGameBase10x10.TextParams, TextShaderProgram, "Back To Menu", correctXcoords(478.0, windowSizeX) , correctYcoords(213, windowSizeY), correctTextSize(1.2, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+                if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                    if (playerInfo.BotLevel == NORMAL_BOT_LEVEL){
+                        mediumLevelBot(&x, &y, mapBot, MAP_SIZE_10_X_10, GAME_END);
+                    }
+                    else if (playerInfo.BotLevel == HARD_BOT_LEVEL){
+                        hardLevelBot(&x, &y, mapBot, MAP_SIZE_10_X_10, botShipBase, GAME_END);
+                    }
+
+                    playerInfo.BotLevel = NOT_FILLED_IN;
+                    playerInfo.GameMode = NOT_FILLED_IN;
+                    playerInfo.MapSize = NOT_FILLED_IN;
+                    playerInfo.scene = MAIN_MENU_SCENES;
+
+                    if (shipBase != NULL){
+                        freeShipBase(shipBase);
+                        shipBase = NULL;
+                    }
+                    if (botShipBase != NULL){
+                        freeShipBase(botShipBase);
+                        botShipBase = NULL;
+                    }
+                    
+                    playerScore = 0;
+                    botScore = 0;
+
+                    clearMap(map);
+                    clearMap(mapBot);
+
+                    lastClickTime = glfwGetTime();
+                }
+            }
+            else {
+                renderText(sMainGameBase10x10.TextParams, TextShaderProgram, "Back To Menu", correctXcoords(478.0, windowSizeX) , correctYcoords(213, windowSizeY), correctTextSize(1.2, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);       
+            } 
+
+            //Обработка кнопки добавления на доску лидеров
+            if (cursorInArea(xMousePos, yMousePos, 431, 429, 856, 342, windowSizeX, windowSizeY)){
+                renderText(sMainGameBase10x10.TextParams, TextShaderProgram, "Add To LeaderBoard", correctXcoords(468.0, windowSizeX) , correctYcoords(325, windowSizeY), correctTextSize(0.9, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+                if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                    if (playerInfo.BotLevel == NORMAL_BOT_LEVEL){
+                        mediumLevelBot(&x, &y, mapBot, MAP_SIZE_10_X_10, GAME_END);
+                    }
+                    else if (playerInfo.BotLevel == HARD_BOT_LEVEL){
+                        hardLevelBot(&x, &y, mapBot, MAP_SIZE_10_X_10, botShipBase, GAME_END);
+                    }
+                    
+                    playerInfo.scene = ADDING_TO_THE_LEADERBOARD_SCENES;
+
+                    if (shipBase != NULL){
+                        freeShipBase(shipBase);
+                        shipBase = NULL;
+                    }
+                    if (botShipBase != NULL){
+                        freeShipBase(botShipBase);
+                        botShipBase = NULL;
+                    }
+
+                    botScore = 0;
+
+                    clearMap(map);
+                    clearMap(mapBot);
+
+                    lastClickTime = glfwGetTime();
+                }
+            }
+            else {
+                renderText(sMainGameBase10x10.TextParams, TextShaderProgram, "Add To LeaderBoard", correctXcoords(468.0, windowSizeX) , correctYcoords(325, windowSizeY), correctTextSize(0.9, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);       
+            } 
+        }
+    }
 
 
-    PlayerShipsLeft = getShipsLeft(botShipBase);
-    snprintf(shipsLeftStr, 3, "%d", PlayerShipsLeft);
+    BotShipsLeft = getShipsLeft(botShipBase);
+    snprintf(shipsLeftStr, 3, "%d", BotShipsLeft);
     renderText(sMainGameBase10x10.TextParams, TextShaderProgram, shipsLeftStr, correctXcoords(907.0, windowSizeX) , correctYcoords(659.5, windowSizeY), correctTextSize(0.75, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
     
     memset(shipsLeftStr, '\0', 3);
 
-    BotShipsLeft = getShipsLeft(shipBase);
-    snprintf(shipsLeftStr, 3, "%d", BotShipsLeft);
+    PlayerShipsLeft = getShipsLeft(shipBase);
+    snprintf(shipsLeftStr, 3, "%d", PlayerShipsLeft);
     renderText(sMainGameBase10x10.TextParams, TextShaderProgram, shipsLeftStr, correctXcoords(274.0, windowSizeX) , correctYcoords(659.5, windowSizeY), correctTextSize(0.75, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
 
     //Если у кого-то из игроков не осталось кораблей, значит игра закончилась
+    if ((PlayerShipsLeft == 0 || BotShipsLeft == 0) && sMainGameBase10x10.state != FAQ){
+        sMainGameBase10x10.state = GAME_END;
+        if (PlayerShipsLeft == 0){
+            whoWin = BOT_WIN;
+        }
+        else if (BotShipsLeft == 0){
+            whoWin = PLAYER_WIN;
+        }
+    }
+
 
     //Отображение того, чей выстрел ожидается в данный момент
     if (sMainGameBase10x10.state == PLAYER_SHOT || (sMainGameBase10x10.state == FAQ && lastSceneState == PLAYER_SHOT)){
@@ -2146,6 +2339,9 @@ void renderMainGameBase10x10(GLFWwindow* window)
     }
     else if (sMainGameBase10x10.state == BOT_SHOT || (sMainGameBase10x10.state == FAQ && lastSceneState == BOT_SHOT)){
         renderText(sMainGameBase10x10.TextParams, TextShaderProgram, "ENEMY SHOT" , correctXcoords(430.0, windowSizeX) , correctYcoords(659.5, windowSizeY), correctTextSize(0.75, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+    }
+    else if (sMainGameBase10x10.state == GAME_END || (sMainGameBase10x10.state == FAQ && lastSceneState == GAME_END)){
+        renderText(sMainGameBase10x10.TextParams, TextShaderProgram, "GAME END" , correctXcoords(446.0, windowSizeX) , correctYcoords(659.5, windowSizeY), correctTextSize(0.75, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
     }
 
     //Обработка FAQ
@@ -2185,6 +2381,9 @@ void renderMainGameBase15x15(GLFWwindow* window)
     extern char FAQMainGame10x10Basic [5][MAX_STRING_SIZE];
     extern const int FAQMainGame10x10BasicStringCount;
 
+    extern int playerScore;
+    extern int botScore;
+
     double xMousePos,
            yMousePos;
 
@@ -2193,12 +2392,16 @@ void renderMainGameBase15x15(GLFWwindow* window)
 
     static int x, y;
     static int lastSceneState = 0;
+
+    static int whoWin = 0;
     
     int botAttackResult;
 
     static int botMode = ATTACK_MODE;
 
     char shipsLeftStr[3] = {'\0',};
+    char botScoreStr[5] = {'\0',};
+    
 
     glfwGetCursorPos(window, &xMousePos, &yMousePos);
     //printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
@@ -2243,17 +2446,17 @@ void renderMainGameBase15x15(GLFWwindow* window)
                         if (killShipInShipBase(botShipBase, j, i) == SHIP_KILLED){
                             putMisses(mapBot, botShipBase, j, i, 1);
                         }
+                        playerScore++;
 
                     }
                     else if (mapBot[i + 1][j + 1] == EMPTY_PLATE){
                         mapBot[i + 1][j + 1] = MISS_PLATE;
                         sMainGameBase15x15.state = BOT_SHOT;
+                        playerScore++;
                     }
                 }
             }
         }
-
-
     }
     else if (sMainGameBase15x15.state == BOT_SHOT) {
         //Обработка выстрела бота
@@ -2326,6 +2529,7 @@ void renderMainGameBase15x15(GLFWwindow* window)
                 }
             }
         }
+        botScore++;
         sleep(BOT_SHOT_DELAY);
     }
     else if (sMainGameBase15x15.state == FAQ){
@@ -2346,19 +2550,150 @@ void renderMainGameBase15x15(GLFWwindow* window)
         }    
         
     }
+    else if (sMainGameBase15x15.state == GAME_END){
+        if (whoWin == BOT_WIN){
+            renderSprite(sMainGameBase15x15.lostPlate, SpriteShaderProgram, FIRST_TEXTURE);
+            snprintf(botScoreStr, 4, "%d", botScore);
+            renderText(sMainGameBase15x15.TextParams, TextShaderProgram, botScoreStr, correctXcoords(705.0, windowSizeX) , correctYcoords(348, windowSizeY), correctTextSize(0.7, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+
+            if (cursorInArea(xMousePos, yMousePos, 442, 491, 831, 408, windowSizeX, windowSizeY)){
+                renderText(sMainGameBase15x15.TextParams, TextShaderProgram, "Back To Menu", correctXcoords(475.0, windowSizeX) , correctYcoords(256, windowSizeY), correctTextSize(1.2, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+                if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                    if (playerInfo.BotLevel == NORMAL_BOT_LEVEL){
+                        mediumLevelBot(&x, &y, mapBot, MAP_SIZE_15_X_15, GAME_END);
+                    }
+                    else if (playerInfo.BotLevel == HARD_BOT_LEVEL){
+                        hardLevelBot(&x, &y, mapBot, MAP_SIZE_15_X_15, botShipBase, GAME_END);
+                    }
+
+                    playerInfo.BotLevel = NOT_FILLED_IN;
+                    playerInfo.GameMode = NOT_FILLED_IN;
+                    playerInfo.MapSize = NOT_FILLED_IN;
+                    playerInfo.scene = MAIN_MENU_SCENES;
+
+                    if (shipBase != NULL){
+                        freeShipBase(shipBase);
+                        shipBase = NULL;
+                    }
+                    if (botShipBase != NULL){
+                        freeShipBase(botShipBase);
+                        botShipBase = NULL;
+                    }
+                    
+                    playerScore = 0;
+                    botScore = 0;
+
+                    clearMap(map);
+                    clearMap(mapBot);
+
+                    lastClickTime = glfwGetTime();
+                }
+            }
+            else {
+                renderText(sMainGameBase15x15.TextParams, TextShaderProgram, "Back To Menu", correctXcoords(475.0, windowSizeX) , correctYcoords(256, windowSizeY), correctTextSize(1.2, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);       
+            }  
+        } 
+        else if (whoWin == PLAYER_WIN){
+            //Обработка победы Игрока
+            renderSprite(sMainGameBase15x15.wonPlate, SpriteShaderProgram, FIRST_TEXTURE);
+            snprintf(botScoreStr, 4, "%d", playerScore);
+            renderText(sMainGameBase15x15.TextParams, TextShaderProgram, botScoreStr, correctXcoords(665.0, windowSizeX) , correctYcoords(411, windowSizeY), correctTextSize(0.7, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+
+            //Если игрок не захотел добавлять имя на доску лидеров, то просто выход в главное меню
+            if (cursorInArea(xMousePos, yMousePos, 428, 536, 859, 452, windowSizeX, windowSizeY)){
+                renderText(sMainGameBase15x15.TextParams, TextShaderProgram, "Back To Menu", correctXcoords(478.0, windowSizeX) , correctYcoords(213, windowSizeY), correctTextSize(1.2, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+                if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                    if (playerInfo.BotLevel == NORMAL_BOT_LEVEL){
+                        mediumLevelBot(&x, &y, mapBot, MAP_SIZE_15_X_15, GAME_END);
+                    }
+                    else if (playerInfo.BotLevel == HARD_BOT_LEVEL){
+                        hardLevelBot(&x, &y, mapBot, MAP_SIZE_15_X_15, botShipBase, GAME_END);
+                    }
+
+                    playerInfo.BotLevel = NOT_FILLED_IN;
+                    playerInfo.GameMode = NOT_FILLED_IN;
+                    playerInfo.MapSize = NOT_FILLED_IN;
+                    playerInfo.scene = MAIN_MENU_SCENES;
+
+                    if (shipBase != NULL){
+                        freeShipBase(shipBase);
+                        shipBase = NULL;
+                    }
+                    if (botShipBase != NULL){
+                        freeShipBase(botShipBase);
+                        botShipBase = NULL;
+                    }
+                    
+                    playerScore = 0;
+                    botScore = 0;
+
+                    clearMap(map);
+                    clearMap(mapBot);
+
+                    lastClickTime = glfwGetTime();
+                }
+            }
+            else {
+                renderText(sMainGameBase15x15.TextParams, TextShaderProgram, "Back To Menu", correctXcoords(478.0, windowSizeX) , correctYcoords(213, windowSizeY), correctTextSize(1.2, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);       
+            } 
+
+            //Обработка кнопки добавления на доску лидеров
+            if (cursorInArea(xMousePos, yMousePos, 431, 429, 856, 342, windowSizeX, windowSizeY)){
+                renderText(sMainGameBase15x15.TextParams, TextShaderProgram, "Add To LeaderBoard", correctXcoords(468.0, windowSizeX) , correctYcoords(325, windowSizeY), correctTextSize(0.9, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+                if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                    if (playerInfo.BotLevel == NORMAL_BOT_LEVEL){
+                        mediumLevelBot(&x, &y, mapBot, MAP_SIZE_15_X_15, GAME_END);
+                    }
+                    else if (playerInfo.BotLevel == HARD_BOT_LEVEL){
+                        hardLevelBot(&x, &y, mapBot, MAP_SIZE_15_X_15, botShipBase, GAME_END);
+                    }
+                    
+                    playerInfo.scene = ADDING_TO_THE_LEADERBOARD_SCENES;
+
+                    if (shipBase != NULL){
+                        freeShipBase(shipBase);
+                        shipBase = NULL;
+                    }
+                    if (botShipBase != NULL){
+                        freeShipBase(botShipBase);
+                        botShipBase = NULL;
+                    }
+
+                    botScore = 0;
+
+                    clearMap(map);
+                    clearMap(mapBot);
+
+                    lastClickTime = glfwGetTime();
+                }
+            }
+            else {
+                renderText(sMainGameBase15x15.TextParams, TextShaderProgram, "Add To LeaderBoard", correctXcoords(468.0, windowSizeX) , correctYcoords(325, windowSizeY), correctTextSize(0.9, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);       
+            } 
+        }
+    }
 
     
-    PlayerShipsLeft = getShipsLeft(botShipBase);
-    snprintf(shipsLeftStr, 3, "%d", PlayerShipsLeft);
+    BotShipsLeft = getShipsLeft(botShipBase);
+    snprintf(shipsLeftStr, 3, "%d", BotShipsLeft);
     renderText(sMainGameBase15x15.TextParams, TextShaderProgram, shipsLeftStr, correctXcoords(907.0, windowSizeX) , correctYcoords(659.5, windowSizeY), correctTextSize(0.75, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
     
     memset(shipsLeftStr, '\0', 3);
 
-    BotShipsLeft = getShipsLeft(shipBase);
-    snprintf(shipsLeftStr, 3, "%d", BotShipsLeft);
+    PlayerShipsLeft = getShipsLeft(shipBase);
+    snprintf(shipsLeftStr, 3, "%d", PlayerShipsLeft);
     renderText(sMainGameBase15x15.TextParams, TextShaderProgram, shipsLeftStr, correctXcoords(274.0, windowSizeX) , correctYcoords(659.5, windowSizeY), correctTextSize(0.75, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
 
     //Если у кого-то из игроков не осталось кораблей, значит игра закончилась
+    if ((PlayerShipsLeft == 0 || BotShipsLeft == 0) && sMainGameBase15x15.state != FAQ){
+        sMainGameBase15x15.state = GAME_END;
+        if (PlayerShipsLeft == 0){
+            whoWin = BOT_WIN;
+        }
+        else if (BotShipsLeft == 0){
+            whoWin = PLAYER_WIN;
+        }
+    }
 
     //Отображение того, чей выстрел ожидается в данный момент
     if (sMainGameBase15x15.state == PLAYER_SHOT || (sMainGameBase15x15.state == FAQ && lastSceneState == PLAYER_SHOT)){
@@ -2366,6 +2701,9 @@ void renderMainGameBase15x15(GLFWwindow* window)
     }
     else if (sMainGameBase15x15.state == BOT_SHOT || (sMainGameBase15x15.state == FAQ && lastSceneState == BOT_SHOT)){
         renderText(sMainGameBase15x15.TextParams, TextShaderProgram, "ENEMY SHOT" , correctXcoords(430.0, windowSizeX) , correctYcoords(659.5, windowSizeY), correctTextSize(0.75, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+    }
+    else if (sMainGameBase15x15.state == GAME_END || (sMainGameBase15x15.state == FAQ && lastSceneState == GAME_END)){
+        renderText(sMainGameBase15x15.TextParams, TextShaderProgram, "GAME END" , correctXcoords(446.0, windowSizeX) , correctYcoords(659.5, windowSizeY), correctTextSize(0.75, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
     }
 
     //Обработка FAQ
@@ -2403,8 +2741,11 @@ void renderMainGameBotFight10x10(GLFWwindow* window)
 
     extern double lastClickTime;
 
-    extern char FAQMainGame10x10Basic [5][MAX_STRING_SIZE];
-    extern const int FAQMainGame10x10BasicStringCount;
+    extern char FAQMainGameBotFight [2][MAX_STRING_SIZE];
+    extern const int FAQMainGameBotFightStringCount;
+
+    extern int bot1Score;
+    extern int bot2Score; 
 
     double xMousePos,
            yMousePos;
@@ -2424,10 +2765,13 @@ void renderMainGameBotFight10x10(GLFWwindow* window)
                botMode2 = ATTACK_MODE;
 
     char shipsLeftStr[3] = {'\0',};
+    char botScoreStr[6] = {'\0',};
+
+    static int whoWin = 0;
 
     glfwGetCursorPos(window, &xMousePos, &yMousePos);
-    //printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
-    //printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
+    printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
+    printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
 
     renderSprite(sMainGameBotFight10x10.Background, SpriteShaderProgram, FIRST_TEXTURE);
     renderSprite(sMainGameBotFight10x10.ButtonPlates, SpriteShaderProgram, FIRST_TEXTURE);
@@ -2478,7 +2822,7 @@ void renderMainGameBotFight10x10(GLFWwindow* window)
             if ((botAttackResult = mediumLevelBotBF(&xb1, &yb1, mapBot2, MAP_SIZE_10_X_10, BOT_1_SHOT, GAME_PROCESS)) == HIT_PLATE){
                 //Если корабль убит, то продолжаем базовый подбор клетки для атаки, в противном случае активируем режим добивания
                 if (killShipInShipBase(shipBaseBFBot2, xb1 - 1, yb1 - 1) == SHIP_KILLED){
-                    putMisses(mapBot2, shipBaseBFBot2, xb1 - 1, yb1 - 1, 4);
+                    putMisses(mapBot2, shipBaseBFBot2, xb1 - 1, yb1 - 1, 1);
                 }
             }
             else if (botAttackResult == MISS_PLATE){
@@ -2512,6 +2856,7 @@ void renderMainGameBotFight10x10(GLFWwindow* window)
                 }
             }
         }
+        bot1Score++;
         sleep(BOT_SHOT_DELAY);
     }
     else if (sMainGameBotFight10x10.state == BOT_2_SHOT) {
@@ -2527,7 +2872,7 @@ void renderMainGameBotFight10x10(GLFWwindow* window)
             if ((botAttackResult = mediumLevelBotBF(&xb2, &yb2, mapBot1, MAP_SIZE_10_X_10, BOT_2_SHOT, GAME_PROCESS)) == HIT_PLATE){
                 //Если корабль убит, то продолжаем базовый подбор клетки для атаки, в противном случае активируем режим добивания
                 if (killShipInShipBase(shipBaseBFBot1, xb2 - 1, yb2 - 1) == SHIP_KILLED){
-                    putMisses(mapBot1, shipBaseBFBot1, xb2 - 1, yb2 - 1, 4);
+                    putMisses(mapBot1, shipBaseBFBot1, xb2 - 1, yb2 - 1, 1);
                 }
             }
             else if (botAttackResult == MISS_PLATE){
@@ -2560,12 +2905,13 @@ void renderMainGameBotFight10x10(GLFWwindow* window)
                 }
             }
         }
+        bot2Score++;
         sleep(BOT_SHOT_DELAY);
     }
     else if (sMainGameBotFight10x10.state == FAQ){
         renderSprite(sMainGameBotFight10x10.FAQPlate, SpriteShaderProgram, FIRST_TEXTURE);
-        for (int i = 0, startY = 530; i < FAQMainGame10x10BasicStringCount; i++, startY -= 30){
-            renderText(sMainGameBotFight10x10.TextParams, TextShaderProgram, FAQMainGame10x10Basic[i], correctXcoords(320.0, windowSizeX) , correctYcoords(startY, windowSizeY), correctTextSize(0.6, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        for (int i = 0, startY = 530; i < FAQMainGameBotFightStringCount; i++, startY -= 30){
+            renderText(sMainGameBotFight10x10.TextParams, TextShaderProgram, FAQMainGameBotFight[i], correctXcoords(320.0, windowSizeX) , correctYcoords(startY, windowSizeY), correctTextSize(0.6, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
         }
 
         if (cursorInArea(xMousePos, yMousePos, 490, 620, 791, 545, windowSizeX, windowSizeY)){
@@ -2579,6 +2925,59 @@ void renderMainGameBotFight10x10(GLFWwindow* window)
             renderText(sMainGameBotFight10x10.TextParams, TextShaderProgram, "OK", correctXcoords(585.0, windowSizeX) , correctYcoords(112, windowSizeY), correctTextSize(2.0, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
         }    
         
+    }
+    else if (sMainGameBotFight10x10.state == GAME_END){
+        renderSprite(sMainGameBotFight10x10.botWinPlate, SpriteShaderProgram, FIRST_TEXTURE);
+        if (whoWin == 2){
+            renderText(sMainGameBotFight10x10.TextParams, TextShaderProgram, "2", correctXcoords(695.0, windowSizeX) , correctYcoords(454, windowSizeY), correctTextSize(1.65, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+            snprintf(botScoreStr, 4, "%d", bot2Score);
+            renderText(sMainGameBotFight10x10.TextParams, TextShaderProgram, botScoreStr, correctXcoords(655.0, windowSizeX) , correctYcoords(349, windowSizeY), correctTextSize(0.6, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+
+        }
+        if (whoWin == 1){
+            renderText(sMainGameBotFight10x10.TextParams, TextShaderProgram, "1", correctXcoords(695.0, windowSizeX) , correctYcoords(454, windowSizeY), correctTextSize(1.65, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+            snprintf(botScoreStr, 4, "%d", bot2Score);
+            renderText(sMainGameBotFight10x10.TextParams, TextShaderProgram, botScoreStr, correctXcoords(655.0, windowSizeX) , correctYcoords(349, windowSizeY), correctTextSize(0.6, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }
+        
+        if (cursorInArea(xMousePos, yMousePos, 442, 491, 831, 408, windowSizeX, windowSizeY)){
+            renderText(sMainGameBotFight10x10.TextParams, TextShaderProgram, "Back To Menu", correctXcoords(475.0, windowSizeX) , correctYcoords(256, windowSizeY), correctTextSize(1.2, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                if (playerInfo.BotLevel == NORMAL_BOT_LEVEL){
+                    mediumLevelBotBF(&xb1, &yb1, mapBot1, MAP_SIZE_10_X_10, BOT_1_SHOT, GAME_END);
+                    mediumLevelBotBF(&xb2, &yb2, mapBot1, MAP_SIZE_10_X_10, BOT_2_SHOT, GAME_END);
+                }
+                else if (playerInfo.BotLevel == HARD_BOT_LEVEL){
+                    hardLevelBotBF(&xb1, &yb1, mapBot1, MAP_SIZE_10_X_10, shipBaseBFBot1, BOT_1_SHOT, GAME_END);
+                    hardLevelBotBF(&xb2, &yb2, mapBot1, MAP_SIZE_10_X_10, shipBaseBFBot2, BOT_2_SHOT, GAME_END);
+                }
+
+                playerInfo.BotLevel = NOT_FILLED_IN;
+                playerInfo.GameMode = NOT_FILLED_IN;
+                playerInfo.MapSize = NOT_FILLED_IN;
+                playerInfo.scene = MAIN_MENU_SCENES;
+
+                if (shipBaseBFBot1 != NULL){
+                    freeShipBase(shipBaseBFBot1);
+                    shipBaseBFBot1 = NULL;
+                }
+                if (shipBaseBFBot2 != NULL){
+                    freeShipBase(shipBaseBFBot2);
+                    shipBaseBFBot2= NULL;
+                }
+                
+                bot1Score = 0;
+                bot2Score = 0;
+
+                clearMap(mapBot1);
+                clearMap(mapBot2);
+
+                lastClickTime = glfwGetTime();
+            }
+        }
+        else {
+            renderText(sMainGameBotFight10x10.TextParams, TextShaderProgram, "Back To Menu", correctXcoords(475.0, windowSizeX) , correctYcoords(256, windowSizeY), correctTextSize(1.2, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);       
+        }    
     }
 
 
@@ -2595,6 +2994,8 @@ void renderMainGameBotFight10x10(GLFWwindow* window)
     //Если у кого-то из игроков не осталось кораблей, значит игра закончилась
     if ((Bot1ShipsLeft == 0 || Bot2ShipsLeft == 0) && sMainGameBotFight10x10.state != FAQ){
         sMainGameBotFight10x10.state = GAME_END;
+        if (Bot1ShipsLeft != 0) whoWin = 1;
+        if (Bot2ShipsLeft != 0) whoWin = 2; 
     }
 
 
@@ -2605,7 +3006,7 @@ void renderMainGameBotFight10x10(GLFWwindow* window)
     else if (sMainGameBotFight10x10.state == BOT_2_SHOT || (sMainGameBotFight10x10.state == FAQ && lastSceneState == BOT_2_SHOT)){
         renderText(sMainGameBotFight10x10.TextParams, TextShaderProgram, "BOT 2 SHOT" , correctXcoords(442.0, windowSizeX) , correctYcoords(659.5, windowSizeY), correctTextSize(0.75, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
     }
-    else if (sMainGameBotFight10x10.state == GAME_END){
+    else if (sMainGameBotFight10x10.state == GAME_END || (sMainGameBotFight10x10.state == FAQ && lastSceneState == GAME_END)){
         renderText(sMainGameBotFight10x10.TextParams, TextShaderProgram, "GAME END" , correctXcoords(446.0, windowSizeX) , correctYcoords(659.5, windowSizeY), correctTextSize(0.75, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
 
     }
@@ -2626,5 +3027,312 @@ void renderMainGameBotFight10x10(GLFWwindow* window)
     //Обработка кнопки Exit
     
 }
+
+
+void renderMainGameBotFight15x15(GLFWwindow* window)
+{
+    extern GLuint SpriteShaderProgram;
+    extern GLuint TextShaderProgram;
+    extern MainGameBotFight15x15 sMainGameBotFight15x15;
+    extern Player playerInfo;
+    extern ShipBase* shipBaseBFBot1;
+    extern ShipBase* shipBaseBFBot2;
+    
+
+    extern int mapBot1[18][18];
+    extern int mapBot2[18][18];
+
+    extern int windowSizeX;
+    extern int windowSizeY;
+
+    extern double lastClickTime;
+
+    extern char FAQMainGameBotFight [2][MAX_STRING_SIZE];
+    extern const int FAQMainGameBotFightStringCount;
+
+    extern int bot1Score;
+    extern int bot2Score;
+
+    double xMousePos,
+           yMousePos;
+
+    int Bot1ShipsLeft,
+        Bot2ShipsLeft;
+
+    static int xb1, yb1, xb2, yb2;
+    static int lastSceneStateBot1 = 0,
+               lastSceneStateBot2 = 0;
+    
+    int botAttackResult;
+
+    static int lastSceneState = 0;
+
+    static int botMode1 = ATTACK_MODE,
+               botMode2 = ATTACK_MODE;
+
+    static int whoWin = 0;
+
+    char shipsLeftStr[3] = {'\0',};
+    char botScoreStr[5] = {'\0'};
+
+    glfwGetCursorPos(window, &xMousePos, &yMousePos);
+    //printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
+    //printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
+
+    renderSprite(sMainGameBotFight15x15.Background, SpriteShaderProgram, FIRST_TEXTURE);
+    renderSprite(sMainGameBotFight15x15.ButtonPlates, SpriteShaderProgram, FIRST_TEXTURE);
+
+    //Отображение поля
+    for (int i = 0; i < 15; i++){
+        for (int j = 0; j < 15; j++){
+            if (mapBot1[i + 1][j + 1] == SHIP_PLATE)
+                renderSprite(sMainGameBotFight15x15.Bot1MapArray[i][j].sprite, SpriteShaderProgram, FIRST_TEXTURE);
+            else if (mapBot1[i + 1][j + 1] == HIT_PLATE){
+                renderSprite(sMainGameBotFight15x15.Bot1MapArray[i][j].sprite, SpriteShaderProgram, SECOND_TEXTURE);
+            }
+            else if (mapBot1[i + 1][j + 1] == MISS_PLATE){
+                renderSprite(sMainGameBotFight15x15.Bot1MapArray[i][j].sprite, SpriteShaderProgram, THIRD_TEXTURE);
+            }
+
+            if (mapBot2[i + 1][j + 1] == SHIP_PLATE)
+                renderSprite(sMainGameBotFight15x15.Bot2MapArray[i][j].sprite, SpriteShaderProgram, FIRST_TEXTURE);
+            else if (mapBot2[i + 1][j + 1] == HIT_PLATE){
+                renderSprite(sMainGameBotFight15x15.Bot2MapArray[i][j].sprite, SpriteShaderProgram, SECOND_TEXTURE);
+            }
+            else if (mapBot2[i + 1][j + 1] == MISS_PLATE){
+                renderSprite(sMainGameBotFight15x15.Bot2MapArray[i][j].sprite, SpriteShaderProgram, THIRD_TEXTURE);
+            }
+        }
+    }
+
+    renderSprite(sMainGameBotFight15x15.MainMap15x15, SpriteShaderProgram, FIRST_TEXTURE);
+
+    //0 - пустая клетка
+    //1 - промах
+    //2 - корабль
+    //3 - подбитый корабль
+    
+    if (sMainGameBotFight15x15.state == BOT_1_SHOT){
+        //Обработка выстрела бота
+        for (int i = 0; i < 10000000; i++);
+
+        if (playerInfo.BotLevel == EASY_BOT_LEVEL){
+            if ((botAttackResult = easyLevelBot(&xb1, &yb1, mapBot2, MAP_SIZE_15_X_15)) == HIT_PLATE){
+                killShipInShipBase(shipBaseBFBot2, xb1 - 1, yb1 - 1);
+            }
+            else if (botAttackResult == MISS_PLATE){
+                sMainGameBotFight15x15.state = BOT_2_SHOT;
+            }
+        }
+        else if (playerInfo.BotLevel == NORMAL_BOT_LEVEL){
+            if ((botAttackResult = mediumLevelBotBF(&xb1, &yb1, mapBot2, MAP_SIZE_15_X_15, BOT_1_SHOT, GAME_PROCESS)) == HIT_PLATE){
+                //Если корабль убит, то продолжаем базовый подбор клетки для атаки, в противном случае активируем режим добивания
+                if (killShipInShipBase(shipBaseBFBot2, xb1 - 1, yb1 - 1) == SHIP_KILLED){
+                    putMisses(mapBot2, shipBaseBFBot2, xb1 - 1, yb1 - 1, 1);
+                }
+            }
+            else if (botAttackResult == MISS_PLATE){
+                sMainGameBotFight15x15.state = BOT_2_SHOT;
+            } 
+        }
+        else if (playerInfo.BotLevel == HARD_BOT_LEVEL){
+            if (botMode1 == ATTACK_MODE){
+                if ((botAttackResult = hardLevelBotBF(&xb1, &yb1, mapBot2, MAP_SIZE_15_X_15, shipBaseBFBot2, BOT_1_SHOT, GAME_PROCESS)) == HIT_PLATE){
+                    if (killShipInShipBase(shipBaseBFBot2, xb1 - 1, yb1 - 1) == SHIP_KILLED){
+                        putMisses(mapBot2, shipBaseBFBot2, xb1 - 1, yb1 - 1, 1);
+                    }
+                    else {
+                        botMode1 = FINISHING_OFF_MODE;
+                    }
+
+                }
+                else if (botAttackResult == MISS_PLATE){
+                    sMainGameBotFight15x15.state = BOT_2_SHOT;
+                }
+            }
+            else {
+                if ((botAttackResult = finishingOffBF(xb1 , yb1, mapBot2, shipBaseBFBot2, ATTACK_PROCESS, MAP_SIZE_15_X_15, BOT_1_SHOT)) == MISS_PLATE){
+                    sMainGameBotFight15x15.state = BOT_2_SHOT;
+                    printf("bot1 %d %d\n", xb1, yb1);
+                }
+                else if (botAttackResult == SHIP_KILLED){
+                    finishingOffBF(xb1 , yb1, mapBot2, shipBaseBFBot2, ATTACK_END, MAP_SIZE_15_X_15, BOT_1_SHOT);
+                    putMisses(mapBot2, shipBaseBFBot2, xb1 - 1, yb1 - 1, 1);
+                    botMode1 = ATTACK_MODE;
+                }
+            }
+        }
+        bot1Score++;
+        sleep(BOT_SHOT_DELAY);
+    }
+    else if (sMainGameBotFight15x15.state == BOT_2_SHOT) {
+        if (playerInfo.BotLevel == EASY_BOT_LEVEL){
+            if ((botAttackResult = easyLevelBot(&xb2, &yb2, mapBot1, MAP_SIZE_15_X_15)) == HIT_PLATE){
+                killShipInShipBase(shipBaseBFBot1, xb2 - 1, yb2 - 1);
+            }
+            else if (botAttackResult == MISS_PLATE){
+                sMainGameBotFight15x15.state = BOT_1_SHOT;
+            }
+        }
+        else if (playerInfo.BotLevel == NORMAL_BOT_LEVEL){
+            if ((botAttackResult = mediumLevelBotBF(&xb2, &yb2, mapBot1, MAP_SIZE_15_X_15, BOT_2_SHOT, GAME_PROCESS)) == HIT_PLATE){
+                //Если корабль убит, то продолжаем базовый подбор клетки для атаки, в противном случае активируем режим добивания
+                if (killShipInShipBase(shipBaseBFBot1, xb2 - 1, yb2 - 1) == SHIP_KILLED){
+                    putMisses(mapBot1, shipBaseBFBot1, xb2 - 1, yb2 - 1, 1);
+                }
+            }
+            else if (botAttackResult == MISS_PLATE){
+                sMainGameBotFight15x15.state = BOT_1_SHOT;
+            }  
+        }
+        else if (playerInfo.BotLevel == HARD_BOT_LEVEL){
+            if (botMode2 == ATTACK_MODE){
+                if ((botAttackResult = hardLevelBotBF(&xb2, &yb2, mapBot1, MAP_SIZE_15_X_15, shipBaseBFBot1, BOT_2_SHOT, GAME_PROCESS)) == HIT_PLATE){
+                    if (killShipInShipBase(shipBaseBFBot1, xb2 - 1, yb2 - 1) == SHIP_KILLED){
+                        putMisses(mapBot1, shipBaseBFBot1, xb2 - 1, yb2 - 1, 1);
+                    }
+                    else {
+                        botMode2 = FINISHING_OFF_MODE;
+                    }
+
+                }
+                else if (botAttackResult == MISS_PLATE){
+                    sMainGameBotFight15x15.state = BOT_1_SHOT;
+                }
+            }
+            else {
+                if ((botAttackResult = finishingOffBF(xb2 , yb2, mapBot1, shipBaseBFBot1, ATTACK_PROCESS, MAP_SIZE_15_X_15, BOT_2_SHOT)) == MISS_PLATE){
+                    sMainGameBotFight15x15.state = BOT_1_SHOT;
+                }
+                else if (botAttackResult == SHIP_KILLED){
+                    finishingOffBF(xb2 , yb2, mapBot1, shipBaseBFBot1, ATTACK_END, MAP_SIZE_15_X_15, BOT_2_SHOT);
+                    putMisses(mapBot1, shipBaseBFBot1, xb2 - 1, yb2 - 1, 1);
+                    botMode2 = ATTACK_MODE;
+                }
+            }
+        }
+        bot2Score++;
+        sleep(BOT_SHOT_DELAY);
+    }
+    else if (sMainGameBotFight15x15.state == FAQ){
+        renderSprite(sMainGameBotFight15x15.FAQPlate, SpriteShaderProgram, FIRST_TEXTURE);
+        for (int i = 0, startY = 530; i < FAQMainGameBotFightStringCount; i++, startY -= 30){
+            renderText(sMainGameBotFight15x15.TextParams, TextShaderProgram, FAQMainGameBotFight[i], correctXcoords(320.0, windowSizeX) , correctYcoords(startY, windowSizeY), correctTextSize(0.6, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }
+
+        if (cursorInArea(xMousePos, yMousePos, 490, 620, 791, 545, windowSizeX, windowSizeY)){
+            renderText(sMainGameBotFight15x15.TextParams, TextShaderProgram, "OK", correctXcoords(585.0, windowSizeX) , correctYcoords(112, windowSizeY), correctTextSize(2.0, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                sMainGameBotFight15x15.state = lastSceneState;
+                lastClickTime = glfwGetTime();
+            }
+        }
+        else {
+            renderText(sMainGameBotFight15x15.TextParams, TextShaderProgram, "OK", correctXcoords(585.0, windowSizeX) , correctYcoords(112, windowSizeY), correctTextSize(2.0, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }    
+        
+    }
+    else if (sMainGameBotFight15x15.state == GAME_END){
+        renderSprite(sMainGameBotFight15x15.botWinPlate, SpriteShaderProgram, FIRST_TEXTURE);
+        if (whoWin == 2){
+            renderText(sMainGameBotFight15x15.TextParams, TextShaderProgram, "2", correctXcoords(695.0, windowSizeX) , correctYcoords(454, windowSizeY), correctTextSize(1.65, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+            snprintf(botScoreStr, 4, "%d", bot2Score);
+            renderText(sMainGameBotFight15x15.TextParams, TextShaderProgram, botScoreStr, correctXcoords(655.0, windowSizeX) , correctYcoords(349, windowSizeY), correctTextSize(0.6, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }
+        if (whoWin == 1){
+            renderText(sMainGameBotFight15x15.TextParams, TextShaderProgram, "1", correctXcoords(695.0, windowSizeX) , correctYcoords(454, windowSizeY), correctTextSize(1.65, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+            snprintf(botScoreStr, 4, "%d", bot1Score);
+            renderText(sMainGameBotFight15x15.TextParams, TextShaderProgram, botScoreStr, correctXcoords(655.0, windowSizeX) , correctYcoords(349, windowSizeY), correctTextSize(0.6, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }
+        
+        if (cursorInArea(xMousePos, yMousePos, 442, 491, 831, 408, windowSizeX, windowSizeY)){
+            renderText(sMainGameBotFight15x15.TextParams, TextShaderProgram, "Back To Menu", correctXcoords(475.0, windowSizeX) , correctYcoords(256, windowSizeY), correctTextSize(1.2, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                if (playerInfo.BotLevel == NORMAL_BOT_LEVEL){
+                    mediumLevelBotBF(&xb1, &yb1, mapBot1, MAP_SIZE_15_X_15, BOT_1_SHOT, GAME_END);
+                    mediumLevelBotBF(&xb2, &yb2, mapBot1, MAP_SIZE_15_X_15, BOT_2_SHOT, GAME_END);
+                }
+                else if (playerInfo.BotLevel == HARD_BOT_LEVEL){
+                    hardLevelBotBF(&xb1, &yb1, mapBot1, MAP_SIZE_15_X_15, shipBaseBFBot1, BOT_1_SHOT, GAME_END);
+                    hardLevelBotBF(&xb2, &yb2, mapBot1, MAP_SIZE_15_X_15, shipBaseBFBot2, BOT_2_SHOT, GAME_END);
+                }
+
+                playerInfo.BotLevel = NOT_FILLED_IN;
+                playerInfo.GameMode = NOT_FILLED_IN;
+                playerInfo.MapSize = NOT_FILLED_IN;
+                playerInfo.scene = MAIN_MENU_SCENES;
+
+                if (shipBaseBFBot1 != NULL){
+                    freeShipBase(shipBaseBFBot1);
+                    shipBaseBFBot1 = NULL;
+                }
+                if (shipBaseBFBot2 != NULL){
+                    freeShipBase(shipBaseBFBot2);
+                    shipBaseBFBot2= NULL;
+                }
+
+                bot1Score = 0;
+                bot2Score = 0;
+
+                clearMap(mapBot1);
+                clearMap(mapBot2);
+
+                lastClickTime = glfwGetTime();
+            }
+        }
+        else {
+            renderText(sMainGameBotFight15x15.TextParams, TextShaderProgram, "Back To Menu", correctXcoords(475.0, windowSizeX) , correctYcoords(256, windowSizeY), correctTextSize(1.2, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);       
+        }    
+    }
+
+
+    Bot2ShipsLeft = getShipsLeft(shipBaseBFBot2);
+    snprintf(shipsLeftStr, 3, "%d", Bot2ShipsLeft);
+    renderText(sMainGameBotFight15x15.TextParams, TextShaderProgram, shipsLeftStr, correctXcoords(920.0, windowSizeX) , correctYcoords(659.5, windowSizeY), correctTextSize(0.75, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+    
+    memset(shipsLeftStr, '\0', 3);
+
+    Bot1ShipsLeft = getShipsLeft(shipBaseBFBot1);
+    snprintf(shipsLeftStr, 3, "%d", Bot1ShipsLeft);
+    renderText(sMainGameBotFight15x15.TextParams, TextShaderProgram, shipsLeftStr, correctXcoords(265.0, windowSizeX) , correctYcoords(659.5, windowSizeY), correctTextSize(0.75, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+
+    //Если у кого-то из игроков не осталось кораблей, значит игра закончилась
+    if ((Bot1ShipsLeft == 0 || Bot2ShipsLeft == 0) && sMainGameBotFight15x15.state != FAQ){
+        sMainGameBotFight15x15.state = GAME_END;
+        if (Bot1ShipsLeft != 0) whoWin = 1;
+        if (Bot2ShipsLeft != 0) whoWin = 2; 
+    }
+
+
+    //Отображение того, чей выстрел ожидается в данный момент
+    if (sMainGameBotFight15x15.state == BOT_1_SHOT || (sMainGameBotFight15x15.state == FAQ && lastSceneState == BOT_1_SHOT)){
+        renderText(sMainGameBotFight15x15.TextParams, TextShaderProgram, "BOT 1 SHOT" , correctXcoords(442.0, windowSizeX) , correctYcoords(659.5, windowSizeY), correctTextSize(0.75, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+    }
+    else if (sMainGameBotFight15x15.state == BOT_2_SHOT || (sMainGameBotFight15x15.state == FAQ && lastSceneState == BOT_2_SHOT)){
+        renderText(sMainGameBotFight15x15.TextParams, TextShaderProgram, "BOT 2 SHOT" , correctXcoords(442.0, windowSizeX) , correctYcoords(659.5, windowSizeY), correctTextSize(0.75, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+    }
+    else if (sMainGameBotFight15x15.state == GAME_END || (sMainGameBotFight15x15.state == FAQ && lastSceneState == GAME_END)){
+        renderText(sMainGameBotFight15x15.TextParams, TextShaderProgram, "GAME END" , correctXcoords(446.0, windowSizeX) , correctYcoords(659.5, windowSizeY), correctTextSize(0.75, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+
+    }
+
+    //Обработка FAQ
+    if (cursorInArea(xMousePos, yMousePos, 1108, 70, 1169, 24, windowSizeX, windowSizeY) && sMainGameBotFight15x15.state != FAQ){
+        renderSprite(sMainGameBotFight15x15.QuestionMarkBtn, SpriteShaderProgram, SECOND_TEXTURE);
+         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+            lastSceneState = sMainGameBotFight15x15.state;
+            sMainGameBotFight15x15.state = FAQ;
+            lastClickTime = glfwGetTime();
+        }
+    }
+    else {
+        renderSprite(sMainGameBotFight15x15.QuestionMarkBtn, SpriteShaderProgram, FIRST_TEXTURE);
+    }    
+
+    //Обработка кнопки Exit
+    
+}
+
+
 
 #endif

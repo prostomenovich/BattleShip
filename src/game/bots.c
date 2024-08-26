@@ -7,6 +7,41 @@ int lastAttackCoordX = -1;
 int lastAttackCoordY = -1;
 int AttackDirection = -1;
 
+//medium bot veriables
+//int step = 0;
+//int direction = -1;
+//int lastX = -1;
+//int lastY = -1;
+
+//hard bot veriables
+int lastX = -1;
+int lastY = -1;
+int direction = -1;
+int step = -1;
+
+//medium bot BF
+int stepBot1 = -1;
+int directionBot1 = -1;
+int lastXBot1 = -1;
+int lastYBot1 = -1;
+
+int stepBot2 = -1;
+int directionBot2 = -1;
+int lastXBot2 = -1;
+int lastYBot2 = -1;
+
+//hard bot BF
+/*
+int lastXBot1 = -1;
+int lastYBot1 = -1;
+int directionBot1 = -1;
+int stepBot1 = -1;
+
+int lastXBot2 = -1;
+int lastYBot2 = -1;
+int directionBot2 = -1;
+//int stepBot2 = -1;
+*/
 
 int easyLevelBot(int* x, int* y, int map[18][18], int mapSize)
 {
@@ -47,13 +82,14 @@ int easyLevelBot(int* x, int* y, int map[18][18], int mapSize)
 
 int mediumLevelBot(int* x, int* y, int map[18][18], int mapSize, int gameStatus)
 {
-    static int step = 0;
-    static int direction = -1;
-    static int lastX = -1;
-    static int lastY = -1;
+    extern int step;
+    extern int direction;
+    extern int lastX;
+    extern int lastY;
 
     int endGameFlag = 0;
 
+    int MapChecker = 0;
 
     if (gameStatus != GAME_END){
         //Проверка, что игра не закончилась
@@ -62,12 +98,15 @@ int mediumLevelBot(int* x, int* y, int map[18][18], int mapSize, int gameStatus)
                 if (map[i][j] == EMPTY_PLATE || map[i][j] == SHIP_PLATE){
                     endGameFlag = 1;
                 }
+                if (map[i][j] == HIT_PLATE || map[i][j] == MISS_PLATE || map[i][j] == AROUND_SHIP_PLATE) MapChecker++;
             }
         }
 
         if (!endGameFlag) return GAME_END;
 
-        if (step == 0) step = rand() % 8 + 2;
+        if (step == -1 && MapChecker < ((mapSize * mapSize) / 2)) step= rand() % 8 + 2;
+        else if (step == -1 && MapChecker >= ((mapSize * mapSize) / 2))  step = rand() % 10 + 1;
+
         if (direction == -1) direction = rand() % 2;
         if (lastX == -1 && lastY == -1){
             if (direction == TOP_DOWN){
@@ -107,7 +146,8 @@ int mediumLevelBot(int* x, int* y, int map[18][18], int mapSize, int gameStatus)
                         lastX = 1;
                         lastY = mapSize;
                     }
-                    step = rand() % 8 + 2;  
+                    if (MapChecker < ((mapSize * mapSize) / 2)) step = rand() % 8 + 2;
+                    else if (MapChecker >= ((mapSize * mapSize) / 2))  step = rand() % 10 + 1; 
                 }
             }
         }
@@ -127,7 +167,7 @@ int mediumLevelBot(int* x, int* y, int map[18][18], int mapSize, int gameStatus)
         }
     }
     else {
-        step = 0;
+        step = -1;
         direction = -1;
         lastX = -1;
         lastY = -1;
@@ -315,10 +355,10 @@ int finishingOff(int x, int y, int map[18][18], ShipBase* shipBase, int AttackSt
 
 int hardLevelBot(int* x, int* y, int map[18][18], int MapSize, ShipBase* shipBase, int gameStatus)
 {
-    static int lastX = -1,
-               lastY = -1,
-               direction = -1,
-               step = -1;
+    extern int lastX;
+    extern int lastY;
+    extern int direction;
+    extern int step;
     int endGameFlag = 0;
             
 
@@ -404,17 +444,18 @@ int hardLevelBot(int* x, int* y, int map[18][18], int MapSize, ShipBase* shipBas
 
 int mediumLevelBotBF(int* x, int* y, int map[18][18], int mapSize, int botCount, int gameStatus)
 {   
-    static int stepBot1 = 0;
-    static int directionBot1 = -1;
-    static int lastXBot1 = -1;
-    static int lastYBot1 = -1;
+    extern int stepBot1;
+    extern int directionBot1;
+    extern int lastXBot1;
+    extern int lastYBot1;
 
-    static int stepBot2 = 0;
-    static int directionBot2 = -1;
-    static int lastXBot2 = -1;
-    static int lastYBot2 = -1;
+    extern int stepBot2;
+    extern int directionBot2;
+    extern int lastXBot2;
+    extern int lastYBot2;
 
     int endGameFlag = 0;
+    int MapChecker = 0;
 
 
     if (botCount == BOT_1_SHOT){
@@ -425,12 +466,15 @@ int mediumLevelBotBF(int* x, int* y, int map[18][18], int mapSize, int botCount,
                     if (map[i][j] == EMPTY_PLATE || map[i][j] == SHIP_PLATE){
                         endGameFlag = 1;
                     }
+                    if (map[i][j] == MISS_PLATE || map[i][j] == HIT_PLATE) MapChecker++;
                 }
             }
 
             if (!endGameFlag) return GAME_END;
 
-            if (stepBot1 == 0) stepBot1 = rand() % 8 + 2;
+            if (stepBot1 == -1 && MapChecker < ((mapSize * mapSize) / 2)) stepBot1 = rand() % 8 + 2;
+            else if (stepBot1 == -1 && MapChecker >= ((mapSize * mapSize) / 2))  stepBot1 = rand() % 10 + 1;
+            
             if (directionBot1 == -1) directionBot1 = rand() % 2;
             if (lastXBot1 == -1 && lastYBot1 == -1){
                 if (directionBot1 == TOP_DOWN){
@@ -470,7 +514,8 @@ int mediumLevelBotBF(int* x, int* y, int map[18][18], int mapSize, int botCount,
                             lastXBot1 = 1;
                             lastYBot1 = mapSize;
                         }
-                        stepBot1 = rand() % 8 + 2;  
+                        if (MapChecker < ((mapSize * mapSize) / 2)) stepBot1 = rand() % 8 + 2;
+                        else if (MapChecker >= ((mapSize * mapSize) / 2))  stepBot1 = rand() % 10 + 1;  
                     }
                 }
             }
@@ -490,7 +535,7 @@ int mediumLevelBotBF(int* x, int* y, int map[18][18], int mapSize, int botCount,
             }
         }
         else {
-            stepBot1 = 0;
+            stepBot1 = -1;
             directionBot1 = -1;
             lastXBot1 = -1;
             lastYBot1 = -1;
@@ -504,12 +549,16 @@ int mediumLevelBotBF(int* x, int* y, int map[18][18], int mapSize, int botCount,
                     if (map[i][j] == EMPTY_PLATE || map[i][j] == SHIP_PLATE){
                         endGameFlag = 1;
                     }
+                    if (map[i][j] == MISS_PLATE || map[i][j] == HIT_PLATE) MapChecker++;
                 }
             }
 
             if (!endGameFlag) return GAME_END;
 
-            if (stepBot2 == 0) stepBot2 = rand() % 8 + 2;
+            if (stepBot2 == -1 && MapChecker < ((mapSize * mapSize) / 2)) stepBot2 = rand() % 8 + 2;
+            else if (stepBot2 == -1 && MapChecker >= ((mapSize * mapSize) / 2)) stepBot2 =  rand() % 10 + 1;
+            //if (stepBot2 == 0) rand() % 10 + 1;
+
             if (directionBot2 == -1) directionBot2 = rand() % 2;
             if (lastXBot2 == -1 && lastYBot2 == -1){
                 if (directionBot2 == TOP_DOWN){
@@ -549,7 +598,8 @@ int mediumLevelBotBF(int* x, int* y, int map[18][18], int mapSize, int botCount,
                             lastXBot2 = 1;
                             lastYBot2 = mapSize;
                         }
-                        stepBot2 = rand() % 8 + 2;  
+                        if (MapChecker < ((mapSize * mapSize) / 2)) stepBot2 = rand() % 8 + 2;
+                        else if (MapChecker >= ((mapSize * mapSize) / 2))  stepBot2 = rand() % 10 + 1;    
                     }
                 }
             }
@@ -569,7 +619,7 @@ int mediumLevelBotBF(int* x, int* y, int map[18][18], int mapSize, int botCount,
             }
         }
         else {
-            stepBot2 = 0;
+            stepBot2 = -1;
             directionBot2 = -1;
             lastXBot2 = -1;
             lastYBot2 = -1;
@@ -579,15 +629,15 @@ int mediumLevelBotBF(int* x, int* y, int map[18][18], int mapSize, int botCount,
 
 int hardLevelBotBF(int* x, int* y, int map[18][18], int MapSize, ShipBase* shipBase, int botCount, int gameStatus)
 {
-    static int lastXBot1 = -1,
-               lastYBot1 = -1,
-               directionBot1 = -1,
-               stepBot1 = -1;
+    extern int lastXBot1;
+    extern int lastYBot1;
+    extern int directionBot1;
+    extern int stepBot1;
 
-    static int lastXBot2 = -1,
-               lastYBot2 = -1,
-               directionBot2 = -1,
-               stepBot2 = -1;
+    extern int lastXBot2;
+    extern int lastYBot2;
+    extern int directionBot2;
+    extern int stepBot2;
 
     int endGameFlag = 0;
             

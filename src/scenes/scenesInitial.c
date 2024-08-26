@@ -24,6 +24,7 @@ RaftPlacement15x15BF sRaftPlacement15X15BF;
 MainGameBase10x10 sMainGameBase10x10;
 MainGameBase15x15 sMainGameBase15x15;
 MainGameBotFight10x10 sMainGameBotFight10x10;
+MainGameBotFight15x15 sMainGameBotFight15x15;
 
 
 //ShipBase
@@ -36,6 +37,10 @@ Coordinates* coords[5] = {NULL, };
 //Other veriables
 PiratesSprites PiratesSpritesBase;
 double lastClickTime = 0;
+int playerScore = 0,
+    botScore = 0,
+    bot1Score = 0,
+    bot2Score = 0;
 
 //FAQ Text
 char FAQMainGame10x10Basic [7][MAX_STRING_SIZE] = 
@@ -51,10 +56,97 @@ char FAQMainGame10x10Basic [7][MAX_STRING_SIZE] =
 
 const int FAQMainGame10x10BasicStringCount = 7;
 
+char FAQMainGameBotFight [2][MAX_STRING_SIZE] = 
+{
+    "In this mode you dont need to do anything",
+    "Just watch the battle between two bots",
+};
+
+const int FAQMainGameBotFightStringCount = 2;
+
+char AboutAuthors [10][MAX_STRING_SIZE] = 
+{   "University:         Saint-Pitersburg",
+    "                 Politechnic University",
+    " ",
+    "Authors:",
+    "    Tryahov Aleksandr Aleksandrovich",
+    "    Volkov Arseny Sergeevich",
+    " ",
+    "Institute: IKNK",
+    "Department: IBKS",
+    "Group: 5151003/30002"
+};
+
+const int AboutAuthorsStringCount = 10;
+
+char AboutLore [9][MAX_STRING_SIZE] = 
+{   "Imagine that you and your opponent are shipwrecked",
+    "during a devastated battle.",
+    "All the ships sank and the only thing you have left",
+    "a small rafts.",
+    "Place your faitful pirates around the field and try",
+    "not to miss, because this is the only one chance to",
+    "win the battle",
+    " ",
+    "Good luck, brave pirate!",
+};
+
+const int AboutLoreStringCount = 9;
+
+char AboutRules [45][MAX_STRING_SIZE] = 
+{   
+    "The rules of the game in Sea Battle are quite simple.",
+    "You need to select one of the proposed modes",
+    "and field size.",
+    " ",
+    "Modes:",
+    "    1. Basic",
+    "    2. Bots Fight",
+    " ",
+    "Map Size",
+    "    1. 10x10",
+    "    2. 15x15",
+    " ",
+    "In the basic mode, you have to fight with a bot of",
+    "one of three difficulty levels (Easy, Normal, Hard).",
+    "The first thing you need to do is place your rafts",
+    "on the field. After the game starts, you need",
+    "to left-click on the opponents field.",
+    "If there is a hit, a cross will appear, otherwise",
+    "a dot will appear. If you hit, then make another",
+    "move, otherwise the move is transferred to the enemy.",
+    "The game continues until one of the players runs",
+    "out of rafts.",
+    " ",
+    "In Bots Fight mode you need to select the difficulty",
+    "level for the bots and place them on the map. ",
+    "Next you just have to enjoy the battle!",
+    " ",
+    "About Raft Placement:",
+    "To place a ship you need to go into edit mode. To do",
+    "this, you need to press the E button; if you did",
+    "everything correctly, the letter E on the right will",
+    "glow yellow. Next, on the map, click on the required",
+    "number of cells. To complete the installation of the",
+    "ship, press E again. The indicator will go out and if",
+    "the ship is installed correctly, the highlighted cells",
+    "will be highlighted in green.",
+    " ",
+    "The number of rafts that need to be placed is",
+    "displayed in the upper right corner of the screen.",
+    "The game cannot begin until all the rafts have",
+    "been placed.",
+    "To clear the field from placed rafts, you can use the",
+    "Clear button, and to automatically place rafts,",
+    "the Autogen button."
+};
+
+const int AboutRulesStringCount = 45;
+
 void initMainMenu()
 {
     extern MainMenu sMainMenu;
-    extern FT_Library ft;
+    extern FT_Library ft1;
     extern Player playerInfo;
 
 
@@ -71,7 +163,7 @@ void initMainMenu()
     setStartSpriteParams(buttonPlates, 1280, 720, 0, 0, 0);
     setSpriteTexture(buttonPlates, "../resources/textures/mainMenu/buttonPlates.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
 
-    Text* textParams = makeNewText(&ft, "../resources/fonts/Unformital.ttf", 48);
+    Text* textParams = makeNewText(&ft1, "../resources/fonts/Unformital.ttf", 48);
 
     playerInfo.scene = MAIN_MENU_SCENES;
     playerInfo.GameMode = NOT_FILLED_IN;
@@ -86,6 +178,9 @@ void initAbout()
 {
     extern MainMenu sMainMenu;
     extern About sAbout;
+    extern FT_Library ft2;
+    
+    Text* textParams = makeNewText(&ft2, "../resources/fonts/undertale_battle_font.ttf", 48);
 
     AnimatedSprite* aboutBackground = initAnimatedSprite();
     setStartAnimSpriteParams(aboutBackground, 1280, 720, 0, 0, 0);
@@ -98,16 +193,34 @@ void initAbout()
     setStartSpriteParams(MainPlace, 1280, 720, 0, 0, 0);
     setSpriteTexture(MainPlace, "../resources/textures/about/buttons.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
 
+    Sprite* paginationPlates = initSprite();
+    setStartSpriteParams(paginationPlates, 1280, 720, 0, 0, 0);
+    setSpriteTexture(paginationPlates, "../resources/textures/about/PaginationPlates.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
+    Sprite* pagUP = initSprite();
+    setStartSpriteParams(pagUP, 1280, 720, 0, 0, 0);
+    setSpriteTexture(pagUP, "../resources/textures/about/pagUPnotPressed.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+    setSpriteTexture(pagUP, "../resources/textures/about/pagUPPressed.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
+
+    Sprite* pagDown = initSprite();
+    setStartSpriteParams(pagDown, 1280, 720, 0, 0, 0);
+    setSpriteTexture(pagDown, "../resources/textures/about/pagDOWNnotPressed.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+    setSpriteTexture(pagDown, "../resources/textures/about/pagDOWNPressed.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
+
     Sprite* ExitBTN = initSprite();
     setStartSpriteParams(ExitBTN, 72, 72, 937, 595, 0);
     setSpriteTexture(ExitBTN, "../resources/textures/about/exit_black.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
     setSpriteTexture(ExitBTN, "../resources/textures/about/exit_red.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
 
 
-    sAbout.TextParams = sMainMenu.TextParams;
+    sAbout.TextParams1 = sMainMenu.TextParams;
+    sAbout.TextParams2 = textParams;
     sAbout.Background = aboutBackground;
     sAbout.MainPlace = MainPlace;
     sAbout.ExitButton = ExitBTN;
+    sAbout.paginationPlates = paginationPlates;
+    sAbout.pagUp = pagUP;
+    sAbout.pagDown = pagDown;
 }
 
 void initNewLoadMenu()
@@ -526,6 +639,14 @@ void initMainGameBase10x10()
     setStartSpriteParams(FAQPlate, 1280, 720, 0 , 0, 0);
     setSpriteTexture(FAQPlate, "../resources/textures/mainGame/FAQPlateBasicGame10x10.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
 
+    Sprite* lostPlate = initSprite();
+    setStartSpriteParams(lostPlate, 1280, 720, 0 , 0, 0);
+    setSpriteTexture(lostPlate, "../resources/textures/mainGame/youLost.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
+    Sprite* wonPlate = initSprite();
+    setStartSpriteParams(wonPlate, 1280, 720, 0 , 0, 0);
+    setSpriteTexture(wonPlate, "../resources/textures/mainGame/youWon.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
     
     double xPos = 70.0,
            yPos = 510.0;
@@ -575,6 +696,8 @@ void initMainGameBase10x10()
     sMainGameBase10x10.ExitBtn = exitBtn;
     sMainGameBase10x10.QuestionMarkBtn = questionMarkBtn;
     sMainGameBase10x10.FAQPlate = FAQPlate;
+    sMainGameBase10x10.lostPlate = lostPlate;
+    sMainGameBase10x10.wonPlate = wonPlate;
 }
 
 void initPiratesSprites()
@@ -651,6 +774,13 @@ void initMainGameBase15x15()
     setStartSpriteParams(FAQPlate, 1280, 720, 0 , 0, 0);
     setSpriteTexture(FAQPlate, "../resources/textures/mainGame/FAQPlateBasicGame10x10.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
 
+    Sprite* lostPlate = initSprite();
+    setStartSpriteParams(lostPlate, 1280, 720, 0 , 0, 0);
+    setSpriteTexture(lostPlate, "../resources/textures/mainGame/youLost.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
+    Sprite* wonPlate = initSprite();
+    setStartSpriteParams(wonPlate, 1280, 720, 0 , 0, 0);
+    setSpriteTexture(wonPlate, "../resources/textures/mainGame/youWon.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
     
     double xPos = 61.43,
            yPos = 540.0;
@@ -699,6 +829,8 @@ void initMainGameBase15x15()
     sMainGameBase15x15.ExitBtn = exitBtn;
     sMainGameBase15x15.QuestionMarkBtn = questionMarkBtn;
     sMainGameBase15x15.FAQPlate = FAQPlate;
+    sMainGameBase15x15.lostPlate = lostPlate;
+    sMainGameBase15x15.wonPlate = wonPlate;
 }
 
 void initMainGameBotFight10x10()
@@ -733,6 +865,10 @@ void initMainGameBotFight10x10()
     Sprite* FAQPlate = initSprite();
     setStartSpriteParams(FAQPlate, 1280, 720, 0 , 0, 0);
     setSpriteTexture(FAQPlate, "../resources/textures/mainGame/FAQPlateBasicGame10x10.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
+    Sprite* winPlate = initSprite();
+    setStartSpriteParams(winPlate, 1280, 720, 0 , 0, 0);
+    setSpriteTexture(winPlate, "../resources/textures/mainGame/BotFightWin.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
 
     
     double xPos = 70.0,
@@ -781,6 +917,96 @@ void initMainGameBotFight10x10()
     sMainGameBotFight10x10.ExitBtn = exitBtn;
     sMainGameBotFight10x10.QuestionMarkBtn = questionMarkBtn;
     sMainGameBotFight10x10.FAQPlate = FAQPlate;
+    sMainGameBotFight10x10.botWinPlate = winPlate;
+}
+
+void initMainGameBotFight15x15()
+{
+    extern MainMenu sMainMenu;
+    extern MainGameBotFight10x10 sMainGameBotFight10x10;
+    extern MainGameBotFight15x15 sMainGameBotFight15x15;
+    extern ShipBase* shipBaseBFBot1;
+    extern ShipBase* shipBaseBFBot2;
+
+    Sprite* background = initSprite();
+    setStartSpriteParams(background, 1280, 720, 0, 0, 0);
+    setSpriteTexture(background, "../resources/textures/raftPuttingMenu/10x10/background.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
+    Sprite* buttonsPlates = initSprite();
+    setStartSpriteParams(buttonsPlates, 1280, 720, 0, 0, 0);
+    setSpriteTexture(buttonsPlates, "../resources/textures/mainGame/mainBtnPlates10x10BF.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
+    Sprite* map = initSprite();
+    setStartSpriteParams(map, 1280, 720, 0, 0, 0);
+    setSpriteTexture(map, "../resources/textures/mainGame/Base15x15/MainMap15x15Basic.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+    
+    Sprite* exitBtn = initSprite();
+    setStartSpriteParams(exitBtn,  60, 60, 1207, 651, 0);
+    setSpriteTexture(exitBtn, "../resources/textures/raftPuttingMenu/10x10/exit_black1.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+    setSpriteTexture(exitBtn, "../resources/textures/raftPuttingMenu/10x10/exit_red1.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
+
+    Sprite* questionMarkBtn = initSprite();
+    setStartSpriteParams(questionMarkBtn, 60, 60, 1109 , 644, 0);
+    setSpriteTexture(questionMarkBtn, "../resources/textures/raftPuttingMenu/10x10/qMark_black.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+    setSpriteTexture(questionMarkBtn, "../resources/textures/raftPuttingMenu/10x10/qMark_white.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
+
+    Sprite* FAQPlate = initSprite();
+    setStartSpriteParams(FAQPlate, 1280, 720, 0 , 0, 0);
+    setSpriteTexture(FAQPlate, "../resources/textures/mainGame/FAQPlateBasicGame10x10.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
+    Sprite* winPlate = initSprite();
+    setStartSpriteParams(winPlate, 1280, 720, 0 , 0, 0);
+    setSpriteTexture(winPlate, "../resources/textures/mainGame/BotFightWin.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
+    
+    double xPos = 61.43,
+           yPos = 540.0;
+
+    //Клетки поля для Bot1
+    for (int i = 0; i < 15; i++){
+        for (int j = 0; j < 15; j++){
+            Sprite* mapPlate = initSprite();
+            setStartSpriteParams(mapPlate, 34, 34, xPos, yPos, 0);
+            xPos += 36.53;
+
+            sMainGameBotFight15x15.Bot1MapArray[i][j].sprite = mapPlate;
+            sMainGameBotFight15x15.Bot1MapArray[i][j].spriteState = THIS_IS_NOT_SHIP_PLATE;
+            sMainGameBotFight15x15.Bot1MapArray[i][j].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+
+        }
+        xPos = 61.43;
+        yPos -= 36.52;
+    }
+    
+    xPos = 704.0;
+    yPos = 542.0;
+
+    //Клетки поля для Bot2
+    for (int i = 0; i < 15; i++){
+        for (int j = 0; j < 15; j++){
+            Sprite* mapPlate = initSprite();
+            setStartSpriteParams(mapPlate, 34, 34, xPos, yPos, 0);
+            xPos += 36.5;
+            
+            sMainGameBotFight15x15.Bot2MapArray[i][j].sprite = mapPlate;
+            sMainGameBotFight15x15.Bot2MapArray[i][j].spriteState = THIS_IS_NOT_SHIP_PLATE;
+            sMainGameBotFight15x15.Bot2MapArray[i][j].sprite->Texture3 = PiratesSpritesBase.waterSplash;
+        }
+        xPos = 705.0;
+        yPos -= 36.7;
+    }
+
+    //if (botShipBase == NULL) botShipBase = initShipBase(MAP_SIZE_10_X_10);
+
+    sMainGameBotFight15x15.TextParams = sMainMenu.TextParams;
+    sMainGameBotFight15x15.Background = background;
+    sMainGameBotFight15x15.ButtonPlates = buttonsPlates;
+    sMainGameBotFight15x15.MainMap15x15 = map;
+    sMainGameBotFight15x15.ExitBtn = exitBtn;
+    sMainGameBotFight15x15.QuestionMarkBtn = questionMarkBtn;
+    sMainGameBotFight15x15.FAQPlate = FAQPlate;
+    sMainGameBotFight15x15.botWinPlate = winPlate;
+    
 }
 
 

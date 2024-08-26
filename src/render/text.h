@@ -9,7 +9,7 @@
 #ifndef TEXT_H
 #define TEXT_H
 
-#define CHARACTERS_COUNT 128
+#define CHARACTERS_COUNT 1024
 #define COORDS_COUNT 24
 
 typedef struct Character

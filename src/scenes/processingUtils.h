@@ -11,7 +11,7 @@
 #define BASE_SCREEN_SIZE_X 1280
 #define BASE_SCREEN_SIZE_Y 720
 
-#define KEY_PRESSED_DELAY 0.4f
+#define KEY_PRESSED_DELAY 0.8f
 #define BOT_SHOT_DELAY 0
 
 //map sprite state

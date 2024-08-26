@@ -37,7 +37,11 @@ typedef struct About
 {
     AnimatedSprite* Background;
     Sprite* MainPlace;
-    Text* TextParams;
+    Sprite* paginationPlates;
+    Sprite* pagUp;
+    Sprite* pagDown;
+    Text* TextParams1;
+    Text* TextParams2;
     Sprite* ExitButton;
     GLuint state;
 
@@ -131,6 +135,8 @@ typedef struct MainGameBase10x10
     Text* TextParams;
     Sprite* ExitBtn;
     Sprite* FAQPlate;
+    Sprite* lostPlate;
+    Sprite* wonPlate;
     GLuint state;
 
 } MainGameBase10x10;
@@ -146,6 +152,8 @@ typedef struct MainGameBase15x15
     Text* TextParams;
     Sprite* ExitBtn;
     Sprite* FAQPlate;
+    Sprite* lostPlate;
+    Sprite* wonPlate;
     GLuint state;
 
 } MainGameBase15x15;
@@ -156,6 +164,7 @@ typedef struct MainGameBotFight10x10
     Sprite* ButtonPlates;
     Sprite* MainMap10x10;
     Sprite* QuestionMarkBtn;
+    Sprite* botWinPlate;
     MapSprite Bot1MapArray[10][10];
     MapSprite Bot2MapArray[10][10];
     Text* TextParams;
@@ -164,6 +173,22 @@ typedef struct MainGameBotFight10x10
     GLuint state;
 
 } MainGameBotFight10x10;
+
+typedef struct MainGameBotFight15x15
+{
+    Sprite* Background;
+    Sprite* ButtonPlates;
+    Sprite* MainMap15x15;
+    Sprite* QuestionMarkBtn;
+    Sprite* botWinPlate;
+    MapSprite Bot1MapArray[15][15];
+    MapSprite Bot2MapArray[15][15];
+    Text* TextParams;
+    Sprite* ExitBtn;
+    Sprite* FAQPlate;
+    GLuint state;
+
+} MainGameBotFight15x15;
 
 typedef struct PiratesSprites 
 {
@@ -226,6 +251,8 @@ void initMainGameBase10x10();
 void initMainGameBase15x15();
 
 void initMainGameBotFight10x10();
+
+void initMainGameBotFight15x15();
 
 //Other
 void initPiratesSprites();

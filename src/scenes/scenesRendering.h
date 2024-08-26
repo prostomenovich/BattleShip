@@ -40,4 +40,6 @@ void renderMainGameBase15x15(GLFWwindow* window);
 
 void renderMainGameBotFight10x10(GLFWwindow* window);
 
+void renderMainGameBotFight15x15(GLFWwindow* window);
+
 #endif

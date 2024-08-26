@@ -19,6 +19,8 @@
 #define MAIN_GAME_BASE_15_X_15 15
 #define MAIN_GAME_BOT_FIGHT_10_X_10 16
 #define MAIN_GAME_BOT_FIGHT_15_X_15 17
+#define ADDING_TO_THE_LEADERBOARD_SCENES 18
+#define LEADER_BOARD_SCENES 19
 
 //Before filling
 #define NOT_FILLED_IN 0
@@ -62,5 +64,7 @@
 //Game Status
 #define GAME_END 100
 #define GAME_PROCESS 200
+#define PLAYER_WIN 300
+#define BOT_WIN 400
 
 #endif

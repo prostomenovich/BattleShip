@@ -19,7 +19,8 @@ int windowSizeY = 720;
 GLuint SpriteShaderProgram;
 GLuint TextShaderProgram;
 
-FT_Library ft;
+FT_Library ft1;
+FT_Library ft2;
 
 
 void glfwWindowSizeCallback(GLFWwindow* window, int width, int height);
@@ -78,7 +79,10 @@ int main(void)
     printf("Renderer: %s\n", glGetString(GL_RENDERER));
     printf("OpenGL Version: %s\n", glGetString(GL_VERSION));
 
-    if (FT_Init_FreeType(&ft)){
+    if (FT_Init_FreeType(&ft1)){
+        printf("ERROR::FREETYPE: Could not init FreeType Library\n");
+    }
+    if (FT_Init_FreeType(&ft2)){
         printf("ERROR::FREETYPE: Could not init FreeType Library\n");
     }
 
@@ -101,6 +105,7 @@ int main(void)
     initMainGameBase10x10();
     initMainGameBase15x15();
     initMainGameBotFight10x10();
+    initMainGameBotFight15x15();
 
 	glClearColor(0, 1, 0, 1);
     
@@ -149,6 +154,9 @@ int main(void)
         }
         if (playerInfo.scene == MAIN_GAME_BOT_FIGHT_10_X_10){
             renderMainGameBotFight10x10(window);
+        }
+        if (playerInfo.scene == MAIN_GAME_BOT_FIGHT_15_X_15){
+            renderMainGameBotFight15x15(window);
         }
         
     
