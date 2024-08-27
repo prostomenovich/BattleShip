@@ -50,6 +50,9 @@ void renderMainMenu(GLFWwindow* window)
 
     if (cursorInArea(xMousePos, yMousePos, 906.0f, 606.0f, 1142.0f, 526.0f, windowSizeX, windowSizeY)){
         renderText(sMainMenu.TextParams, TextShaderProgram, "Leaders", correctXcoords(905.0, windowSizeX) , correctYcoords(135, windowSizeY), correctTextSize(1.4, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS){
+            playerInfo.scene = LEADERS_SCENES;
+        }
     }
     else {
         renderText(sMainMenu.TextParams, TextShaderProgram, "Leaders", correctXcoords(905.0, windowSizeX) , correctYcoords(135, windowSizeY), correctTextSize(1.4, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
@@ -3333,6 +3336,254 @@ void renderMainGameBotFight15x15(GLFWwindow* window)
     
 }
 
+void renderAddingNickName(GLFWwindow* window)
+{
+    extern GLuint SpriteShaderProgram;
+    extern GLuint TextShaderProgram;
+    extern AddingNickName sAddingNickName;
+    extern Player playerInfo;
+    extern LeaderBoard* leaderBoard;
+    extern int playerScore;
+    extern char nickname[MAX_STRING_SIZE];
+
+    extern int windowSizeX;
+    extern int windowSizeY;
+
+    extern double lastClickTime;
+
+    extern char FAQMainGameBotFight [2][MAX_STRING_SIZE];
+    extern const int FAQMainGameBotFightStringCount;
+
+    double xMousePos,
+           yMousePos;
+
+    int symbolsLeft = 0;
+    char symbolsLeftStr[4] = {'\0',};
 
 
+    glfwGetCursorPos(window, &xMousePos, &yMousePos);
+    //printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
+    //printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
+
+    renderAnimSprite(sAddingNickName.Background, SpriteShaderProgram, time(NULL), 1.0);
+    renderSprite(sAddingNickName.buttonPlates, SpriteShaderProgram, FIRST_TEXTURE);
+
+    symbolsLeft = getWord(nickname, MAX_NICKNAME_SIZE, window);   
+    snprintf(symbolsLeftStr, 3, "%d", symbolsLeft);
+    renderText(sAddingNickName.TextParams2, TextShaderProgram, symbolsLeftStr , correctXcoords(733.0, windowSizeX) , correctYcoords(310.0, windowSizeY), correctTextSize(0.56, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+    renderText(sAddingNickName.TextParams2, TextShaderProgram, nickname , correctXcoords(340.0, windowSizeX) , correctYcoords(371.0, windowSizeY), correctTextSize(0.75, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+    
+    if (cursorInArea(xMousePos, yMousePos, 506, 515, 774, 447, windowSizeX, windowSizeY) && sAddingNickName.state != FAQ){
+        renderText(sAddingNickName.TextParams1, TextShaderProgram, "READY" , correctXcoords(553.0, windowSizeX) , correctYcoords(222.0, windowSizeY), correctTextSize(1.4, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+            //Перед добавлением ника нужно записать в файл ранее отсортированную таблицу, очистить её, а потом скопировать с файла таблицу с добавленым ником и заново отсортировать её
+            //Таким образом нужно будет переместить на нужное место только один элемент
+
+            int resault = checkNickname(leaderBoard, nickname, playerScore, playerInfo.MapSize, playerInfo.BotLevel);
+
+            if (leaderBoard != NULL) updateLeaderBoard(PATH_TO_LEADERBOARD_DATA, leaderBoard);
+            if (leaderBoard != NULL) freeLeaderBoard(leaderBoard);
+            
+            //скидываем счётчик индексов никнейма
+            getWord(NULL, MAX_NICKNAME_SIZE, window);
+
+            if (resault == SCORE_NOT_UPDATED) pushDataInLeaderBoard(nickname, playerScore, playerInfo.MapSize, playerInfo.BotLevel, PATH_TO_LEADERBOARD_DATA);
+            leaderBoard = getDataFromLeaderBoard(PATH_TO_LEADERBOARD_DATA);
+            sortLeaderBoard(leaderBoard);
+
+            memset(nickname, '\0', MAX_NICKNAME_SIZE);
+
+            //скидываем счётчик индексов никнейма
+            getWord(NULL, MAX_NICKNAME_SIZE, window);
+
+            playerInfo.BotLevel = NOT_FILLED_IN;
+            playerInfo.GameMode = NOT_FILLED_IN;
+            playerInfo.MapSize = NOT_FILLED_IN;
+            playerScore = 0;
+            
+            playerInfo.scene = MAIN_MENU_SCENES;
+            lastClickTime = glfwGetTime();
+        }
+    }
+    else {
+        renderText(sAddingNickName.TextParams1, TextShaderProgram, "READY" , correctXcoords(553.0, windowSizeX) , correctYcoords(222.0, windowSizeY), correctTextSize(1.4, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+    }    
+    
+    if (leaderBoard != NULL){
+        for (int i = 0; i < leaderBoard->count; i++){
+            printf("%s %d %d\n", leaderBoard->nodes[i]->Nickname, leaderBoard->nodes[i]->MapSize, leaderBoard->nodes[i]->Score);
+        }
+    }
+    
+}
+
+void renderLeaders(GLFWwindow* window)
+{
+    extern GLuint SpriteShaderProgram;
+    extern GLuint TextShaderProgram;
+    extern Leaders sLeaders;
+    extern Player playerInfo;
+    extern LeaderBoard* leaderBoard;
+    extern char nickname[MAX_STRING_SIZE];
+
+    extern int windowSizeX;
+    extern int windowSizeY;
+
+    extern double lastClickTime;
+
+    extern char FAQMainGameBotFight [2][MAX_STRING_SIZE];
+    extern const int FAQMainGameBotFightStringCount;
+
+    double xMousePos,
+           yMousePos;
+
+    static int mapSize = 0,
+               botLevel = 0,
+               startNumber = 0;
+
+    char dataStr[5] = {'\0'};
+
+    glfwGetCursorPos(window, &xMousePos, &yMousePos);
+    printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
+    printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
+
+    renderAnimSprite(sLeaders.Background, SpriteShaderProgram, time(NULL), 1.0);
+    renderSprite(sLeaders.buttonPlates, SpriteShaderProgram, FIRST_TEXTURE);
+
+    //if (leaderBoard == NULL) getDataFromLeaderBoard(PATH_TO_LEADERBOARD_DATA); 
+
+    //Map Size buttons
+    if ((cursorInArea(xMousePos, yMousePos, 40, 186, 312, 108, windowSizeX, windowSizeY) && sLeaders.state != FAQ) || mapSize == MAP_SIZE_10_X_10){
+        renderText(sLeaders.TextParams1, TextShaderProgram, "10x10" , correctXcoords(83.0, windowSizeX) , correctYcoords(552.0, windowSizeY), correctTextSize(1.6, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+            if (mapSize != MAP_SIZE_10_X_10){
+                mapSize = MAP_SIZE_10_X_10;
+                lastClickTime = glfwGetTime();
+            }
+        }
+    }
+    else {
+        renderText(sLeaders.TextParams1, TextShaderProgram, "10x10" , correctXcoords(83.0, windowSizeX) , correctYcoords(552.0, windowSizeY), correctTextSize(1.6, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+    }   
+
+    if ((cursorInArea(xMousePos, yMousePos, 40, 294, 312, 216, windowSizeX, windowSizeY) && sLeaders.state != FAQ) || mapSize == MAP_SIZE_15_X_15){
+        renderText(sLeaders.TextParams1, TextShaderProgram, "15x15" , correctXcoords(83.0, windowSizeX) , correctYcoords(445.0, windowSizeY), correctTextSize(1.6, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+            if (mapSize != MAP_SIZE_15_X_15){
+                mapSize = MAP_SIZE_15_X_15;
+                lastClickTime = glfwGetTime();
+            }
+        }
+    }
+    else {
+        renderText(sLeaders.TextParams1, TextShaderProgram, "15x15" , correctXcoords(83.0, windowSizeX) , correctYcoords(445.0, windowSizeY), correctTextSize(1.6, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+    }
+
+
+    //Bot level buttons
+    if ((cursorInArea(xMousePos, yMousePos, 40, 472, 312, 391, windowSizeX, windowSizeY) && sLeaders.state != FAQ) || botLevel == EASY_BOT_LEVEL){
+        renderText(sLeaders.TextParams1, TextShaderProgram, "EASY" , correctXcoords(93.0, windowSizeX) , correctYcoords(268.0, windowSizeY), correctTextSize(1.6, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+            if (botLevel != EASY_BOT_LEVEL){
+                botLevel = EASY_BOT_LEVEL;
+                lastClickTime = glfwGetTime();
+            }
+        }
+    }
+    else {
+        renderText(sLeaders.TextParams1, TextShaderProgram, "EASY" , correctXcoords(93.0, windowSizeX) , correctYcoords(268.0, windowSizeY), correctTextSize(1.6, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+    }
+
+    if ((cursorInArea(xMousePos, yMousePos, 40, 568, 312, 491, windowSizeX, windowSizeY) && sLeaders.state != FAQ) || botLevel == NORMAL_BOT_LEVEL){
+        renderText(sLeaders.TextParams1, TextShaderProgram, "NORMAL" , correctXcoords(62.0, windowSizeX) , correctYcoords(171.0, windowSizeY), correctTextSize(1.5, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+            if (botLevel != NORMAL_BOT_LEVEL){
+                botLevel = NORMAL_BOT_LEVEL;
+                lastClickTime = glfwGetTime();
+            }
+        }
+    }
+    else {
+        renderText(sLeaders.TextParams1, TextShaderProgram, "NORMAL" , correctXcoords(62.0, windowSizeX) , correctYcoords(171.0, windowSizeY), correctTextSize(1.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+    }
+
+    if ((cursorInArea(xMousePos, yMousePos, 40, 668, 312, 593, windowSizeX, windowSizeY) && sLeaders.state != FAQ) || botLevel == HARD_BOT_LEVEL){
+        renderText(sLeaders.TextParams1, TextShaderProgram, "HARD" , correctXcoords(93.0, windowSizeX) , correctYcoords(68.0, windowSizeY), correctTextSize(1.6, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+            if (botLevel != HARD_BOT_LEVEL){
+                botLevel = HARD_BOT_LEVEL;
+                lastClickTime = glfwGetTime();
+            }
+        }
+    }
+    else {
+        renderText(sLeaders.TextParams1, TextShaderProgram, "HARD" , correctXcoords(93.0, windowSizeX) , correctYcoords(68.0, windowSizeY), correctTextSize(1.6, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+    }
+
+    //Обработка кнопки Exit
+    if ((cursorInArea(xMousePos, yMousePos, 1199, 74, 1265, 23, windowSizeX, windowSizeY) && sLeaders.state != FAQ)){
+        renderSprite(sLeaders.ExitBtn, SpriteShaderProgram, SECOND_TEXTURE);
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+            mapSize = 0;
+            botLevel = 0;
+            startNumber = 0;
+            playerInfo.scene = MAIN_MENU_SCENES;
+        }
+    }
+    else {
+        renderSprite(sLeaders.ExitBtn, SpriteShaderProgram, FIRST_TEXTURE);
+    }
+
+    //Обработка pagUP
+    if ((cursorInArea(xMousePos, yMousePos, 1197, 347, 1267, 293, windowSizeX, windowSizeY) && sLeaders.state != FAQ)){
+        renderSprite(sLeaders.pagUp, SpriteShaderProgram, SECOND_TEXTURE);
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+            if (startNumber - 16 >= 0) startNumber -= 17;
+            lastClickTime = glfwGetTime();
+        }
+    }
+    else {
+        renderSprite(sLeaders.pagUp, SpriteShaderProgram, FIRST_TEXTURE);
+    }
+
+    //Обработка pagDOWN
+    if ((cursorInArea(xMousePos, yMousePos, 1199, 426, 1265, 374, windowSizeX, windowSizeY) && sLeaders.state != FAQ)){
+        renderSprite(sLeaders.pagDown, SpriteShaderProgram, SECOND_TEXTURE);
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+            if (startNumber + 16 < leaderBoard->count) startNumber += 17;
+
+            lastClickTime = glfwGetTime();
+        }
+    }
+    else {
+        renderSprite(sLeaders.pagDown, SpriteShaderProgram, FIRST_TEXTURE);
+    }
+    
+    
+    
+
+    double y = 570;
+    int place = 1;
+
+    //Вывод выборки
+    if (mapSize != 0 && botLevel != 0){
+        for (int i = 0; i < leaderBoard->count; i++){
+            if (mapSize == leaderBoard->nodes[i]->MapSize && botLevel == leaderBoard->nodes[i]->BotLevel){
+                if (i >= startNumber && i <= startNumber + 16){
+                    snprintf(dataStr, 4, "%d", place);
+                    renderText(sLeaders.TextParams2, TextShaderProgram, dataStr , correctXcoords(500, windowSizeX) , correctYcoords(y, windowSizeY), correctTextSize(0.6, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+                    memset(dataStr, '\0', 5);
+                    snprintf(dataStr, 4, "%d", leaderBoard->nodes[i]->Score);
+                    renderText(sLeaders.TextParams2, TextShaderProgram, dataStr , correctXcoords(1013, windowSizeX) , correctYcoords(y, windowSizeY), correctTextSize(0.6, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+                    memset(dataStr, '\0', 5);
+                    renderText(sLeaders.TextParams2, TextShaderProgram, leaderBoard->nodes[i]->Nickname , correctXcoords(610, windowSizeX) , correctYcoords(y, windowSizeY), correctTextSize(0.6, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+                    y -= 35;
+                }
+                place++;
+            }
+        }
+    }
+
+
+}
 #endif

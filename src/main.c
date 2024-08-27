@@ -106,6 +106,8 @@ int main(void)
     initMainGameBase15x15();
     initMainGameBotFight10x10();
     initMainGameBotFight15x15();
+    initAddingNickName();
+    initLeaders();
 
 	glClearColor(0, 1, 0, 1);
     
@@ -157,6 +159,12 @@ int main(void)
         }
         if (playerInfo.scene == MAIN_GAME_BOT_FIGHT_15_X_15){
             renderMainGameBotFight15x15(window);
+        }
+        if (playerInfo.scene == ADDING_TO_THE_LEADERBOARD_SCENES){
+            renderAddingNickName(window);
+        }
+        if (playerInfo.scene == LEADERS_SCENES){
+            renderLeaders(window);
         }
         
     

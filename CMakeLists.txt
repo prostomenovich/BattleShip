@@ -30,7 +30,9 @@ add_executable(${PROJECT_NAME} src/main.c
                                src/scenes/otherScenesUtils.c
                                src/scenes/defines.h
                                src/game/bots.c
-                               src/game/bots.h)
+                               src/game/bots.h
+                               src/game/leaderBoard.c
+                               src/game/leaderBoard.h)
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)

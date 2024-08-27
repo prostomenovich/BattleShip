@@ -12,6 +12,7 @@
 #define BASE_SCREEN_SIZE_Y 720
 
 #define KEY_PRESSED_DELAY 0.8f
+#define BTN_DELAY 0.2f
 #define BOT_SHOT_DELAY 0
 
 //map sprite state
@@ -28,6 +29,10 @@
 
 //For FAQ text
 #define MAX_STRING_SIZE 100
+
+//get Word
+#define MAX_LINE_SIZE_REACHED 1000
+#define MAX_NICKNAME_SIZE 30
 
 typedef struct MapSprite
 {
@@ -49,6 +54,8 @@ int cursorInArea(int mousePosX, int mousePosY, int lowerLeftX, int lowerLeftY, i
 int plateIsPressed10x10(int i, int j, int xMousePos, int yMousePos);
 
 void intToString(char* str, int digit);
+
+int getWord(char* string, int maxStringSize, GLFWwindow* window);
 
 
 

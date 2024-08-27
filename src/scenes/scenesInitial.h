@@ -8,6 +8,7 @@
 #include "../render/text.h"
 #include "processingUtils.h"
 #include "../game/ShipBase.h"
+#include "../game/leaderBoard.h"
 #include "defines.h"
 
 
@@ -190,6 +191,34 @@ typedef struct MainGameBotFight15x15
 
 } MainGameBotFight15x15;
 
+typedef struct AddingNickName
+{
+    AnimatedSprite* Background;
+    Sprite* buttonPlates;
+    Text* TextParams1;
+    Text* TextParams2;
+    Sprite* ExitBtn;
+    Sprite* QuestionMarkBtn;
+    Sprite* FAQPlate;
+    GLuint state;
+
+} AddingNickName;
+
+typedef struct Leaders
+{
+    AnimatedSprite* Background;
+    Sprite* buttonPlates;
+    Text* TextParams1;
+    Text* TextParams2;
+    Sprite* ExitBtn;
+    Sprite* QuestionMarkBtn;
+    Sprite* FAQPlate;
+    Sprite* pagUp;
+    Sprite* pagDown;
+    GLuint state;
+
+} Leaders;
+
 typedef struct PiratesSprites 
 {
     GLuint blueBasePBL;
@@ -253,6 +282,10 @@ void initMainGameBase15x15();
 void initMainGameBotFight10x10();
 
 void initMainGameBotFight15x15();
+
+void initAddingNickName();
+
+void initLeaders();
 
 //Other
 void initPiratesSprites();
