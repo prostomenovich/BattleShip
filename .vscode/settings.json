@@ -3,6 +3,7 @@
         "text.h": "c",
         "stb_image.h": "c",
         "mat4.h": "c",
-        "call.h": "c"
+        "call.h": "c",
+        "defines.h": "c"
     }
 }

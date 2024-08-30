@@ -33,6 +33,7 @@
 //get Word
 #define MAX_LINE_SIZE_REACHED 1000
 #define MAX_NICKNAME_SIZE 30
+#define MAX_SAVENAME_SIZE 30
 
 typedef struct MapSprite
 {

@@ -27,6 +27,8 @@ MainGameBotFight10x10 sMainGameBotFight10x10;
 MainGameBotFight15x15 sMainGameBotFight15x15;
 AddingNickName sAddingNickName;
 Leaders sLeaders;
+GetSaveName sGetSaveName;
+LoadingMenu sLoadingMenu;
 
 
 //ShipBase
@@ -39,12 +41,15 @@ Coordinates* coords[5] = {NULL, };
 //Other veriables
 PiratesSprites PiratesSpritesBase;
 LeaderBoard* leaderBoard = NULL;
+SaveNamesList* listSaveNames = NULL;
 double lastClickTime = 0;
 int playerScore = 0,
     botScore = 0,
     bot1Score = 0,
     bot2Score = 0;
 char nickname[MAX_NICKNAME_SIZE] = {'\0',};
+char saveName[MAX_SAVENAME_SIZE] = {'\0',};
+char loadName[MAX_SAVENAME_SIZE] = {'\0',};
 
 //FAQ Text
 char FAQMainGame10x10Basic [7][MAX_STRING_SIZE] = 
@@ -630,7 +635,7 @@ void initMainGameBase10x10()
     setSpriteTexture(map, "../resources/textures/mainGame/Base10x10/MainMap10x10.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
     
     Sprite* exitBtn = initSprite();
-    setStartSpriteParams(exitBtn,  60, 60, 1207, 651, 0);
+    setStartSpriteParams(exitBtn,  60, 60, 1197, 644, 0);
     setSpriteTexture(exitBtn, "../resources/textures/raftPuttingMenu/10x10/exit_black1.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
     setSpriteTexture(exitBtn, "../resources/textures/raftPuttingMenu/10x10/exit_red1.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
 
@@ -650,6 +655,10 @@ void initMainGameBase10x10()
     Sprite* wonPlate = initSprite();
     setStartSpriteParams(wonPlate, 1280, 720, 0 , 0, 0);
     setSpriteTexture(wonPlate, "../resources/textures/mainGame/youWon.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
+    Sprite* exitQuestion = initSprite();
+    setStartSpriteParams(exitQuestion, 1280, 720, 0 , 0, 0);
+    setSpriteTexture(exitQuestion, "../resources/textures/SaveLoad/QuestionAboutSave.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
 
     
     double xPos = 70.0,
@@ -702,6 +711,7 @@ void initMainGameBase10x10()
     sMainGameBase10x10.FAQPlate = FAQPlate;
     sMainGameBase10x10.lostPlate = lostPlate;
     sMainGameBase10x10.wonPlate = wonPlate;
+    sMainGameBase10x10.exitQuestion = exitQuestion;
 }
 
 void initPiratesSprites()
@@ -765,7 +775,7 @@ void initMainGameBase15x15()
     setSpriteTexture(map, "../resources/textures/mainGame/Base15x15/MainMap15x15Basic.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
     
     Sprite* exitBtn = initSprite();
-    setStartSpriteParams(exitBtn,  60, 60, 1207, 651, 0);
+    setStartSpriteParams(exitBtn,  60, 60, 1197, 644, 0);
     setSpriteTexture(exitBtn, "../resources/textures/raftPuttingMenu/10x10/exit_black1.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
     setSpriteTexture(exitBtn, "../resources/textures/raftPuttingMenu/10x10/exit_red1.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
 
@@ -785,6 +795,10 @@ void initMainGameBase15x15()
     Sprite* wonPlate = initSprite();
     setStartSpriteParams(wonPlate, 1280, 720, 0 , 0, 0);
     setSpriteTexture(wonPlate, "../resources/textures/mainGame/youWon.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
+    Sprite* exitQuestion = initSprite();
+    setStartSpriteParams(exitQuestion, 1280, 720, 0 , 0, 0);
+    setSpriteTexture(exitQuestion, "../resources/textures/SaveLoad/QuestionAboutSave.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
     
     double xPos = 61.43,
            yPos = 540.0;
@@ -835,6 +849,7 @@ void initMainGameBase15x15()
     sMainGameBase15x15.FAQPlate = FAQPlate;
     sMainGameBase15x15.lostPlate = lostPlate;
     sMainGameBase15x15.wonPlate = wonPlate;
+    sMainGameBase15x15.exitQuestion = exitQuestion;
 }
 
 void initMainGameBotFight10x10()
@@ -857,7 +872,7 @@ void initMainGameBotFight10x10()
     setSpriteTexture(map, "../resources/textures/mainGame/Base10x10/MainMap10x10.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
     
     Sprite* exitBtn = initSprite();
-    setStartSpriteParams(exitBtn,  60, 60, 1207, 651, 0);
+    setStartSpriteParams(exitBtn,  60, 60, 1197, 644, 0);
     setSpriteTexture(exitBtn, "../resources/textures/raftPuttingMenu/10x10/exit_black1.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
     setSpriteTexture(exitBtn, "../resources/textures/raftPuttingMenu/10x10/exit_red1.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
 
@@ -873,6 +888,10 @@ void initMainGameBotFight10x10()
     Sprite* winPlate = initSprite();
     setStartSpriteParams(winPlate, 1280, 720, 0 , 0, 0);
     setSpriteTexture(winPlate, "../resources/textures/mainGame/BotFightWin.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
+    Sprite* exitQuestion = initSprite();
+    setStartSpriteParams(exitQuestion, 1280, 720, 0 , 0, 0);
+    setSpriteTexture(exitQuestion, "../resources/textures/SaveLoad/QuestionAboutSave.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
 
     
     double xPos = 70.0,
@@ -922,6 +941,7 @@ void initMainGameBotFight10x10()
     sMainGameBotFight10x10.QuestionMarkBtn = questionMarkBtn;
     sMainGameBotFight10x10.FAQPlate = FAQPlate;
     sMainGameBotFight10x10.botWinPlate = winPlate;
+    sMainGameBotFight10x10.exitQuestion = exitQuestion;
 }
 
 void initMainGameBotFight15x15()
@@ -945,7 +965,7 @@ void initMainGameBotFight15x15()
     setSpriteTexture(map, "../resources/textures/mainGame/Base15x15/MainMap15x15Basic.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
     
     Sprite* exitBtn = initSprite();
-    setStartSpriteParams(exitBtn,  60, 60, 1207, 651, 0);
+    setStartSpriteParams(exitBtn,  60, 60, 1197, 644, 0);
     setSpriteTexture(exitBtn, "../resources/textures/raftPuttingMenu/10x10/exit_black1.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
     setSpriteTexture(exitBtn, "../resources/textures/raftPuttingMenu/10x10/exit_red1.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
 
@@ -961,6 +981,10 @@ void initMainGameBotFight15x15()
     Sprite* winPlate = initSprite();
     setStartSpriteParams(winPlate, 1280, 720, 0 , 0, 0);
     setSpriteTexture(winPlate, "../resources/textures/mainGame/BotFightWin.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
+    Sprite* exitQuestion = initSprite();
+    setStartSpriteParams(exitQuestion, 1280, 720, 0 , 0, 0);
+    setSpriteTexture(exitQuestion, "../resources/textures/SaveLoad/QuestionAboutSave.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
 
     
     double xPos = 61.43,
@@ -1010,6 +1034,7 @@ void initMainGameBotFight15x15()
     sMainGameBotFight15x15.QuestionMarkBtn = questionMarkBtn;
     sMainGameBotFight15x15.FAQPlate = FAQPlate;
     sMainGameBotFight15x15.botWinPlate = winPlate; 
+    sMainGameBotFight15x15.exitQuestion = exitQuestion;
 }
 
 void initAddingNickName()
@@ -1096,5 +1121,90 @@ void initLeaders()
     sLeaders.pagDown = pagDown;
 }
 
+void initGetSaveName()
+{
+    extern MainMenu sMainMenu;
+    extern About sAbout;
+    extern GetSaveName sGetSaveName;
+    extern char saveName[MAX_SAVENAME_SIZE];
 
+    memset(saveName, '\0', MAX_SAVENAME_SIZE);
+
+    Sprite* btnPlate = initSprite();
+    setStartSpriteParams(btnPlate, 1280, 720, 0 , 0, 0);
+    setSpriteTexture(btnPlate, "../resources/textures/SaveLoad/getSaveNameScene.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
+    Sprite* exitBtn = initSprite();
+    setStartSpriteParams(exitBtn,  60, 60, 1198, 649, 0);
+    setSpriteTexture(exitBtn, "../resources/textures/raftPuttingMenu/10x10/exit_black1.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+    setSpriteTexture(exitBtn, "../resources/textures/raftPuttingMenu/10x10/exit_red1.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
+
+    Sprite* questionMarkBtn = initSprite();
+    setStartSpriteParams(questionMarkBtn, 60, 60, 1109 , 644, 0);
+    setSpriteTexture(questionMarkBtn, "../resources/textures/raftPuttingMenu/10x10/qMark_black.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+    setSpriteTexture(questionMarkBtn, "../resources/textures/raftPuttingMenu/10x10/qMark_white.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
+
+    Sprite* FAQPlate = initSprite();
+    setStartSpriteParams(FAQPlate, 1280, 720, 0 , 0, 0);
+    setSpriteTexture(FAQPlate, "../resources/textures/mainGame/FAQPlateBasicGame10x10.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
+    sGetSaveName.TextParams1 = sMainMenu.TextParams;
+    sGetSaveName.TextParams2 = sAbout.TextParams2;
+    sGetSaveName.Background = sAbout.Background;
+    sGetSaveName.buttonPlates = btnPlate;
+    sGetSaveName.ExitBtn = exitBtn;
+    sGetSaveName.QuestionMarkBtn = questionMarkBtn;
+    sGetSaveName.FAQPlate = FAQPlate;
+}
+
+
+void initLoadingMenu()
+{
+    extern MainMenu sMainMenu;
+    extern About sAbout;
+    extern LoadingMenu sLoadingMenu;
+    extern char loadName[MAX_SAVENAME_SIZE];
+    
+    
+    memset(loadName, '\0', MAX_SAVENAME_SIZE);
+
+    Sprite* btnPlate = initSprite();
+    setStartSpriteParams(btnPlate, 1280, 720, 0 , 0, 0);
+    setSpriteTexture(btnPlate, "../resources/textures/loadingMenu/loadMenu.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
+    Sprite* exitBtn = initSprite();
+    setStartSpriteParams(exitBtn,  60, 60, 1204, 651, 0);
+    setSpriteTexture(exitBtn, "../resources/textures/raftPuttingMenu/10x10/exit_black1.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+    setSpriteTexture(exitBtn, "../resources/textures/raftPuttingMenu/10x10/exit_red1.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
+
+    Sprite* questionMarkBtn = initSprite();
+    setStartSpriteParams(questionMarkBtn, 60, 60, 1109 , 644, 0);
+    setSpriteTexture(questionMarkBtn, "../resources/textures/raftPuttingMenu/10x10/qMark_black.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+    setSpriteTexture(questionMarkBtn, "../resources/textures/raftPuttingMenu/10x10/qMark_white.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
+
+    Sprite* FAQPlate = initSprite();
+    setStartSpriteParams(FAQPlate, 1280, 720, 0 , 0, 0);
+    setSpriteTexture(FAQPlate, "../resources/textures/mainGame/FAQPlateBasicGame10x10.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
+    Sprite* pagUP = initSprite();
+    setStartSpriteParams(pagUP, 55, 55, 903, 530, 0);
+    setSpriteTexture(pagUP, "../resources/textures/loadingMenu/pagUPblack.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+    setSpriteTexture(pagUP, "../resources/textures/loadingMenu/pagUPwhite.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
+
+    Sprite* pagDown = initSprite();
+    setStartSpriteParams(pagDown, 55, 55, 903, 452, 0);
+    setSpriteTexture(pagDown, "../resources/textures/loadingMenu/pagDOWNblack.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+    setSpriteTexture(pagDown, "../resources/textures/loadingMenu/pagDOWNwhite.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
+
+
+    sLoadingMenu.TextParams1 = sMainMenu.TextParams;
+    sLoadingMenu.TextParams2 = sAbout.TextParams2;
+    sLoadingMenu.Background = sAbout.Background;
+    sLoadingMenu.buttonPlates = btnPlate;
+    sLoadingMenu.ExitBtn = exitBtn;
+    sLoadingMenu.QuestionMarkBtn = questionMarkBtn;
+    sLoadingMenu.FAQPlate = FAQPlate;
+    sLoadingMenu.pagUp = pagUP;
+    sLoadingMenu.pagDown = pagDown;
+}
 #endif

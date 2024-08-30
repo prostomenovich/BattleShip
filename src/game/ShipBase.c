@@ -485,21 +485,39 @@ void genRandShips(int map[18][18], ShipBase* shipBase, int MapSize)
 
 void freeShipBase(ShipBase* shipBase)
 {
-    ShipBase* tmp;
+    ShipBase* tmp = NULL;
+    if (shipBase == NULL) return;
     while(shipBase != NULL){
-
         for (int i = 0; i < shipBase->shipsCount; i++){
             for (int j = 0; j < shipBase->shipType; j++){
-                free(shipBase->ships[i]->coords[j]);
+                if (shipBase->ships[i]->coords[j] != NULL){
+                    free(shipBase->ships[i]->coords[j]);
+                    shipBase->ships[i]->coords[j] = NULL;
+                }
+                else {
+                    return;
+                }
             }
-            free(shipBase->ships[i]->coords);
+            if (shipBase->ships[i]->coords != NULL){
+                free(shipBase->ships[i]->coords);
+                shipBase->ships[i]->coords = NULL;
+            }
+            else {
+                return;
+            }
         }
-        free(shipBase->ships);
-
+        if (shipBase != NULL){
+            free(shipBase->ships);
+        }else {
+            return;
+        }
         tmp = shipBase;
-        shipBase = shipBase->nextShip;
-        free(tmp);
+        if (shipBase != NULL)
+            shipBase = shipBase->nextShip;
+        if (tmp != NULL) free(tmp);
     }
+
+    shipBase = NULL;
 }
 
 void clearTrashFromMap(int map[18][18])

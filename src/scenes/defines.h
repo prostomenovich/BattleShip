@@ -21,6 +21,8 @@
 #define MAIN_GAME_BOT_FIGHT_15_X_15 17
 #define ADDING_TO_THE_LEADERBOARD_SCENES 18
 #define LEADERS_SCENES 19
+#define SAVING_GAME_SCENES 20
+#define LOAD_GAME_SCENES 21
 
 //Before filling
 #define NOT_FILLED_IN 0
@@ -44,6 +46,7 @@
 #define FAQ 57
 #define BOT_1_SHOT 58
 #define BOT_2_SHOT 59
+#define EXIT_QUESTION 60
 
 //states for main game
 #define THIS_IS_SHIP_PLATE_LIVE 1
@@ -69,5 +72,6 @@
 
 
 #define PATH_TO_LEADERBOARD_DATA "../resources/data/lb"
+#define PATH_TO_FOLDER "../resources/data/saves/"
 
 #endif

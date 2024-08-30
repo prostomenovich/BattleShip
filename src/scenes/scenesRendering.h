@@ -14,6 +14,7 @@
 #include "defines.h"
 #include "../game/bots.h"
 #include "../game/leaderBoard.h"
+#include "../game/saveLoad.h"
 
 
 #ifndef SCENESRENDERING_H
@@ -46,5 +47,9 @@ void renderMainGameBotFight15x15(GLFWwindow* window);
 void renderAddingNickName(GLFWwindow* window);
 
 void renderLeaders(GLFWwindow* window);
+
+void renderGetSaveName(GLFWwindow* window);
+
+void renderLoadingMenu(GLFWwindow* window);
 
 #endif

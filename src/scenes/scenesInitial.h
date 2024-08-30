@@ -138,6 +138,7 @@ typedef struct MainGameBase10x10
     Sprite* FAQPlate;
     Sprite* lostPlate;
     Sprite* wonPlate;
+    Sprite* exitQuestion;
     GLuint state;
 
 } MainGameBase10x10;
@@ -155,6 +156,7 @@ typedef struct MainGameBase15x15
     Sprite* FAQPlate;
     Sprite* lostPlate;
     Sprite* wonPlate;
+    Sprite* exitQuestion;
     GLuint state;
 
 } MainGameBase15x15;
@@ -171,6 +173,7 @@ typedef struct MainGameBotFight10x10
     Text* TextParams;
     Sprite* ExitBtn;
     Sprite* FAQPlate;
+    Sprite* exitQuestion;
     GLuint state;
 
 } MainGameBotFight10x10;
@@ -187,6 +190,7 @@ typedef struct MainGameBotFight15x15
     Text* TextParams;
     Sprite* ExitBtn;
     Sprite* FAQPlate;
+    Sprite* exitQuestion;
     GLuint state;
 
 } MainGameBotFight15x15;
@@ -218,6 +222,34 @@ typedef struct Leaders
     GLuint state;
 
 } Leaders;
+
+typedef struct GetSaveName
+{
+    AnimatedSprite* Background;
+    Sprite* buttonPlates;
+    Text* TextParams1;
+    Text* TextParams2;
+    Sprite* ExitBtn;
+    Sprite* QuestionMarkBtn;
+    Sprite* FAQPlate;
+    GLuint state;
+
+} GetSaveName;
+
+typedef struct LoadingMenu
+{
+    AnimatedSprite* Background;
+    Sprite* buttonPlates;
+    Text* TextParams1;
+    Text* TextParams2;
+    Sprite* ExitBtn;
+    Sprite* QuestionMarkBtn;
+    Sprite* FAQPlate;
+    Sprite* pagUp;
+    Sprite* pagDown;
+    GLuint state;
+
+} LoadingMenu;
 
 typedef struct PiratesSprites 
 {
@@ -258,6 +290,13 @@ typedef struct PiratesSprites
 
 } PiratesSprites;
 
+typedef struct SaveNamesList
+{
+    char** names;
+    GLuint count;
+    
+} SaveNamesList;
+
 //scenes Initial
 void initMainMenu();
 
@@ -286,6 +325,10 @@ void initMainGameBotFight15x15();
 void initAddingNickName();
 
 void initLeaders();
+
+void initGetSaveName();
+
+void initLoadingMenu();
 
 //Other
 void initPiratesSprites();

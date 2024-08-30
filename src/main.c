@@ -11,6 +11,7 @@
 #include FT_FREETYPE_H
 #include "scenes/scenesInitial.h"
 #include "scenes/scenesRendering.h"
+#include "game/leaderBoard.h"
 
 int windowSizeX = 1280;
 int windowSizeY = 720;
@@ -23,6 +24,7 @@ FT_Library ft1;
 FT_Library ft2;
 
 
+
 void glfwWindowSizeCallback(GLFWwindow* window, int width, int height);
 void glfwKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void character_callback( GLFWwindow * window, unsigned  int codepoint);
@@ -33,6 +35,7 @@ int main(void)
     extern GLuint TextShaderProgram;
 
     extern Player playerInfo;
+    extern LeaderBoard* leaderBoard;
 
     GLFWwindow* window;
 
@@ -108,6 +111,8 @@ int main(void)
     initMainGameBotFight15x15();
     initAddingNickName();
     initLeaders();
+    initGetSaveName();
+    initLoadingMenu();
 
 	glClearColor(0, 1, 0, 1);
     
@@ -166,6 +171,12 @@ int main(void)
         if (playerInfo.scene == LEADERS_SCENES){
             renderLeaders(window);
         }
+        if (playerInfo.scene == SAVING_GAME_SCENES){
+            renderGetSaveName(window);
+        }
+        if (playerInfo.scene == LOAD_GAME_SCENES){
+            renderLoadingMenu(window);
+        }
         
     
         /* Swap front and back buffers */
@@ -174,6 +185,10 @@ int main(void)
         /* Poll for and process events */
         glfwPollEvents();
     }
+
+    //Сохраняем текущую таблицу лидеров
+    if (leaderBoard != NULL) updateLeaderBoard(PATH_TO_LEADERBOARD_DATA, leaderBoard);
+    if (leaderBoard != NULL) freeLeaderBoard(leaderBoard);
 
     glfwTerminate();
     return EXIT_SUCCESS;
