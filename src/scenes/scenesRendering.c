@@ -450,6 +450,11 @@ void renderRaftPlacement10x10(GLFWwindow* window)
 
     static int elemCount = 0, first = 0;
     int maxElemCount = maxPlatesShip(shipBase);
+
+    extern char FAQRaftPlacement[8][MAX_STRING_SIZE];
+    extern const int FAQRaftPlacementStringCount;
+
+    static int lastSceneState = 0;
     
     glfwGetCursorPos(window, &xMousePos, &yMousePos);
     printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
@@ -480,7 +485,7 @@ void renderRaftPlacement10x10(GLFWwindow* window)
     
     renderSprite(sRaftPlacement10X10.Background, SpriteShaderProgram, FIRST_TEXTURE);
     
-    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY && sRaftPlacement10X10.state != FAQ){
         if (sRaftPlacement10X10.state == IN_EDIT_MODE){
             sRaftPlacement10X10.state = NOT_IN_EDIT_MODE;
             if (shipIsCorrect(map, shipBase, elemCount, MAP_SIZE_10_X_10, coords) == SHIP_IS_CORRECT){
@@ -523,7 +528,7 @@ void renderRaftPlacement10x10(GLFWwindow* window)
     }
 
 
-    if (sRaftPlacement10X10.state == IN_EDIT_MODE){
+    if (sRaftPlacement10X10.state == IN_EDIT_MODE && sRaftPlacement10X10.state != FAQ){
 
         for (int i = 0; i < 10; i++){
             for (int j = 0; j < 10; j++){
@@ -723,15 +728,36 @@ void renderRaftPlacement10x10(GLFWwindow* window)
     }
 
     //Обработка кнопки подсказки
-    if (cursorInArea(xMousePos, yMousePos, 1200, 139, 1264, 89, windowSizeX, windowSizeY)){
+    if (cursorInArea(xMousePos, yMousePos, 1200, 139, 1264, 89, windowSizeX, windowSizeY) && sRaftPlacement10X10.state != FAQ){
         renderSprite(sRaftPlacement10X10.QuestionMarkBtn, SpriteShaderProgram, SECOND_TEXTURE);
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
-            
+            lastSceneState = sRaftPlacement10X10.state;
+            sRaftPlacement10X10.state = FAQ;
             lastClickTime = glfwGetTime();
         }
     }
     else {
         renderSprite(sRaftPlacement10X10.QuestionMarkBtn, SpriteShaderProgram, FIRST_TEXTURE);
+    }
+
+    //Обработка FAQ
+    if (sRaftPlacement10X10.state == FAQ){
+        renderSprite(sRaftPlacement10X10.FAQPlate, SpriteShaderProgram, FIRST_TEXTURE);
+        for (int i = 0, startY = 530; i < FAQRaftPlacementStringCount; i++, startY -= 35){
+            renderText(sRaftPlacement10X10.TextParams, TextShaderProgram, FAQRaftPlacement[i], correctXcoords(320.0, windowSizeX) , correctYcoords(startY, windowSizeY), correctTextSize(0.6, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }
+
+        if (cursorInArea(xMousePos, yMousePos, 490, 620, 791, 545, windowSizeX, windowSizeY)){
+            renderText(sRaftPlacement10X10.TextParams, TextShaderProgram, "OK", correctXcoords(585.0, windowSizeX) , correctYcoords(112, windowSizeY), correctTextSize(2.0, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                sRaftPlacement10X10.state = lastSceneState;
+                lastClickTime = glfwGetTime();
+            }
+        }
+        else {
+            renderText(sRaftPlacement10X10.TextParams, TextShaderProgram, "OK", correctXcoords(585.0, windowSizeX) , correctYcoords(112, windowSizeY), correctTextSize(2.0, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }    
+        
     }
 }
 
@@ -762,6 +788,11 @@ void renderRaftPlacement15x15(GLFWwindow* window)
 
     static int elemCount = 0;
     int maxElemCount = maxPlatesShip(shipBase);
+
+    extern char FAQRaftPlacement[8][MAX_STRING_SIZE];
+    extern const int FAQRaftPlacementStringCount;
+
+    static int lastSceneState = 0;
     
     glfwGetCursorPos(window, &xMousePos, &yMousePos);
     printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
@@ -780,7 +811,7 @@ void renderRaftPlacement15x15(GLFWwindow* window)
     renderSprite(sRaftPlacement15X15.Background, SpriteShaderProgram, FIRST_TEXTURE);
     renderSprite(sRaftPlacement15X15.ButtonPlates, SpriteShaderProgram, FIRST_TEXTURE);
 
-    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY && sRaftPlacement15X15.state != FAQ){
         if (sRaftPlacement15X15.state == IN_EDIT_MODE){
             sRaftPlacement15X15.state = NOT_IN_EDIT_MODE;
             if (shipIsCorrect(map, shipBase, elemCount, MAP_SIZE_15_X_15, coords) == SHIP_IS_CORRECT){
@@ -822,7 +853,7 @@ void renderRaftPlacement15x15(GLFWwindow* window)
     }
 
 
-    if (sRaftPlacement15X15.state == IN_EDIT_MODE){
+    if (sRaftPlacement15X15.state == IN_EDIT_MODE && sRaftPlacement15X15.state != FAQ){
 
         for (int i = 0; i < 15; i++){
             for (int j = 0; j < 15; j++){
@@ -887,7 +918,7 @@ void renderRaftPlacement15x15(GLFWwindow* window)
     renderText(sRaftPlacement15X15.TextParams, TextShaderProgram, CanPutShips, correctXcoords(173.0, windowSizeX) , correctYcoords(521, windowSizeY), correctTextSize(0.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
 
     //Обработка кнопки PLAY
-    if (cursorInArea(xMousePos, yMousePos, 42, 464, 359, 385, windowSizeX, windowSizeY)){
+    if (cursorInArea(xMousePos, yMousePos, 42, 464, 359, 385, windowSizeX, windowSizeY) && sRaftPlacement15X15.state != FAQ){
         if (AllShipsInMap(shipBase) == NOT_ALL_SHIPS_IN_MAP){
             renderText(sRaftPlacement15X15.TextParams, TextShaderProgram, "Play", correctXcoords(126.0, windowSizeX) , correctYcoords(274, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 1.0f, 0.0f, 0.0f);
         }
@@ -920,7 +951,7 @@ void renderRaftPlacement15x15(GLFWwindow* window)
     }
 
     //Обработка кнопки CLEAR
-    if (cursorInArea(xMousePos, yMousePos, 36, 682, 361, 599, windowSizeX, windowSizeY)){
+    if (cursorInArea(xMousePos, yMousePos, 36, 682, 361, 599, windowSizeX, windowSizeY) && sRaftPlacement15X15.state != FAQ){
         renderText(sRaftPlacement15X15.TextParams, TextShaderProgram, "Clear", correctXcoords(112.0, windowSizeX) , correctYcoords(53.0, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
             clearMap(map);
@@ -940,7 +971,7 @@ void renderRaftPlacement15x15(GLFWwindow* window)
     }
 
     //Обработка кнопки AutoGen
-    if (cursorInArea(xMousePos, yMousePos, 37, 572, 362, 492, windowSizeX, windowSizeY)){
+    if (cursorInArea(xMousePos, yMousePos, 37, 572, 362, 492, windowSizeX, windowSizeY) && sRaftPlacement15X15.state != FAQ){
         renderText(sRaftPlacement15X15.TextParams, TextShaderProgram, "AutoGen", correctXcoords(66.0, windowSizeX) , correctYcoords(162.0, windowSizeY), correctTextSize(1.7, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
             clearMap(map);
@@ -979,7 +1010,7 @@ void renderRaftPlacement15x15(GLFWwindow* window)
     }
 
     //Обработка кнопки Exit
-    if (cursorInArea(xMousePos, yMousePos, 1202, 64, 1262, 17, windowSizeX, windowSizeY)){
+    if (cursorInArea(xMousePos, yMousePos, 1202, 64, 1262, 17, windowSizeX, windowSizeY) && sRaftPlacement15X15.state != FAQ){
         renderSprite(sRaftPlacement15X15.ExitBtn, SpriteShaderProgram, SECOND_TEXTURE);
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
             
@@ -1006,15 +1037,36 @@ void renderRaftPlacement15x15(GLFWwindow* window)
     }
 
     //Обработка кнопки подсказки
-    if (cursorInArea(xMousePos, yMousePos, 1200, 139, 1264, 89, windowSizeX, windowSizeY)){
+    if (cursorInArea(xMousePos, yMousePos, 1200, 139, 1264, 89, windowSizeX, windowSizeY) && sRaftPlacement15X15.state != FAQ){
         renderSprite(sRaftPlacement15X15.QuestionMarkBtn, SpriteShaderProgram, SECOND_TEXTURE);
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
-            
+            lastSceneState = sRaftPlacement15X15.state;
+            sRaftPlacement15X15.state = FAQ;
             lastClickTime = glfwGetTime();
         }
     }
     else {
         renderSprite(sRaftPlacement15X15.QuestionMarkBtn, SpriteShaderProgram, FIRST_TEXTURE);
+    }
+
+    //Обработка FAQ
+    if (sRaftPlacement15X15.state == FAQ){
+        renderSprite(sRaftPlacement15X15.FAQPlate, SpriteShaderProgram, FIRST_TEXTURE);
+        for (int i = 0, startY = 530; i < FAQRaftPlacementStringCount; i++, startY -= 35){
+            renderText(sRaftPlacement15X15.TextParams, TextShaderProgram, FAQRaftPlacement[i], correctXcoords(320.0, windowSizeX) , correctYcoords(startY, windowSizeY), correctTextSize(0.6, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }
+
+        if (cursorInArea(xMousePos, yMousePos, 490, 620, 791, 545, windowSizeX, windowSizeY)){
+            renderText(sRaftPlacement15X15.TextParams, TextShaderProgram, "OK", correctXcoords(585.0, windowSizeX) , correctYcoords(112, windowSizeY), correctTextSize(2.0, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                sRaftPlacement15X15.state = lastSceneState;
+                lastClickTime = glfwGetTime();
+            }
+        }
+        else {
+            renderText(sRaftPlacement15X15.TextParams, TextShaderProgram, "OK", correctXcoords(585.0, windowSizeX) , correctYcoords(112, windowSizeY), correctTextSize(2.0, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }    
+        
     }
 
 }
@@ -1045,6 +1097,11 @@ void renderRaftPlacement10x10BF(GLFWwindow* window)
            yMousePos;
 
     char CanPutShips[2] = {'\0',};
+
+    extern char FAQRaftPlacementBF[10][MAX_STRING_SIZE];
+    extern const int FAQRaftPlacementBFStringCount;
+
+    static int lastSceneState = 0;
 
     glfwGetCursorPos(window, &xMousePos, &yMousePos);
     printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
@@ -1077,7 +1134,7 @@ void renderRaftPlacement10x10BF(GLFWwindow* window)
         
         renderSprite(sRaftPlacement10X10BF.Background, SpriteShaderProgram, FIRST_TEXTURE);
         
-        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY && sRaftPlacement10X10BF.state != FAQ){
             if (sRaftPlacement10X10BF.state == IN_EDIT_MODE){
                 sRaftPlacement10X10BF.state = NOT_IN_EDIT_MODE;
                 if (shipIsCorrect(mapBot1, shipBaseBFBot1, elemCount, MAP_SIZE_10_X_10, coords) == SHIP_IS_CORRECT){
@@ -1120,7 +1177,7 @@ void renderRaftPlacement10x10BF(GLFWwindow* window)
         }
 
 
-        if (sRaftPlacement10X10BF.state == IN_EDIT_MODE){
+        if (sRaftPlacement10X10BF.state == IN_EDIT_MODE && sRaftPlacement10X10BF.state != FAQ){
 
             for (int i = 0; i < 10; i++){
                 for (int j = 0; j < 10; j++){
@@ -1183,7 +1240,7 @@ void renderRaftPlacement10x10BF(GLFWwindow* window)
         renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, CanPutShips, correctXcoords(172.0, windowSizeX) , correctYcoords(537, windowSizeY), correctTextSize(0.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
 
         //Обработка кнопки CLEAR
-        if (cursorInArea(xMousePos, yMousePos, 36, 682, 361, 599, windowSizeX, windowSizeY)){
+        if (cursorInArea(xMousePos, yMousePos, 36, 682, 361, 599, windowSizeX, windowSizeY) && sRaftPlacement10X10BF.state != FAQ){
             renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "Clear", correctXcoords(108.0, windowSizeX) , correctYcoords(58.0, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
             if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
                 clearMap(mapBot1);
@@ -1203,7 +1260,7 @@ void renderRaftPlacement10x10BF(GLFWwindow* window)
         }
 
         //Обработка кнопки AutoGen
-        if (cursorInArea(xMousePos, yMousePos, 37, 572, 362, 492, windowSizeX, windowSizeY)){
+        if (cursorInArea(xMousePos, yMousePos, 37, 572, 362, 492, windowSizeX, windowSizeY) && sRaftPlacement10X10BF.state != FAQ){
             renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "AutoGen", correctXcoords(66.0, windowSizeX) , correctYcoords(168.0, windowSizeY), correctTextSize(1.7, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
             if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
                 clearMap(mapBot1);
@@ -1252,7 +1309,7 @@ void renderRaftPlacement10x10BF(GLFWwindow* window)
         
         renderSprite(sRaftPlacement10X10BF.Background, SpriteShaderProgram, FIRST_TEXTURE);
         
-        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY && sRaftPlacement10X10BF.state != FAQ){
             if (sRaftPlacement10X10BF.state == IN_EDIT_MODE){
                 sRaftPlacement10X10BF.state = NOT_IN_EDIT_MODE;
                 if (shipIsCorrect(mapBot2, shipBaseBFBot2, elemCount, MAP_SIZE_10_X_10, coords) == SHIP_IS_CORRECT){
@@ -1294,7 +1351,7 @@ void renderRaftPlacement10x10BF(GLFWwindow* window)
         }
 
 
-        if (sRaftPlacement10X10BF.state == IN_EDIT_MODE){
+        if (sRaftPlacement10X10BF.state == IN_EDIT_MODE && sRaftPlacement10X10BF.state != FAQ){
 
             for (int i = 0; i < 10; i++){
                 for (int j = 0; j < 10; j++){
@@ -1357,7 +1414,7 @@ void renderRaftPlacement10x10BF(GLFWwindow* window)
         renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, CanPutShips, correctXcoords(172.0, windowSizeX) , correctYcoords(537, windowSizeY), correctTextSize(0.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
 
         //Обработка кнопки CLEAR
-        if (cursorInArea(xMousePos, yMousePos, 36, 682, 361, 599, windowSizeX, windowSizeY)){
+        if (cursorInArea(xMousePos, yMousePos, 36, 682, 361, 599, windowSizeX, windowSizeY) && sRaftPlacement10X10BF.state != FAQ){
             renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "Clear", correctXcoords(108.0, windowSizeX) , correctYcoords(58.0, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
             if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
                 clearMap(mapBot2);
@@ -1377,7 +1434,7 @@ void renderRaftPlacement10x10BF(GLFWwindow* window)
         }
 
         //Обработка кнопки AutoGen
-        if (cursorInArea(xMousePos, yMousePos, 37, 572, 362, 492, windowSizeX, windowSizeY)){
+        if (cursorInArea(xMousePos, yMousePos, 37, 572, 362, 492, windowSizeX, windowSizeY) && sRaftPlacement10X10BF.state != FAQ){
             renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "AutoGen", correctXcoords(66.0, windowSizeX) , correctYcoords(168.0, windowSizeY), correctTextSize(1.7, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
             if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
                 clearMap(mapBot2);
@@ -1417,7 +1474,7 @@ void renderRaftPlacement10x10BF(GLFWwindow* window)
     }
 
     //Обработка кнопки Exit
-    if (cursorInArea(xMousePos, yMousePos, 1202, 64, 1262, 17, windowSizeX, windowSizeY)){
+    if (cursorInArea(xMousePos, yMousePos, 1202, 64, 1262, 17, windowSizeX, windowSizeY) && sRaftPlacement10X10BF.state != FAQ){
         renderSprite(sRaftPlacement10X10BF.ExitBtn, SpriteShaderProgram, SECOND_TEXTURE);
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
             
@@ -1449,10 +1506,11 @@ void renderRaftPlacement10x10BF(GLFWwindow* window)
     }
 
     //Обработка кнопки подсказки
-    if (cursorInArea(xMousePos, yMousePos, 1200, 139, 1264, 89, windowSizeX, windowSizeY)){
+    if (cursorInArea(xMousePos, yMousePos, 1200, 139, 1264, 89, windowSizeX, windowSizeY) && sRaftPlacement10X10BF.state != FAQ){
         renderSprite(sRaftPlacement10X10BF.QuestionMarkBtn, SpriteShaderProgram, SECOND_TEXTURE);
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
-            
+            lastSceneState = sRaftPlacement10X10BF.state;
+            sRaftPlacement10X10BF.state = FAQ;
             lastClickTime = glfwGetTime();
         }
     }
@@ -1491,7 +1549,7 @@ void renderRaftPlacement10x10BF(GLFWwindow* window)
     }
 
     //Обработка кнопки PLAY
-    if (cursorInArea(xMousePos, yMousePos, 42, 464, 359, 385, windowSizeX, windowSizeY)){
+    if (cursorInArea(xMousePos, yMousePos, 42, 464, 359, 385, windowSizeX, windowSizeY) && sRaftPlacement10X10BF.state != FAQ){
         if (AllShipsInMap(shipBaseBFBot2) == NOT_ALL_SHIPS_IN_MAP || AllShipsInMap(shipBaseBFBot1) == NOT_ALL_SHIPS_IN_MAP){
             renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "Play", correctXcoords(120.0, windowSizeX) , correctYcoords(274, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 1.0f, 0.0f, 0.0f);
         }
@@ -1524,6 +1582,26 @@ void renderRaftPlacement10x10BF(GLFWwindow* window)
     else {
         renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "Play", correctXcoords(120.0, windowSizeX) , correctYcoords(274, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
     }
+
+    //Обработка FAQ
+    if (sRaftPlacement10X10BF.state == FAQ){
+        renderSprite(sRaftPlacement10X10BF.FAQPlate, SpriteShaderProgram, FIRST_TEXTURE);
+        for (int i = 0, startY = 530; i < FAQRaftPlacementBFStringCount; i++, startY -= 35){
+            renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, FAQRaftPlacementBF[i], correctXcoords(320.0, windowSizeX) , correctYcoords(startY, windowSizeY), correctTextSize(0.6, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }
+
+        if (cursorInArea(xMousePos, yMousePos, 490, 620, 791, 545, windowSizeX, windowSizeY)){
+            renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "OK", correctXcoords(585.0, windowSizeX) , correctYcoords(112, windowSizeY), correctTextSize(2.0, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                sRaftPlacement10X10BF.state = lastSceneState;
+                lastClickTime = glfwGetTime();
+            }
+        }
+        else {
+            renderText(sRaftPlacement10X10BF.TextParams, TextShaderProgram, "OK", correctXcoords(585.0, windowSizeX) , correctYcoords(112, windowSizeY), correctTextSize(2.0, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }    
+        
+    }
         
 }
 
@@ -1550,6 +1628,11 @@ void renderRaftPlacement15x15BF(GLFWwindow* window)
            yMousePos;
 
     char CanPutShips[2] = {'\0',};
+
+    extern char FAQRaftPlacementBF[10][MAX_STRING_SIZE];
+    extern const int FAQRaftPlacementBFStringCount;
+
+    static int lastSceneState = 0;
 
     glfwGetCursorPos(window, &xMousePos, &yMousePos);
     printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
@@ -1582,7 +1665,7 @@ void renderRaftPlacement15x15BF(GLFWwindow* window)
         
         renderSprite(sRaftPlacement15X15BF.Background, SpriteShaderProgram, FIRST_TEXTURE);
         
-        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY && sRaftPlacement15X15BF.state != FAQ){
             if (sRaftPlacement15X15BF.state == IN_EDIT_MODE){
                 sRaftPlacement15X15BF.state = NOT_IN_EDIT_MODE;
                 if (shipIsCorrect(mapBot1, shipBaseBFBot1, elemCount, MAP_SIZE_15_X_15, coords) == SHIP_IS_CORRECT){
@@ -1624,7 +1707,7 @@ void renderRaftPlacement15x15BF(GLFWwindow* window)
         }
 
 
-        if (sRaftPlacement15X15BF.state == IN_EDIT_MODE){
+        if (sRaftPlacement15X15BF.state == IN_EDIT_MODE && sRaftPlacement15X15BF.state != FAQ){
 
             for (int i = 0; i < 15; i++){
                 for (int j = 0; j < 15; j++){
@@ -1689,7 +1772,7 @@ void renderRaftPlacement15x15BF(GLFWwindow* window)
         renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, CanPutShips, correctXcoords(173.0, windowSizeX) , correctYcoords(521, windowSizeY), correctTextSize(0.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
 
         //Обработка кнопки CLEAR
-        if (cursorInArea(xMousePos, yMousePos, 36, 682, 361, 599, windowSizeX, windowSizeY)){
+        if (cursorInArea(xMousePos, yMousePos, 36, 682, 361, 599, windowSizeX, windowSizeY) && sRaftPlacement15X15BF.state != FAQ){
             renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, "Clear", correctXcoords(111.0, windowSizeX) , correctYcoords(54.0, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
             if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
                 clearMap(mapBot1);
@@ -1709,7 +1792,7 @@ void renderRaftPlacement15x15BF(GLFWwindow* window)
         }
 
         //Обработка кнопки AutoGen
-        if (cursorInArea(xMousePos, yMousePos, 37, 572, 362, 492, windowSizeX, windowSizeY)){
+        if (cursorInArea(xMousePos, yMousePos, 37, 572, 362, 492, windowSizeX, windowSizeY) && sRaftPlacement15X15BF.state != FAQ){
             renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, "AutoGen", correctXcoords(66.0, windowSizeX) , correctYcoords(164.0, windowSizeY), correctTextSize(1.7, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
             if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
                 clearMap(mapBot1);
@@ -1757,7 +1840,7 @@ void renderRaftPlacement15x15BF(GLFWwindow* window)
         
         renderSprite(sRaftPlacement15X15BF.Background, SpriteShaderProgram, FIRST_TEXTURE);
         
-        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY && sRaftPlacement15X15BF.state != FAQ){
             if (sRaftPlacement15X15BF.state == IN_EDIT_MODE){
                 sRaftPlacement15X15BF.state = NOT_IN_EDIT_MODE;
                 if (shipIsCorrect(mapBot2, shipBaseBFBot2, elemCount, MAP_SIZE_15_X_15, coords) == SHIP_IS_CORRECT){
@@ -1799,7 +1882,7 @@ void renderRaftPlacement15x15BF(GLFWwindow* window)
         }
 
 
-        if (sRaftPlacement15X15BF.state == IN_EDIT_MODE){
+        if (sRaftPlacement15X15BF.state == IN_EDIT_MODE && sRaftPlacement15X15BF.state != FAQ){
             for (int i = 0; i < 15; i++){
                 for (int j = 0; j < 15; j++){
                     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && cursorInArea(xMousePos, yMousePos, sRaftPlacement15X15BF.MapArrayBot2[i][j].sprite->positionX, windowSizeY - sRaftPlacement15X15BF.MapArrayBot2[i][j].sprite->positionY, sRaftPlacement15X15BF.MapArrayBot2[i][j].sprite->positionX + sRaftPlacement15X15BF.MapArrayBot2[i][j].sprite->sizeX, windowSizeY - sRaftPlacement15X15BF.MapArrayBot2[i][j].sprite->positionY - sRaftPlacement15X15BF.MapArrayBot2[i][j].sprite->sizeY, windowSizeX, windowSizeY) && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
@@ -1863,7 +1946,7 @@ void renderRaftPlacement15x15BF(GLFWwindow* window)
         renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, CanPutShips, correctXcoords(173.0, windowSizeX) , correctYcoords(521, windowSizeY), correctTextSize(0.5, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
 
         //Обработка кнопки CLEAR
-        if (cursorInArea(xMousePos, yMousePos, 36, 682, 361, 599, windowSizeX, windowSizeY)){
+        if (cursorInArea(xMousePos, yMousePos, 36, 682, 361, 599, windowSizeX, windowSizeY) && sRaftPlacement15X15BF.state != FAQ){
             renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, "Clear", correctXcoords(111.0, windowSizeX) , correctYcoords(54.0, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
             if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
                 clearMap(mapBot2);
@@ -1883,7 +1966,7 @@ void renderRaftPlacement15x15BF(GLFWwindow* window)
         }
 
         //Обработка кнопки AutoGen
-        if (cursorInArea(xMousePos, yMousePos, 37, 572, 362, 492, windowSizeX, windowSizeY)){
+        if (cursorInArea(xMousePos, yMousePos, 37, 572, 362, 492, windowSizeX, windowSizeY) && sRaftPlacement15X15BF.state != FAQ){
             renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, "AutoGen", correctXcoords(66.0, windowSizeX) , correctYcoords(164.0, windowSizeY), correctTextSize(1.7, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
             if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
                 clearMap(mapBot2);
@@ -1923,7 +2006,7 @@ void renderRaftPlacement15x15BF(GLFWwindow* window)
     }
 
     //Обработка кнопки Exit
-    if (cursorInArea(xMousePos, yMousePos, 1202, 64, 1262, 17, windowSizeX, windowSizeY)){
+    if (cursorInArea(xMousePos, yMousePos, 1202, 64, 1262, 17, windowSizeX, windowSizeY) && sRaftPlacement15X15BF.state != FAQ){
         renderSprite(sRaftPlacement15X15BF.ExitBtn, SpriteShaderProgram, SECOND_TEXTURE);
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
             
@@ -1958,7 +2041,8 @@ void renderRaftPlacement15x15BF(GLFWwindow* window)
     if (cursorInArea(xMousePos, yMousePos, 1200, 139, 1264, 89, windowSizeX, windowSizeY)){
         renderSprite(sRaftPlacement15X15BF.QuestionMarkBtn, SpriteShaderProgram, SECOND_TEXTURE);
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
-            
+            lastSceneState = sRaftPlacement15X15BF.state;
+            sRaftPlacement15X15BF.state = FAQ;
             lastClickTime = glfwGetTime();
         }
     }
@@ -1997,7 +2081,7 @@ void renderRaftPlacement15x15BF(GLFWwindow* window)
     }
 
     //Обработка кнопки PLAY
-    if (cursorInArea(xMousePos, yMousePos, 42, 464, 359, 385, windowSizeX, windowSizeY)){
+    if (cursorInArea(xMousePos, yMousePos, 42, 464, 359, 385, windowSizeX, windowSizeY) && sRaftPlacement15X15BF.state != FAQ){
         if (AllShipsInMap(shipBaseBFBot2) == NOT_ALL_SHIPS_IN_MAP || AllShipsInMap(shipBaseBFBot1) == NOT_ALL_SHIPS_IN_MAP){
             renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, "Play", correctXcoords(124.0, windowSizeX) , correctYcoords(274, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 1.0f, 0.0f, 0.0f);
         }
@@ -2029,6 +2113,26 @@ void renderRaftPlacement15x15BF(GLFWwindow* window)
     }
     else {
         renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, "Play", correctXcoords(124.0, windowSizeX) , correctYcoords(274, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+    }
+
+    //Обработка FAQ
+    if (sRaftPlacement15X15BF.state == FAQ){
+        renderSprite(sRaftPlacement15X15BF.FAQPlate, SpriteShaderProgram, FIRST_TEXTURE);
+        for (int i = 0, startY = 530; i < FAQRaftPlacementBFStringCount; i++, startY -= 35){
+            renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, FAQRaftPlacementBF[i], correctXcoords(320.0, windowSizeX) , correctYcoords(startY, windowSizeY), correctTextSize(0.6, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }
+
+        if (cursorInArea(xMousePos, yMousePos, 490, 620, 791, 545, windowSizeX, windowSizeY)){
+            renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, "OK", correctXcoords(585.0, windowSizeX) , correctYcoords(112, windowSizeY), correctTextSize(2.0, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                sRaftPlacement15X15BF.state = lastSceneState;
+                lastClickTime = glfwGetTime();
+            }
+        }
+        else {
+            renderText(sRaftPlacement15X15BF.TextParams, TextShaderProgram, "OK", correctXcoords(585.0, windowSizeX) , correctYcoords(112, windowSizeY), correctTextSize(2.0, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }    
+        
     }
         
 }
@@ -2074,6 +2178,9 @@ void renderMainGameBase10x10(GLFWwindow* window)
     char shipsLeftStr[3] = {'\0',};
     char botScoreStr[5] = {'\0',};
 
+    static double lastPlayerShotTime = 0,
+                  lastBotShotTime = 0;
+
     glfwGetCursorPos(window, &xMousePos, &yMousePos);
     printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
     printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
@@ -2107,7 +2214,7 @@ void renderMainGameBase10x10(GLFWwindow* window)
     //2 - корабль
     //3 - подбитый корабль
 
-    if (sMainGameBase10x10.state == PLAYER_SHOT){
+    if (sMainGameBase10x10.state == PLAYER_SHOT && glfwGetTime() - lastPlayerShotTime >= PLAYER_DELAY){
         //Обработка выстрела игрока
         for (int i = 0; i < 10; i++){
             for (int j = 0; j < 10; j++){
@@ -2125,12 +2232,12 @@ void renderMainGameBase10x10(GLFWwindow* window)
                         sMainGameBase10x10.state = BOT_SHOT;
                         playerScore++;
                     }
-                    
+                    lastPlayerShotTime = glfwGetTime();
                 }
             }
         }
     }
-    else if (sMainGameBase10x10.state == BOT_SHOT) {
+    else if (sMainGameBase10x10.state == BOT_SHOT && glfwGetTime() - lastBotShotTime >= BOT_DELAY) {
         //Обработка выстрела бота
         for (int i = 0; i < 10000000; i++);
 
@@ -2182,7 +2289,7 @@ void renderMainGameBase10x10(GLFWwindow* window)
             }
         }
         botScore++;
-        sleep(BOT_SHOT_DELAY);
+        lastBotShotTime = glfwGetTime();
     }
     else if (sMainGameBase10x10.state == FAQ){
         renderSprite(sMainGameBase10x10.FAQPlate, SpriteShaderProgram, FIRST_TEXTURE);
@@ -2493,6 +2600,9 @@ void renderMainGameBase15x15(GLFWwindow* window)
 
     char shipsLeftStr[3] = {'\0',};
     char botScoreStr[5] = {'\0',};
+
+    static double lastPlayerShotTime = 0,
+                  lastBotShotTime = 0;
     
 
     glfwGetCursorPos(window, &xMousePos, &yMousePos);
@@ -2528,7 +2638,7 @@ void renderMainGameBase15x15(GLFWwindow* window)
     //2 - корабль
     //3 - подбитый корабль
 
-    if (sMainGameBase15x15.state == PLAYER_SHOT){
+    if (sMainGameBase15x15.state == PLAYER_SHOT && glfwGetTime() - lastPlayerShotTime >= PLAYER_DELAY){
         //Обработка выстрела игрока
         for (int i = 0; i < 15; i++){
             for (int j = 0; j < 15; j++){
@@ -2546,14 +2656,13 @@ void renderMainGameBase15x15(GLFWwindow* window)
                         sMainGameBase15x15.state = BOT_SHOT;
                         playerScore++;
                     }
+                    lastPlayerShotTime - glfwGetTime();
                 }
             }
         }
     }
-    else if (sMainGameBase15x15.state == BOT_SHOT) {
+    else if (sMainGameBase15x15.state == BOT_SHOT && glfwGetTime() - lastBotShotTime >= BOT_DELAY) {
         //Обработка выстрела бота
-        for (int i = 0; i < 10000000; i++);
-
         if (playerInfo.BotLevel == EASY_BOT_LEVEL){
             if ((botAttackResult = easyLevelBot(&x, &y, map, MAP_SIZE_15_X_15)) == HIT_PLATE){
                 killShipInShipBase(shipBase, x - 1, y - 1);
@@ -2623,6 +2732,7 @@ void renderMainGameBase15x15(GLFWwindow* window)
         }
         botScore++;
         sleep(BOT_SHOT_DELAY);
+        lastBotShotTime = glfwGetTime();
     }
     else if (sMainGameBase15x15.state == FAQ){
         renderSprite(sMainGameBase15x15.FAQPlate, SpriteShaderProgram, FIRST_TEXTURE);
@@ -2936,6 +3046,8 @@ void renderMainGameBotFight10x10(GLFWwindow* window)
 
     static int whoWin = 0;
 
+    static int lastBotShotTime = 0;
+
     glfwGetCursorPos(window, &xMousePos, &yMousePos);
     printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
     printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
@@ -2973,7 +3085,7 @@ void renderMainGameBotFight10x10(GLFWwindow* window)
     //2 - корабль
     //3 - подбитый корабль
     
-    if (sMainGameBotFight10x10.state == BOT_1_SHOT){
+    if (sMainGameBotFight10x10.state == BOT_1_SHOT && glfwGetTime() - lastBotShotTime  >= BOT_BF_DELAY){
         //Обработка выстрела бота
         for (int i = 0; i < 10000000; i++);
 
@@ -3024,9 +3136,10 @@ void renderMainGameBotFight10x10(GLFWwindow* window)
             }
         }
         bot1Score++;
+        lastBotShotTime = glfwGetTime();
         sleep(BOT_SHOT_DELAY);
     }
-    else if (sMainGameBotFight10x10.state == BOT_2_SHOT) {
+    else if (sMainGameBotFight10x10.state == BOT_2_SHOT && glfwGetTime() - lastBotShotTime >= BOT_BF_DELAY) {
         if (playerInfo.BotLevel == EASY_BOT_LEVEL){
             if ((botAttackResult = easyLevelBot(&xb2, &yb2, mapBot1, MAP_SIZE_10_X_10)) == HIT_PLATE){
                 killShipInShipBase(shipBaseBFBot1, xb2 - 1, yb2 - 1);
@@ -3073,6 +3186,7 @@ void renderMainGameBotFight10x10(GLFWwindow* window)
             }
         }
         bot2Score++;
+        lastBotShotTime = glfwGetTime();
         sleep(BOT_SHOT_DELAY);
     }
     else if (sMainGameBotFight10x10.state == FAQ){
@@ -3319,6 +3433,8 @@ void renderMainGameBotFight15x15(GLFWwindow* window)
     char shipsLeftStr[3] = {'\0',};
     char botScoreStr[5] = {'\0'};
 
+    static double lastBotShotTime = 0;
+
     glfwGetCursorPos(window, &xMousePos, &yMousePos);
     //printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
     //printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
@@ -3356,7 +3472,7 @@ void renderMainGameBotFight15x15(GLFWwindow* window)
     //2 - корабль
     //3 - подбитый корабль
     
-    if (sMainGameBotFight15x15.state == BOT_1_SHOT){
+    if (sMainGameBotFight15x15.state == BOT_1_SHOT && glfwGetTime() - lastBotShotTime >= BOT_BF_DELAY){
         //Обработка выстрела бота
         for (int i = 0; i < 10000000; i++);
 
@@ -3407,9 +3523,10 @@ void renderMainGameBotFight15x15(GLFWwindow* window)
             }
         }
         bot1Score++;
+        lastBotShotTime = glfwGetTime();
         sleep(BOT_SHOT_DELAY);
     }
-    else if (sMainGameBotFight15x15.state == BOT_2_SHOT) {
+    else if (sMainGameBotFight15x15.state == BOT_2_SHOT && glfwGetTime() - lastBotShotTime >= BOT_BF_DELAY) {
         if (playerInfo.BotLevel == EASY_BOT_LEVEL){
             if ((botAttackResult = easyLevelBot(&xb2, &yb2, mapBot1, MAP_SIZE_15_X_15)) == HIT_PLATE){
                 killShipInShipBase(shipBaseBFBot1, xb2 - 1, yb2 - 1);
@@ -3456,6 +3573,7 @@ void renderMainGameBotFight15x15(GLFWwindow* window)
             }
         }
         bot2Score++;
+        lastBotShotTime = glfwGetTime();
         sleep(BOT_SHOT_DELAY);
     }
     else if (sMainGameBotFight15x15.state == FAQ){
@@ -3670,8 +3788,8 @@ void renderAddingNickName(GLFWwindow* window)
 
     extern double lastClickTime;
 
-    extern char FAQMainGameBotFight [2][MAX_STRING_SIZE];
-    extern const int FAQMainGameBotFightStringCount;
+    extern char FAQAddingName[2][MAX_STRING_SIZE];
+    extern const int FAQAddingNameStringCount;
 
     double xMousePos,
            yMousePos;
@@ -3679,6 +3797,7 @@ void renderAddingNickName(GLFWwindow* window)
     int symbolsLeft = 0;
     char symbolsLeftStr[4] = {'\0',};
 
+    static int lastSceneState = 0;
 
     glfwGetCursorPos(window, &xMousePos, &yMousePos);
     //printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
@@ -3729,6 +3848,60 @@ void renderAddingNickName(GLFWwindow* window)
     }    
 
     //Обработка кнопки Exit
+    if ((cursorInArea(xMousePos, yMousePos, 1198, 68, 1258, 18, windowSizeX, windowSizeY) && sAddingNickName.state != FAQ)){
+        renderSprite(sAddingNickName.ExitBtn, SpriteShaderProgram, SECOND_TEXTURE);
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+            memset(nickname, '\0', MAX_NICKNAME_SIZE);
+
+            //скидываем счётчик индексов никнейма
+            getWord(NULL, MAX_NICKNAME_SIZE, window);
+
+            playerInfo.BotLevel = NOT_FILLED_IN;
+            playerInfo.GameMode = NOT_FILLED_IN;
+            playerInfo.MapSize = NOT_FILLED_IN;
+            playerScore = 0;
+            
+            playerInfo.scene = MAIN_MENU_SCENES;
+            lastClickTime = glfwGetTime();
+        }
+    }
+    else {
+        renderSprite(sAddingNickName.ExitBtn, SpriteShaderProgram, FIRST_TEXTURE);
+    }
+    
+    //Обработка FAQ
+    if (cursorInArea(xMousePos, yMousePos, 1108, 70, 1169, 24, windowSizeX, windowSizeY) && sAddingNickName.state != FAQ){
+        renderSprite(sAddingNickName.QuestionMarkBtn, SpriteShaderProgram, SECOND_TEXTURE);
+         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+            lastSceneState = sAddingNickName.state;
+            sAddingNickName.state = FAQ;
+            lastClickTime = glfwGetTime();
+        }
+    }
+    else {
+        renderSprite(sAddingNickName.QuestionMarkBtn, SpriteShaderProgram, FIRST_TEXTURE);
+    }    
+
+    //Вывод подсказки
+    if (sAddingNickName.state == FAQ){
+        renderSprite(sAddingNickName.FAQPlate, SpriteShaderProgram, FIRST_TEXTURE);
+        for (int i = 0, startY = 530; i < FAQAddingNameStringCount; i++, startY -= 30){
+            renderText(sAddingNickName.TextParams2, TextShaderProgram, FAQAddingName[i], correctXcoords(320.0, windowSizeX) , correctYcoords(startY, windowSizeY), correctTextSize(0.6, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }
+
+        if (cursorInArea(xMousePos, yMousePos, 490, 620, 791, 545, windowSizeX, windowSizeY)){
+            renderText(sAddingNickName.TextParams1, TextShaderProgram, "OK", correctXcoords(585.0, windowSizeX) , correctYcoords(112, windowSizeY), correctTextSize(2.0, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                sAddingNickName.state = lastSceneState;
+                lastClickTime = glfwGetTime();
+            }
+        }
+        else {
+            renderText(sAddingNickName.TextParams1, TextShaderProgram, "OK", correctXcoords(585.0, windowSizeX) , correctYcoords(112, windowSizeY), correctTextSize(2.0, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }    
+        
+    }
+
 }
 
 void renderLeaders(GLFWwindow* window)
@@ -3883,7 +4056,7 @@ void renderLeaders(GLFWwindow* window)
     if (mapSize != 0 && botLevel != 0){
         for (int i = 0; i < leaderBoard->count; i++){
             if (mapSize == leaderBoard->nodes[i]->MapSize && botLevel == leaderBoard->nodes[i]->BotLevel){
-                if (i >= startNumber && i < startNumber + 15){
+                if ((i >= startNumber && i < startNumber + 15) || (place < 15 && i >= startNumber + 15)){
                     snprintf(dataStr, 4, "%d", place);
                     renderText(sLeaders.TextParams2, TextShaderProgram, dataStr , correctXcoords(500, windowSizeX) , correctYcoords(y, windowSizeY), correctTextSize(0.6, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
                     memset(dataStr, '\0', 5);
@@ -3935,9 +4108,10 @@ void renderGetSaveName(GLFWwindow* window)
     extern ShipBase* shipBaseBFBot1;
     extern ShipBase* shipBaseBFBot2;
 
+    extern SaveNamesList* listSaveNames;
 
-    extern char FAQMainGameBotFight [2][MAX_STRING_SIZE];
-    extern const int FAQMainGameBotFightStringCount;
+    extern char FAQAddingSaveName[2][MAX_STRING_SIZE];
+    extern const int FAQAddingSaveNameStringCount;
 
     double xMousePos,
            yMousePos;
@@ -3945,6 +4119,7 @@ void renderGetSaveName(GLFWwindow* window)
     int symbolsLeft = 0;
     char symbolsLeftStr[4] = {'\0',};
 
+    static int lastSceneState = 0;
 
     glfwGetCursorPos(window, &xMousePos, &yMousePos);
     printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
@@ -4108,6 +4283,10 @@ void renderGetSaveName(GLFWwindow* window)
                 
                 playerInfo.scene = MAIN_MENU_SCENES;
             }
+
+            if (listSaveNames != NULL) freeSaveNames(listSaveNames);
+            listSaveNames = getSaveNames(PATH_TO_FOLDER);
+            
             getWord(NULL, MAX_SAVENAME_SIZE, window);
             memset(saveName, '\0', MAX_SAVENAME_SIZE);
         }
@@ -4182,83 +4361,120 @@ void renderGetSaveName(GLFWwindow* window)
                 clearMap(mapBot);
 
                 playerInfo.scene = MAIN_MENU_SCENES;
-            }
-
-            getWord(NULL, MAX_SAVENAME_SIZE, window);
-            memset(saveName, '\0', MAX_SAVENAME_SIZE);
-            lastClickTime = glfwGetTime();
-        }
-        else if (playerInfo.GameMode == BOTS_FIGHT_MODE && playerInfo.MapSize == MAP_SIZE_10_X_10){
-            if (playerInfo.BotLevel == NORMAL_BOT_LEVEL){
-                    mediumLevelBotBF(0, 0, mapBot1, MAP_SIZE_10_X_10, BOT_1_SHOT, GAME_END);
-                    mediumLevelBotBF(0, 0, mapBot1, MAP_SIZE_10_X_10, BOT_2_SHOT, GAME_END);
-            }
-            else if (playerInfo.BotLevel == HARD_BOT_LEVEL){
-                hardLevelBotBF(0, 0, mapBot1, MAP_SIZE_10_X_10, shipBaseBFBot1, BOT_1_SHOT, GAME_END);
-                hardLevelBotBF(0, 0, mapBot1, MAP_SIZE_10_X_10, shipBaseBFBot2, BOT_2_SHOT, GAME_END);
-            }
-
-            playerInfo.BotLevel = NOT_FILLED_IN;
-            playerInfo.GameMode = NOT_FILLED_IN;
-            playerInfo.MapSize = NOT_FILLED_IN;
-
-            botMode1 = ATTACK_MODE;
-            botMode2 = ATTACK_MODE;
-
-            if (shipBaseBFBot1 != NULL){
-                freeShipBase(shipBaseBFBot1);
-                shipBaseBFBot1 = NULL;
-            }
-            if (shipBaseBFBot2 != NULL){
-                freeShipBase(shipBaseBFBot2);
-                shipBaseBFBot2= NULL;
-            }
             
-            bot1Score = 0;
-            bot2Score = 0;
 
-            clearMap(mapBot1);
-            clearMap(mapBot2);
+                getWord(NULL, MAX_SAVENAME_SIZE, window);
+                memset(saveName, '\0', MAX_SAVENAME_SIZE);
 
-            playerInfo.scene = MAIN_MENU_SCENES;
-        }
-        else if (playerInfo.GameMode == BOTS_FIGHT_MODE && playerInfo.MapSize == MAP_SIZE_15_X_15){
-            if (playerInfo.BotLevel == NORMAL_BOT_LEVEL){
-                mediumLevelBotBF(0, 0, mapBot1, MAP_SIZE_15_X_15, BOT_1_SHOT, GAME_END);
-                mediumLevelBotBF(0, 0, mapBot1, MAP_SIZE_15_X_15, BOT_2_SHOT, GAME_END);
-            }
-            else if (playerInfo.BotLevel == HARD_BOT_LEVEL){
-                hardLevelBotBF(0, 0, mapBot1, MAP_SIZE_15_X_15, shipBaseBFBot1, BOT_1_SHOT, GAME_END);
-                hardLevelBotBF(0, 0, mapBot1, MAP_SIZE_15_X_15, shipBaseBFBot2, BOT_2_SHOT, GAME_END);
-            }
-
-            playerInfo.BotLevel = NOT_FILLED_IN;
-            playerInfo.GameMode = NOT_FILLED_IN;
-            playerInfo.MapSize = NOT_FILLED_IN;
-
-            botMode1 = ATTACK_MODE;
-            botMode2 = ATTACK_MODE;
-
-            if (shipBaseBFBot1 != NULL){
-                freeShipBase(shipBaseBFBot1);
-                shipBaseBFBot1 = NULL;
-            }
-            if (shipBaseBFBot2 != NULL){
-                freeShipBase(shipBaseBFBot2);
-                shipBaseBFBot2= NULL;
-            }
             
-            bot1Score = 0;
-            bot2Score = 0;
+                lastClickTime = glfwGetTime();
+            }        
+            else if (playerInfo.GameMode == BOTS_FIGHT_MODE && playerInfo.MapSize == MAP_SIZE_10_X_10){
+                if (playerInfo.BotLevel == NORMAL_BOT_LEVEL){
+                        mediumLevelBotBF(0, 0, mapBot1, MAP_SIZE_10_X_10, BOT_1_SHOT, GAME_END);
+                        mediumLevelBotBF(0, 0, mapBot1, MAP_SIZE_10_X_10, BOT_2_SHOT, GAME_END);
+                }
+                else if (playerInfo.BotLevel == HARD_BOT_LEVEL){
+                    hardLevelBotBF(0, 0, mapBot1, MAP_SIZE_10_X_10, shipBaseBFBot1, BOT_1_SHOT, GAME_END);
+                    hardLevelBotBF(0, 0, mapBot1, MAP_SIZE_10_X_10, shipBaseBFBot2, BOT_2_SHOT, GAME_END);
+                }
 
-            clearMap(mapBot1);
-            clearMap(mapBot2);
-            
-            playerInfo.scene = MAIN_MENU_SCENES;
+                playerInfo.BotLevel = NOT_FILLED_IN;
+                playerInfo.GameMode = NOT_FILLED_IN;
+                playerInfo.MapSize = NOT_FILLED_IN;
+
+                botMode1 = ATTACK_MODE;
+                botMode2 = ATTACK_MODE;
+
+                if (shipBaseBFBot1 != NULL){
+                    freeShipBase(shipBaseBFBot1);
+                    shipBaseBFBot1 = NULL;
+                }
+                if (shipBaseBFBot2 != NULL){
+                    freeShipBase(shipBaseBFBot2);
+                    shipBaseBFBot2= NULL;
+                }
+                
+                bot1Score = 0;
+                bot2Score = 0;
+
+                clearMap(mapBot1);
+                clearMap(mapBot2);
+
+                playerInfo.scene = MAIN_MENU_SCENES;
+            }
+            else if (playerInfo.GameMode == BOTS_FIGHT_MODE && playerInfo.MapSize == MAP_SIZE_15_X_15){
+                if (playerInfo.BotLevel == NORMAL_BOT_LEVEL){
+                    mediumLevelBotBF(0, 0, mapBot1, MAP_SIZE_15_X_15, BOT_1_SHOT, GAME_END);
+                    mediumLevelBotBF(0, 0, mapBot1, MAP_SIZE_15_X_15, BOT_2_SHOT, GAME_END);
+                }
+                else if (playerInfo.BotLevel == HARD_BOT_LEVEL){
+                    hardLevelBotBF(0, 0, mapBot1, MAP_SIZE_15_X_15, shipBaseBFBot1, BOT_1_SHOT, GAME_END);
+                    hardLevelBotBF(0, 0, mapBot1, MAP_SIZE_15_X_15, shipBaseBFBot2, BOT_2_SHOT, GAME_END);
+                }
+
+                playerInfo.BotLevel = NOT_FILLED_IN;
+                playerInfo.GameMode = NOT_FILLED_IN;
+                playerInfo.MapSize = NOT_FILLED_IN;
+
+                botMode1 = ATTACK_MODE;
+                botMode2 = ATTACK_MODE;
+
+                if (shipBaseBFBot1 != NULL){
+                    freeShipBase(shipBaseBFBot1);
+                    shipBaseBFBot1 = NULL;
+                }
+                if (shipBaseBFBot2 != NULL){
+                    freeShipBase(shipBaseBFBot2);
+                    shipBaseBFBot2= NULL;
+                }
+                
+                bot1Score = 0;
+                bot2Score = 0;
+
+                clearMap(mapBot1);
+                clearMap(mapBot2);
+                
+                playerInfo.scene = MAIN_MENU_SCENES;
+            }
         }
     }
     else {
         renderSprite(sGetSaveName.ExitBtn, SpriteShaderProgram, FIRST_TEXTURE);
+    }
+
+
+    //Обработка FAQ
+    if (cursorInArea(xMousePos, yMousePos, 1108, 70, 1169, 24, windowSizeX, windowSizeY) && sGetSaveName.state != FAQ){
+        renderSprite(sGetSaveName.QuestionMarkBtn, SpriteShaderProgram, SECOND_TEXTURE);
+         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+            lastSceneState = sGetSaveName.state;
+            sGetSaveName.state = FAQ;
+            lastClickTime = glfwGetTime();
+        }
+    }
+    else {
+        renderSprite(sGetSaveName.QuestionMarkBtn, SpriteShaderProgram, FIRST_TEXTURE);
+    }    
+
+    //Вывод подсказки
+    if (sGetSaveName.state == FAQ){
+        renderSprite(sGetSaveName.FAQPlate, SpriteShaderProgram, FIRST_TEXTURE);
+        for (int i = 0, startY = 530; i < FAQAddingSaveNameStringCount; i++, startY -= 30){
+            renderText(sGetSaveName.TextParams2, TextShaderProgram, FAQAddingSaveName[i], correctXcoords(320.0, windowSizeX) , correctYcoords(startY, windowSizeY), correctTextSize(0.6, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }
+
+        if (cursorInArea(xMousePos, yMousePos, 490, 620, 791, 545, windowSizeX, windowSizeY)){
+            renderText(sGetSaveName.TextParams1, TextShaderProgram, "OK", correctXcoords(585.0, windowSizeX) , correctYcoords(112, windowSizeY), correctTextSize(2.0, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                sGetSaveName.state = lastSceneState;
+                lastClickTime = glfwGetTime();
+            }
+        }
+        else {
+            renderText(sGetSaveName.TextParams1, TextShaderProgram, "OK", correctXcoords(585.0, windowSizeX) , correctYcoords(112, windowSizeY), correctTextSize(2.0, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }    
+        
     }
     
 }
@@ -4292,8 +4508,8 @@ void renderLoadingMenu(GLFWwindow* window)
 
     extern double lastClickTime;
 
-    extern char FAQMainGameBotFight [2][MAX_STRING_SIZE];
-    extern const int FAQMainGameBotFightStringCount;
+    extern char FAQLoadingGameMenu[5][MAX_STRING_SIZE];
+    extern const int FAQLoadingGameMenuStringCount;
 
     double xMousePos,
            yMousePos;
@@ -4362,7 +4578,7 @@ void renderLoadingMenu(GLFWwindow* window)
 
 
     //Обработка кнопки Load
-    if (cursorInArea(xMousePos, yMousePos, 380, 677, 615, 615, windowSizeX, windowSizeY)){
+    if (cursorInArea(xMousePos, yMousePos, 380, 677, 615, 615, windowSizeX, windowSizeY) && sLoadingMenu.state != FAQ){
         renderText(sLoadingMenu.TextParams1, TextShaderProgram, "LOAD" , correctXcoords(435.0, windowSizeX) , correctYcoords(58.0, windowSizeY), correctTextSize(1.2, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
             if (loadGame(PATH_TO_FOLDER, loadName) == LOAD_SUCCESS){
@@ -4396,7 +4612,7 @@ void renderLoadingMenu(GLFWwindow* window)
     }
 
     //Обработка кнопки Delete
-    if (cursorInArea(xMousePos, yMousePos, 659, 677, 900, 615, windowSizeX, windowSizeY)){
+    if (cursorInArea(xMousePos, yMousePos, 659, 677, 900, 615, windowSizeX, windowSizeY) && sLoadingMenu.state != FAQ){
         renderText(sLoadingMenu.TextParams1, TextShaderProgram, "DELETE" , correctXcoords(696.0, windowSizeX) , correctYcoords(58.0, windowSizeY), correctTextSize(1.2, windowSizeX, windowSizeY), 1.0f, 0.0f, 0.0f);
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
             if(delSave(PATH_TO_FOLDER, loadName) == DELETE_SUCCESS){
@@ -4419,7 +4635,7 @@ void renderLoadingMenu(GLFWwindow* window)
 
 
     //Обработка кнопки Exit
-    if (cursorInArea(xMousePos, yMousePos, 1202, 64, 1262, 17, windowSizeX, windowSizeY)){
+    if (cursorInArea(xMousePos, yMousePos, 1202, 64, 1262, 17, windowSizeX, windowSizeY) && sLoadingMenu.state != FAQ){
         renderSprite(sLoadingMenu.ExitBtn, SpriteShaderProgram, SECOND_TEXTURE);
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
             playerInfo.scene = MAIN_MENU_SCENES;
@@ -4435,5 +4651,36 @@ void renderLoadingMenu(GLFWwindow* window)
         renderSprite(sLoadingMenu.ExitBtn, SpriteShaderProgram, FIRST_TEXTURE);
     }
 
+    //Обработка кнопки подсказки 
+    if (cursorInArea(xMousePos, yMousePos, 1203, 138, 1260, 95, windowSizeX, windowSizeY) && sLoadingMenu.state != FAQ){
+        renderSprite(sLoadingMenu.QuestionMarkBtn, SpriteShaderProgram, SECOND_TEXTURE);
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+            sLoadingMenu.state = FAQ;
+            lastClickTime = glfwGetTime();
+        }
+    }
+    else{
+        renderSprite(sLoadingMenu.QuestionMarkBtn, SpriteShaderProgram, FIRST_TEXTURE);
+    }
+    
+    //Обработка FAQ
+    if (sLoadingMenu.state == FAQ){
+        renderSprite(sLoadingMenu.FAQPlate, SpriteShaderProgram, FIRST_TEXTURE);
+        for (int i = 0, startY = 530; i < FAQLoadingGameMenuStringCount; i++, startY -= 35){
+            renderText(sLoadingMenu.TextParams2, TextShaderProgram, FAQLoadingGameMenu[i], correctXcoords(320.0, windowSizeX) , correctYcoords(startY, windowSizeY), correctTextSize(0.6, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }
+
+        if (cursorInArea(xMousePos, yMousePos, 490, 620, 791, 545, windowSizeX, windowSizeY)){
+            renderText(sLoadingMenu.TextParams1, TextShaderProgram, "OK", correctXcoords(585.0, windowSizeX) , correctYcoords(112, windowSizeY), correctTextSize(2.0, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
+            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
+                sLoadingMenu.state = NOT_FAQ;
+                lastClickTime = glfwGetTime();
+            }
+        }
+        else {
+            renderText(sLoadingMenu.TextParams1, TextShaderProgram, "OK", correctXcoords(585.0, windowSizeX) , correctYcoords(112, windowSizeY), correctTextSize(2.0, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
+        }    
+        
+    }
 }
 #endif

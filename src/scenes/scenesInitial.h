@@ -77,6 +77,7 @@ typedef struct RaftPlacement10x10
     Sprite* ButtonPlates;
     Sprite* Map10x10;
     Sprite* QuestionMarkBtn;
+    Sprite* FAQPlate;
     MapSprite MapArray[10][10];
     Text* TextParams;
     Sprite* ExitBtn;
@@ -92,6 +93,7 @@ typedef struct RaftPlacement15x15
     Sprite* QuestionMarkBtn;
     MapSprite MapArray[15][15];
     Text* TextParams;
+    Sprite* FAQPlate;
     Sprite* ExitBtn;
     GLuint state;
 
@@ -103,6 +105,7 @@ typedef struct RaftPlacement10x10BF
     Sprite* ButtonPlates;
     Sprite* Map10x10;
     Sprite* QuestionMarkBtn;
+    Sprite* FAQPlate;
     MapSprite MapArrayBot1[10][10];
     MapSprite MapArrayBot2[10][10];
     Text* TextParams;
@@ -117,6 +120,7 @@ typedef struct RaftPlacement15x15BF
     Sprite* ButtonPlates;
     Sprite* Map15x15;
     Sprite* QuestionMarkBtn;
+    Sprite* FAQPlate;
     MapSprite MapArrayBot1[15][15];
     MapSprite MapArrayBot2[15][15];
     Text* TextParams;

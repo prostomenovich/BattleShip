@@ -68,10 +68,69 @@ const int FAQMainGame10x10BasicStringCount = 7;
 char FAQMainGameBotFight [2][MAX_STRING_SIZE] = 
 {
     "In this mode you dont need to do anything",
-    "Just watch the battle between two bots",
+    "Just watch the battle between two bots"
 };
 
 const int FAQMainGameBotFightStringCount = 2;
+
+char FAQLoadingGameMenu[5][MAX_STRING_SIZE] =
+{
+    "Enter the name of the existing save and",
+    "click on the Load button. If the save is",
+    "correct, you will immediately be taken",
+    "to the battlefield. Enter a name for the",
+    "save and press delete to delete it."
+};
+
+const int FAQLoadingGameMenuStringCount = 5; 
+
+char FAQRaftPlacement[8][MAX_STRING_SIZE] =
+{
+    "To place a ship you need to go into edit mode. To do",
+    "this you need to press the E button if you did",
+    "everything correctly the letter E on the right will",
+    "glow yellow Next on the map click on the required",
+    "number of cells To complete the installation of the",
+    "ship press E again The indicator will go out and if",
+    "the ship is installed correctly the highlighted cells",
+    "will be highlighted in green."
+};
+
+const int FAQRaftPlacementStringCount = 8; 
+
+char FAQRaftPlacementBF[10][MAX_STRING_SIZE] =
+{
+    "To place a ship you need to go into edit mode. To do",
+    "this you need to press the E button if you did",
+    "everything correctly the letter E on the right will",
+    "glow yellow Next on the map click on the required",
+    "number of cells To complete the installation of the",
+    "ship press E again The indicator will go out and if",
+    "the ship is installed correctly the highlighted cells",
+    "will be highlighted in green. Buttons B1 and B2 switch",
+    "maps for different bots. Place the required number",
+    " of ships on both fields to start the game."
+};
+
+const int FAQRaftPlacementBFStringCount = 10; 
+
+char FAQAddingName[2][MAX_STRING_SIZE] =
+{
+    "Enter your nickname using the keyboard",
+    "and click Ready."
+};
+
+const int FAQAddingNameStringCount = 2; 
+
+char FAQAddingSaveName[2][MAX_STRING_SIZE] =
+{
+    "Enter a name to save using the keyboard",
+    "and click Ready."
+};
+
+const int FAQAddingSaveNameStringCount = 2; 
+
+
 
 char AboutAuthors [10][MAX_STRING_SIZE] = 
 {   "University:         Saint-Pitersburg",
@@ -102,7 +161,7 @@ char AboutLore [9][MAX_STRING_SIZE] =
 
 const int AboutLoreStringCount = 9;
 
-char AboutRules [45][MAX_STRING_SIZE] = 
+char AboutRules [70][MAX_STRING_SIZE] = 
 {   
     "The rules of the game in Sea Battle are quite simple.",
     "You need to select one of the proposed modes",
@@ -147,10 +206,33 @@ char AboutRules [45][MAX_STRING_SIZE] =
     "been placed.",
     "To clear the field from placed rafts, you can use the",
     "Clear button, and to automatically place rafts,",
-    "the Autogen button."
+    "the Autogen button.",
+    " ",
+    "About LeaderBoard",
+    "If you win the battle, you will be asked to add your",
+    "name to the leaderboard. Enter your nickname in the",
+    "field and click Ready.", 
+    "After this, in the main menu you can go to the",
+    "LeaderBoard tab, select the required map size and bot",
+    "level and see the current leaderboard for this mode.",
+    " ",
+    "About Saving",
+    "If during the game you want to exit, you will be given",
+    "the option to save the game. Enter a name in the save",
+    "name field and click Ready.",
+    " ",
+    "About loading game",
+    "In the main menu, select loading game, all saves",
+    "available to you will appear in the list at the top of",
+    "the screen. Enter the name of the desired song on the",
+    "keyboard and press Load. If the save file does not contain",
+    "errors, then you will be taken to the playing field,",
+    "otherwise nothing will happen. If you enter an existing save",
+    "and click on the Delete button, this save will be",
+    "permanently deleted."
 };
 
-const int AboutRulesStringCount = 45;
+const int AboutRulesStringCount = 70;
 
 void initMainMenu()
 {
@@ -332,6 +414,9 @@ void initRaftPlacement10x10()
     setSpriteTexture(questionMarkBtn, "../resources/textures/raftPuttingMenu/10x10/qMark_black.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
     setSpriteTexture(questionMarkBtn, "../resources/textures/raftPuttingMenu/10x10/qMark_white.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
     
+    Sprite* FAQPlate = initSprite();
+    setStartSpriteParams(FAQPlate, 1280, 720, 0 , 0, 0);
+    setSpriteTexture(FAQPlate, "../resources/textures/mainGame/FAQPlateBasicGame10x10.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
 
     double xPos = 558.0,
         yPos = 582.0;
@@ -375,6 +460,7 @@ void initRaftPlacement10x10()
     sRaftPlacement10X10.QuestionMarkBtn = questionMarkBtn;
     sRaftPlacement10X10.state = NOT_IN_EDIT_MODE;
     sRaftPlacement10X10.ExitBtn = exitBtn;
+    sRaftPlacement10X10.FAQPlate = FAQPlate;
 }
 
 void initRaftPlacement15x15()
@@ -409,6 +495,9 @@ void initRaftPlacement15x15()
     setSpriteTexture(questionMarkBtn, "../resources/textures/raftPuttingMenu/10x10/qMark_black.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
     setSpriteTexture(questionMarkBtn, "../resources/textures/raftPuttingMenu/10x10/qMark_white.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
     
+    Sprite* FAQPlate = initSprite();
+    setStartSpriteParams(FAQPlate, 1280, 720, 0 , 0, 0);
+    setSpriteTexture(FAQPlate, "../resources/textures/mainGame/FAQPlateBasicGame10x10.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
 
     double xPos = 549.8,
         yPos = 621.0;
@@ -451,6 +540,7 @@ void initRaftPlacement15x15()
     sRaftPlacement15X15.QuestionMarkBtn = questionMarkBtn;
     sRaftPlacement15X15.state = NOT_IN_EDIT_MODE;
     sRaftPlacement15X15.ExitBtn = exitBtn;
+    sRaftPlacement15X15.FAQPlate = FAQPlate;
 }
 
 void initRaftPlacement10x10BF()
@@ -465,6 +555,10 @@ void initRaftPlacement10x10BF()
     Sprite* buttonsPlate = initSprite();
     setStartSpriteParams(buttonsPlate, 1280, 720, 0, 0, 0);
     setSpriteTexture(buttonsPlate, "../resources/textures/raftPuttingMenu/10x10/buttonsPlateForBF.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
+    Sprite* FAQPlate = initSprite();
+    setStartSpriteParams(FAQPlate, 1280, 720, 0 , 0, 0);
+    setSpriteTexture(FAQPlate, "../resources/textures/mainGame/FAQPlateBasicGame10x10.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
 
     double xPos = 558.0,
         yPos = 582.0;
@@ -532,6 +626,7 @@ void initRaftPlacement10x10BF()
     sRaftPlacement10X10BF.QuestionMarkBtn = sRaftPlacement10X10.QuestionMarkBtn;
     sRaftPlacement10X10BF.state = NOT_IN_EDIT_MODE;
     sRaftPlacement10X10BF.ExitBtn = sRaftPlacement10X10.ExitBtn;
+    sRaftPlacement10X10BF.FAQPlate = FAQPlate;
 }
 
 void initRaftPlacement15x15BF()
@@ -546,6 +641,10 @@ void initRaftPlacement15x15BF()
     Sprite* buttonsPlate = initSprite();
     setStartSpriteParams(buttonsPlate, 1280, 720, 0, 0, 0);
     setSpriteTexture(buttonsPlate, "../resources/textures/raftPuttingMenu/15x15/buttonsPlateForBF.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
+
+    Sprite* FAQPlate = initSprite();
+    setStartSpriteParams(FAQPlate, 1280, 720, 0 , 0, 0);
+    setSpriteTexture(FAQPlate, "../resources/textures/mainGame/FAQPlateBasicGame10x10.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
 
     double xPos = 549.8,
            yPos = 621.0;
@@ -613,6 +712,7 @@ void initRaftPlacement15x15BF()
     sRaftPlacement15X15BF.QuestionMarkBtn = sRaftPlacement15X15.QuestionMarkBtn;
     sRaftPlacement15X15BF.state = NOT_IN_EDIT_MODE;
     sRaftPlacement15X15BF.ExitBtn = sRaftPlacement15X15.ExitBtn;
+    sRaftPlacement15X15BF.FAQPlate = FAQPlate;
 }
 
 void initMainGameBase10x10()
@@ -1051,12 +1151,12 @@ void initAddingNickName()
     setSpriteTexture(btnPlate, "../resources/textures/AddingNickname/AddingNickPlates.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
 
     Sprite* exitBtn = initSprite();
-    setStartSpriteParams(exitBtn,  60, 60, 1207, 651, 0);
+    setStartSpriteParams(exitBtn,  60, 60, 1197, 647, 0);
     setSpriteTexture(exitBtn, "../resources/textures/raftPuttingMenu/10x10/exit_black1.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
     setSpriteTexture(exitBtn, "../resources/textures/raftPuttingMenu/10x10/exit_red1.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
 
     Sprite* questionMarkBtn = initSprite();
-    setStartSpriteParams(questionMarkBtn, 60, 60, 1109 , 644, 0);
+    setStartSpriteParams(questionMarkBtn, 60, 60, 1112 , 648, 0);
     setSpriteTexture(questionMarkBtn, "../resources/textures/raftPuttingMenu/10x10/qMark_black.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
     setSpriteTexture(questionMarkBtn, "../resources/textures/raftPuttingMenu/10x10/qMark_white.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
 
@@ -1140,7 +1240,7 @@ void initGetSaveName()
     setSpriteTexture(exitBtn, "../resources/textures/raftPuttingMenu/10x10/exit_red1.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
 
     Sprite* questionMarkBtn = initSprite();
-    setStartSpriteParams(questionMarkBtn, 60, 60, 1109 , 644, 0);
+    setStartSpriteParams(questionMarkBtn, 60, 60, 1112 , 648, 0);
     setSpriteTexture(questionMarkBtn, "../resources/textures/raftPuttingMenu/10x10/qMark_black.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
     setSpriteTexture(questionMarkBtn, "../resources/textures/raftPuttingMenu/10x10/qMark_white.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
 
@@ -1178,7 +1278,7 @@ void initLoadingMenu()
     setSpriteTexture(exitBtn, "../resources/textures/raftPuttingMenu/10x10/exit_red1.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
 
     Sprite* questionMarkBtn = initSprite();
-    setStartSpriteParams(questionMarkBtn, 60, 60, 1109 , 644, 0);
+    setStartSpriteParams(questionMarkBtn, 60, 60, 1203 , 579, 0);
     setSpriteTexture(questionMarkBtn, "../resources/textures/raftPuttingMenu/10x10/qMark_black.png", GL_NEAREST, GL_CLAMP_TO_EDGE, FIRST_TEXTURE);
     setSpriteTexture(questionMarkBtn, "../resources/textures/raftPuttingMenu/10x10/qMark_white.png", GL_NEAREST, GL_CLAMP_TO_EDGE, SECOND_TEXTURE);
 

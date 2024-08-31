@@ -12,6 +12,8 @@
 #include "scenes/scenesInitial.h"
 #include "scenes/scenesRendering.h"
 #include "game/leaderBoard.h"
+#include "game/ShipBase.h"
+#include "scenes/freeScenes.h"
 
 int windowSizeX = 1280;
 int windowSizeY = 720;
@@ -36,6 +38,11 @@ int main(void)
 
     extern Player playerInfo;
     extern LeaderBoard* leaderBoard;
+
+    extern ShipBase* shipBase;
+    extern ShipBase* botShipBase;
+    extern ShipBase* shipBaseBFBot1;
+    extern ShipBase* shipBaseBFBot2;
 
     GLFWwindow* window;
 
@@ -189,6 +196,31 @@ int main(void)
     //Сохраняем текущую таблицу лидеров
     if (leaderBoard != NULL) updateLeaderBoard(PATH_TO_LEADERBOARD_DATA, leaderBoard);
     if (leaderBoard != NULL) freeLeaderBoard(leaderBoard);
+
+    //Освобождаем память, выделенную под shipBase
+    if (shipBase != NULL) freeShipBase(shipBase);
+    if (botShipBase != NULL) freeShipBase(botShipBase);
+    if (shipBaseBFBot1 != NULL) freeShipBase(shipBaseBFBot1);
+    if (shipBaseBFBot2 != NULL) freeShipBase(shipBaseBFBot2);
+
+    //Освобождаем память, выделенную под объекты на сценах
+    freePiratesSprites();
+    freeMainMenu();
+    freeAbout();
+    freeNewLoadMenu();
+    freeGameSettingsMenu();
+    freeRaftPlacement10x10();
+    freeRaftPlacement15x15();
+    freeRaftPlacement10x10BF();
+    freeRaftPlacement15x15BF();
+    freeMainGameBase10x10();
+    freeMainGameBase15x15();
+    freeMainGameBotFight10x10();
+    freeMainGameBotFight15x15();
+    freeAddingNickName();
+    freeLeaders();
+    freeGetSaveName();
+    freeLoadingMenu();
 
     glfwTerminate();
     return EXIT_SUCCESS;

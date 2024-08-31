@@ -14,6 +14,9 @@
 #define KEY_PRESSED_DELAY 0.8f
 #define BTN_DELAY 0.2f
 #define BOT_SHOT_DELAY 0
+#define BOT_DELAY 0.8f
+#define BOT_BF_DELAY 1.2f
+#define PLAYER_DELAY 0.2f
 
 //map sprite state
 #define PLATE_NOT_PRESSED 1
@@ -32,7 +35,7 @@
 
 //get Word
 #define MAX_LINE_SIZE_REACHED 1000
-#define MAX_NICKNAME_SIZE 30
+#define MAX_NICKNAME_SIZE 20
 #define MAX_SAVENAME_SIZE 30
 
 typedef struct MapSprite

@@ -47,6 +47,7 @@
 #define BOT_1_SHOT 58
 #define BOT_2_SHOT 59
 #define EXIT_QUESTION 60
+#define NOT_FAQ 61
 
 //states for main game
 #define THIS_IS_SHIP_PLATE_LIVE 1
