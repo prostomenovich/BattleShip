@@ -106,4 +106,5 @@ void putMisses(int map[18][18], ShipBase* shipBase, int x, int y, int digit);
 
 int getShipsLeft(ShipBase* shipBase);
 
+
 #endif

@@ -7,19 +7,13 @@ int lastAttackCoordX = -1;
 int lastAttackCoordY = -1;
 int AttackDirection = -1;
 
-//medium bot veriables
-//int step = 0;
-//int direction = -1;
-//int lastX = -1;
-//int lastY = -1;
-
-//hard bot veriables
+//Переменные для ботов уровня Normal и Hard в ражиме Basic
 int lastX = -1;
 int lastY = -1;
 int direction = -1;
 int step = -1;
 
-//medium bot BF
+//Переменные для ботов уровня Normal и Hard в режиме Bots Fight
 int stepBot1 = -1;
 int directionBot1 = -1;
 int lastXBot1 = -1;
@@ -30,19 +24,7 @@ int directionBot2 = -1;
 int lastXBot2 = -1;
 int lastYBot2 = -1;
 
-//hard bot BF
-/*
-int lastXBot1 = -1;
-int lastYBot1 = -1;
-int directionBot1 = -1;
-int stepBot1 = -1;
-
-int lastXBot2 = -1;
-int lastYBot2 = -1;
-int directionBot2 = -1;
-//int stepBot2 = -1;
-*/
-
+//Генерирует выстрел для бота лёгкого уровня сложности
 int easyLevelBot(int* x, int* y, int map[18][18], int mapSize)
 {
     int xTmp = rand() % mapSize + 1,
@@ -80,6 +62,7 @@ int easyLevelBot(int* x, int* y, int map[18][18], int mapSize)
     }
 }
 
+//Генерирует выстрел для бота среднего уровня сложности
 int mediumLevelBot(int* x, int* y, int map[18][18], int mapSize, int gameStatus)
 {
     extern int step;
@@ -151,8 +134,7 @@ int mediumLevelBot(int* x, int* y, int map[18][18], int mapSize, int gameStatus)
                 }
             }
         }
-        printf("x: %d, y: %d ", lastX, lastY);
-        printf("step %d\n", step);
+
         if (map[lastY][lastX] == EMPTY_PLATE){
             map[lastY][lastX] = MISS_PLATE;
             *x = lastX;
@@ -175,6 +157,7 @@ int mediumLevelBot(int* x, int* y, int map[18][18], int mapSize, int gameStatus)
     
 }
 
+//Режим добивания для бота уровня Hard
 int finishingOff(int x, int y, int map[18][18], ShipBase* shipBase, int AttackStatus, int MapSize)
 {
     extern int lastAttackCoordX;
@@ -190,10 +173,11 @@ int finishingOff(int x, int y, int map[18][18], ShipBase* shipBase, int AttackSt
         /*
             Выбор корректного направления для атаки
             Проверяется:
-                1. Не стреляли ли уже в клетку, в которуб планируется сделать атаку
+                1. Не стреляли ли уже в клетку, в которую планируется сделать атаку
                 2. Не выходит ли атака за границы поля
         
         */
+
         if (AttackDirection == UP && (map[lastAttackCoordY - 1][lastAttackCoordX] == HIT_PLATE || map[lastAttackCoordY - 1][lastAttackCoordX] == MISS_PLATE || map[lastAttackCoordY - 1][lastAttackCoordX] == AROUND_SHIP_PLATE || lastAttackCoordY - 1 < 1)){
             AttackDirection = DOWN;
             if (AttackDirection == DOWN && (map[lastAttackCoordY + 1][lastAttackCoordX] == HIT_PLATE || map[lastAttackCoordY + 1][lastAttackCoordX] == MISS_PLATE || map[lastAttackCoordY + 1][lastAttackCoordX] == AROUND_SHIP_PLATE || lastAttackCoordY + 1 > MapSize)){
@@ -353,6 +337,7 @@ int finishingOff(int x, int y, int map[18][18], ShipBase* shipBase, int AttackSt
 
 }
 
+//Генерирует выстрел для бота уровня сложности hard
 int hardLevelBot(int* x, int* y, int map[18][18], int MapSize, ShipBase* shipBase, int gameStatus)
 {
     extern int lastX;
@@ -418,8 +403,7 @@ int hardLevelBot(int* x, int* y, int map[18][18], int MapSize, ShipBase* shipBas
                 }
             }
         }
-        printf("%d, %d ", lastX, lastY);
-        printf("%d\n", step);
+
         if (map[lastY][lastX] == EMPTY_PLATE){
             map[lastY][lastX] = MISS_PLATE;
             *x = lastX;
@@ -442,6 +426,7 @@ int hardLevelBot(int* x, int* y, int map[18][18], int MapSize, ShipBase* shipBas
     
 }
 
+//Генерирует выстрел для ботов среднего уровня сложности в режиме bots fight
 int mediumLevelBotBF(int* x, int* y, int map[18][18], int mapSize, int botCount, int gameStatus)
 {   
     extern int stepBot1;
@@ -456,7 +441,6 @@ int mediumLevelBotBF(int* x, int* y, int map[18][18], int mapSize, int botCount,
 
     int endGameFlag = 0;
     int MapChecker = 0;
-
 
     if (botCount == BOT_1_SHOT){
         if (gameStatus != GAME_END){
@@ -519,8 +503,7 @@ int mediumLevelBotBF(int* x, int* y, int map[18][18], int mapSize, int botCount,
                     }
                 }
             }
-            printf("x: %d, y: %d ", lastXBot1, lastYBot1);
-            printf("step %d\n", stepBot1);
+
             if (map[lastYBot1][lastXBot1] == EMPTY_PLATE){
                 map[lastYBot1][lastXBot1] = MISS_PLATE;
                 *x = lastXBot1;
@@ -603,8 +586,7 @@ int mediumLevelBotBF(int* x, int* y, int map[18][18], int mapSize, int botCount,
                     }
                 }
             }
-            printf("x: %d, y: %d ", lastXBot2, lastYBot2);
-            printf("step %d\n", stepBot2);
+
             if (map[lastYBot2][lastXBot2] == EMPTY_PLATE){
                 map[lastYBot2][lastXBot2] = MISS_PLATE;
                 *x = lastXBot2;
@@ -627,6 +609,7 @@ int mediumLevelBotBF(int* x, int* y, int map[18][18], int mapSize, int botCount,
     }
 }
 
+//Генерирует выстрел для бота уровня сложности hard в режиме bots fight
 int hardLevelBotBF(int* x, int* y, int map[18][18], int MapSize, ShipBase* shipBase, int botCount, int gameStatus)
 {
     extern int lastXBot1;
@@ -698,8 +681,7 @@ int hardLevelBotBF(int* x, int* y, int map[18][18], int MapSize, ShipBase* shipB
                     }
                 }
             }
-            printf("%d, %d ", lastXBot1, lastYBot1);
-            printf("%d\n", stepBot1);
+
             if (map[lastYBot1][lastXBot1] == EMPTY_PLATE){
                 map[lastYBot1][lastXBot1] = MISS_PLATE;
                 *x = lastXBot1;
@@ -777,8 +759,7 @@ int hardLevelBotBF(int* x, int* y, int map[18][18], int MapSize, ShipBase* shipB
                     }
                 }
             }
-            printf("%d, %d ", lastXBot2, lastYBot2);
-            printf("%d\n", stepBot2);
+
             if (map[lastYBot2][lastXBot2] == EMPTY_PLATE){
                 map[lastYBot2][lastXBot2] = MISS_PLATE;
                 *x = lastXBot2;
@@ -801,6 +782,7 @@ int hardLevelBotBF(int* x, int* y, int map[18][18], int MapSize, ShipBase* shipB
     }
 }
 
+//Режим добивания для ботов уровня сложности Hard в режиме bots fight
 int finishingOffBF(int x, int y, int map[18][18], ShipBase* shipBase, int AttackStatus, int MapSize, int botCount)
 {
     static int lastAttackCoordXBot1 = -1;
@@ -830,22 +812,9 @@ int finishingOffBF(int x, int y, int map[18][18], ShipBase* shipBase, int Attack
                     2. Не выходит ли атака за границы поля
             
             */
-           printf("BEFORE\n");
-           printf("%d %d\n", lastAttackCoordXBot1, lastAttackCoordYBot1);
-           if (AttackDirectionBot1 == UP) printf("BOT 1 UP\n");
-           if (AttackDirectionBot1 == DOWN) printf("BOT 1 DOWN\n");
-           if (AttackDirectionBot1 == RIGHT) printf("BOT 1 RIGHT\n");
-           if (AttackDirectionBot1 == LEFT) printf("BOT 1 LEFT\n");
 
-           for (int i = 1 ; i <= 10; i++){
-            for (int j = 1; j <= 10; j++){
-                printf("%d ", map[i][j]);
-            }
-            printf("\n");
-           }
             if (AttackDirectionBot1 == UP && (map[lastAttackCoordYBot1 - 1][lastAttackCoordXBot1] == HIT_PLATE || map[lastAttackCoordYBot1 - 1][lastAttackCoordXBot1] == MISS_PLATE || map[lastAttackCoordYBot1 - 1][lastAttackCoordXBot1] == AROUND_SHIP_PLATE || lastAttackCoordYBot1 - 1 < 1)){
                 AttackDirectionBot1 = DOWN;
-                printf("XUI1\n");
                 if (AttackDirectionBot1 == DOWN && (map[y + 1][x] == HIT_PLATE || map[y + 1][x] == MISS_PLATE || map[y + 1][x] == AROUND_SHIP_PLATE || y + 1 > MapSize)){
                     AttackDirectionBot1 = rand() % 2 + 2;
                     if (AttackDirectionBot1 == RIGHT && (map[y][x + 1] == HIT_PLATE || map[y][x + 1] == MISS_PLATE || map[y][x + 1] == AROUND_SHIP_PLATE || x + 1 > MapSize)){
@@ -861,7 +830,6 @@ int finishingOffBF(int x, int y, int map[18][18], ShipBase* shipBase, int Attack
             }
             else if (AttackDirectionBot1 == DOWN && (map[lastAttackCoordYBot1 + 1][lastAttackCoordXBot1] == HIT_PLATE || map[lastAttackCoordYBot1 + 1][lastAttackCoordXBot1] == MISS_PLATE || map[lastAttackCoordYBot1 + 1][lastAttackCoordXBot1] == AROUND_SHIP_PLATE || lastAttackCoordYBot1 + 1 > MapSize)){
                 AttackDirectionBot1 = UP;
-                printf("XUI2\n");
                 if (AttackDirectionBot1 == UP && (map[y - 1][x] == HIT_PLATE || map[y - 1][x] == MISS_PLATE || map[y - 1][x] == AROUND_SHIP_PLATE || y - 1 < 1)){
                     AttackDirectionBot1 = rand() % 2 + 2;
                     if (AttackDirectionBot1 == RIGHT && (map[y][x + 1] == HIT_PLATE || map[y][x + 1] == MISS_PLATE || map[y][x + 1] == AROUND_SHIP_PLATE || x + 1 > MapSize)){
@@ -877,7 +845,6 @@ int finishingOffBF(int x, int y, int map[18][18], ShipBase* shipBase, int Attack
             }
             else if (AttackDirectionBot1 == RIGHT && (map[lastAttackCoordYBot1][lastAttackCoordXBot1 + 1] == HIT_PLATE || map[lastAttackCoordYBot1][lastAttackCoordXBot1 + 1] == MISS_PLATE || map[lastAttackCoordYBot1][lastAttackCoordXBot1 + 1] == AROUND_SHIP_PLATE || lastAttackCoordXBot1 + 1 > MapSize)){
                 AttackDirectionBot1 = LEFT;
-                printf("XUI3\n");
                 if (AttackDirectionBot1 == LEFT && (map[y][x - 1] == HIT_PLATE || map[y][x - 1] == MISS_PLATE || map[y][x - 1] == AROUND_SHIP_PLATE || x - 1 < 1)){
                     AttackDirectionBot1 = rand() % 2;
                     if (AttackDirectionBot1 == DOWN && (map[y + 1][x] == HIT_PLATE || map[y + 1][x] == MISS_PLATE || map[y + 1][x] == AROUND_SHIP_PLATE || y + 1 > MapSize)){
@@ -893,7 +860,6 @@ int finishingOffBF(int x, int y, int map[18][18], ShipBase* shipBase, int Attack
             }
             else if (AttackDirectionBot1 == LEFT && (map[lastAttackCoordYBot1][lastAttackCoordXBot1 - 1] == HIT_PLATE || map[lastAttackCoordYBot1][lastAttackCoordXBot1 - 1] == MISS_PLATE || map[lastAttackCoordYBot1][lastAttackCoordXBot1 - 1] == AROUND_SHIP_PLATE || lastAttackCoordXBot1 - 1 < 1)){
                 AttackDirectionBot1 = RIGHT;
-                printf("XUI4\n");
                 if (AttackDirectionBot1 == RIGHT && (map[y][x + 1] == HIT_PLATE || map[y][x + 1] == MISS_PLATE || map[y][x + 1] == AROUND_SHIP_PLATE || x + 1 > MapSize)){
                     AttackDirectionBot1 = rand() % 2;
                     if (AttackDirectionBot1 == DOWN && (map[y + 1][x] == HIT_PLATE || map[y + 1][x] == MISS_PLATE || map[y + 1][x] == AROUND_SHIP_PLATE || y + 1 > MapSize)){
@@ -907,13 +873,6 @@ int finishingOffBF(int x, int y, int map[18][18], ShipBase* shipBase, int Attack
                 lastAttackCoordXBot1 = x;
                 lastAttackCoordYBot1 = y;
             }
-
-            printf("AFTER\n");
-           if (AttackDirectionBot1 == UP) printf("BOT 1 UP\n");
-           else if (AttackDirectionBot1 == DOWN) printf("BOT 1 DOWN\n");
-           else if (AttackDirectionBot1 == RIGHT) printf("BOT 1 RIGHT\n");
-           else if (AttackDirectionBot1 == LEFT) printf("BOT 1 LEFT\n");
-           else printf("ZALUPA BOT 1\n");
 
             if (AttackDirectionBot1 == UP){
                 lastAttackCoordYBot1--;
@@ -940,16 +899,13 @@ int finishingOffBF(int x, int y, int map[18][18], ShipBase* shipBase, int Attack
                 if (map[lastAttackCoordYBot1][lastAttackCoordXBot1] == SHIP_PLATE){
                     map[lastAttackCoordYBot1][lastAttackCoordXBot1] = HIT_PLATE;
                     if (killShipInShipBase(shipBase, lastAttackCoordXBot1 - 1, lastAttackCoordYBot1 - 1) == SHIP_KILLED){
-                        printf("KILL DOWN\n");
                         return SHIP_KILLED;
                     }
                     else {
-                        printf("DOWN HIT\n");
                         return HIT_PLATE;
                     }
                 }
                 else {
-                    printf("DOWN MISS\n");
                     map[lastAttackCoordYBot1][lastAttackCoordXBot1] = MISS_PLATE;
                     AttackDirectionBot1 = -1;
                     lastAttackCoordXBot1 = x;
@@ -1020,11 +976,6 @@ int finishingOffBF(int x, int y, int map[18][18], ShipBase* shipBase, int Attack
             if (lastAttackCoordXBot2 == -1) lastAttackCoordXBot2 = x;
             if (lastAttackCoordYBot2 == -1) lastAttackCoordYBot2 = y;
 
-            printf("BEFORE\n");
-            if (AttackDirectionBot2 == UP) printf("BOT 2 UP\n");
-           else if (AttackDirectionBot2 == DOWN) printf("BOT 2 DOWN\n");
-           else if (AttackDirectionBot2 == RIGHT) printf("BOT 2 RIGHT\n");
-           else if (AttackDirectionBot2 == LEFT) printf("BOT 2 LEFT\n");
             /*
                 Выбор корректного направления для атаки
                 Проверяется:
@@ -1032,6 +983,7 @@ int finishingOffBF(int x, int y, int map[18][18], ShipBase* shipBase, int Attack
                     2. Не выходит ли атака за границы поля
             
             */
+
             if (AttackDirectionBot2 == UP && (map[lastAttackCoordYBot2 - 1][lastAttackCoordXBot2] == HIT_PLATE || map[lastAttackCoordYBot2 - 1][lastAttackCoordXBot2] == MISS_PLATE || map[lastAttackCoordYBot2 - 1][lastAttackCoordXBot2] == AROUND_SHIP_PLATE || lastAttackCoordYBot2 - 1 < 1)){
                 AttackDirectionBot2 = DOWN;
                 if (AttackDirectionBot2 == DOWN && (map[y + 1][x] == HIT_PLATE || map[y + 1][x] == MISS_PLATE || map[y + 1][x] == AROUND_SHIP_PLATE || y + 1 > MapSize)){
@@ -1092,12 +1044,6 @@ int finishingOffBF(int x, int y, int map[18][18], ShipBase* shipBase, int Attack
                 lastAttackCoordXBot2 = x;
                 lastAttackCoordYBot2 = y;
             }
-            printf("AFTER\n");
-            if (AttackDirectionBot2 == UP) printf("BOT 2 UP\n");
-           else if (AttackDirectionBot2 == DOWN) printf("BOT 2 DOWN\n");
-           else if (AttackDirectionBot2 == RIGHT) printf("BOT 2 RIGHT\n");
-           else if (AttackDirectionBot2 == LEFT) printf("BOT 2 LEFT\n");
-           else printf("ZALUPA BOT 2\n");
 
             if (AttackDirectionBot2 == UP){
                 lastAttackCoordYBot2--;

@@ -3,6 +3,7 @@
 #ifndef OTHERSCENESUTILS_C
 #define OTHERSCENESUTILS_C
 
+//Заполняет клетки текстурами кораблей для поля 10x10
 void fillShipsTextures10x10(MapSprite SpriteArray[10][10], ShipBase* shipBase, int map[18][18], int turn)
 {
     extern PiratesSprites PiratesSpritesBase;
@@ -234,6 +235,7 @@ void fillShipsTextures10x10(MapSprite SpriteArray[10][10], ShipBase* shipBase, i
     }
 }
 
+//Заполняет клетки текстурами кораблей для поля 15x15
 void fillShipsTextures15x15(MapSprite SpriteArray[15][15], ShipBase* shipBase, int map[18][18], int turn)
 {
     extern PiratesSprites PiratesSpritesBase;

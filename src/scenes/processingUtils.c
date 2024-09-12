@@ -3,26 +3,31 @@
 #ifndef PROCESSINGUTILS_C
 #define PROCESSINGUTILS_C
 
+//Восстанавливает корректное положение по X в случае ихменения размер окна (не используется в большинстве сцен)
 double correctXcoords(double currentXcoords, int windowSizeX)
 {
     return currentXcoords * (double)windowSizeX / BASE_SCREEN_SIZE_X;
 }
 
+//Восстанавливает корректное положение по Y в случае ихменения размер окна (не используется в большинстве сцен)
 double correctYcoords(double currentYcoords, int windowSizeY)
 {
     return currentYcoords * (double)windowSizeY / BASE_SCREEN_SIZE_Y;
 }
 
+//Восстанавливает корректный размер текста в соответствии с разрешением экрана (не применяется в больштнстве сцен)
 double correctTextSize(double currentSize, int windowSizeX, int windowSizeY)
 {
     return ((currentSize * windowSizeX * windowSizeY) / ( BASE_SCREEN_SIZE_X * BASE_SCREEN_SIZE_Y)); 
 }
 
+//Проверяет находится ли курсор в заданной области
 int cursorInArea(int mousePosX, int mousePosY, int lowerLeftX, int lowerLeftY, int higherRightX, int higherRightY, int windowSizeX, int windowSizeY)
 {
     return mousePosX >= correctXcoords(lowerLeftX, windowSizeX) && mousePosY <= correctYcoords(lowerLeftY, windowSizeY) && mousePosX <= correctXcoords(higherRightX, windowSizeX) && mousePosY >= correctYcoords(higherRightY, windowSizeY);
 }
 
+//Пересчитывает параметры справйта в соответствии с рамером экрана (не применяется в большинстве сцен)
 void changeCorrectSpriteParams(Sprite* sprite, int windowSizeX, int windowSizeY)
 {   
     static int lastSizeX = 1280;
@@ -47,7 +52,6 @@ int plateIsPressed10x10(int i, int j, int xMousePos, int yMousePos)
 {
     extern int windowSizeX;
     extern int windowSizeY;
-    //extern RaftPlacement10x10 sRaftPlacement10X10;
 
     if (i == 0){
         if (j == 0){
@@ -88,6 +92,7 @@ int plateIsPressed10x10(int i, int j, int xMousePos, int yMousePos)
             
 }
 
+//Переводит число в строку
 void intToString(char* str, int digit)
 {
     char tmp[3] = {'\0', };
@@ -102,6 +107,7 @@ void intToString(char* str, int digit)
 
 }
 
+//Обработка ввода с клавиатуры
 int getWord(char* string, int maxStringSize, GLFWwindow* window)
 {
     static int index = 0;

@@ -7,6 +7,8 @@ int botMode = ATTACK_MODE;
 int botMode1 = ATTACK_MODE,
     botMode2 = ATTACK_MODE;
 
+//Отрисовка всех сцен и обработка взаимодействия с ними
+
 void renderMainMenu(GLFWwindow* window)
 {
     extern GLuint SpriteShaderProgram;
@@ -26,13 +28,13 @@ void renderMainMenu(GLFWwindow* window)
     changeAnimSpriteSize(sMainMenu.Background, windowSizeX, windowSizeY);
 
     glfwGetCursorPos(window, &xMousePos, &yMousePos);
-    printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
-    printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
+    //printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
+    //printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
 
     renderAnimSprite(sMainMenu.Background, SpriteShaderProgram, time(NULL), 1.0);
     renderSprite(sMainMenu.ButtonPlates, SpriteShaderProgram, FIRST_TEXTURE);
     
-    if (cursorInArea(xMousePos, yMousePos, 495.0f, 617.0f, 794.0f, 512.0f, windowSizeX, windowSizeY)){
+    if (cursorInArea(xMousePos, yMousePos, 495.0f, 617.0f, 794.0f, 512.0f, windowSizeX, windowSizeY) && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
         renderText(sMainMenu.TextParams, TextShaderProgram, "Play", correctXcoords(560.0, windowSizeX) , correctYcoords(135, windowSizeY), correctTextSize(2.0, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
             playerInfo.scene = NEW_LOAD_MENU_SCENES;
@@ -43,7 +45,7 @@ void renderMainMenu(GLFWwindow* window)
         renderText(sMainMenu.TextParams, TextShaderProgram, "Play", correctXcoords(560.0, windowSizeX) , correctYcoords(135, windowSizeY), correctTextSize(2.0, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
     }
 
-    if (cursorInArea(xMousePos, yMousePos, 144.0f, 608.0f, 392.0f, 523.0f, windowSizeX, windowSizeY)){
+    if (cursorInArea(xMousePos, yMousePos, 144.0f, 608.0f, 392.0f, 523.0f, windowSizeX, windowSizeY) && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
         renderText(sMainMenu.TextParams, TextShaderProgram, "About", correctXcoords(167.0, windowSizeX) , correctYcoords(128, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
             playerInfo.scene = ABOUT_LORE_SCENES;
@@ -54,7 +56,7 @@ void renderMainMenu(GLFWwindow* window)
         renderText(sMainMenu.TextParams, TextShaderProgram, "About", correctXcoords(167.0, windowSizeX) , correctYcoords(128, windowSizeY), correctTextSize(1.8, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
     }
 
-    if (cursorInArea(xMousePos, yMousePos, 906.0f, 606.0f, 1142.0f, 526.0f, windowSizeX, windowSizeY)){
+    if (cursorInArea(xMousePos, yMousePos, 906.0f, 606.0f, 1142.0f, 526.0f, windowSizeX, windowSizeY) && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
         renderText(sMainMenu.TextParams, TextShaderProgram, "Leaders", correctXcoords(905.0, windowSizeX) , correctYcoords(135, windowSizeY), correctTextSize(1.4, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
             playerInfo.scene = LEADERS_SCENES;
@@ -97,8 +99,8 @@ void renderAbout(GLFWwindow* window)
     changeAnimSpriteSize(sAbout.Background, windowSizeX, windowSizeY);
 
     glfwGetCursorPos(window, &xMousePos, &yMousePos);
-    printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
-    printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
+    //printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
+    //printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
 
     renderAnimSprite(sAbout.Background, SpriteShaderProgram, time(NULL), 1.0);
     renderSprite(sAbout.MainPlace, SpriteShaderProgram, FIRST_TEXTURE);
@@ -211,8 +213,8 @@ void renderNewLoadMenu(GLFWwindow* window)
     changeAnimSpriteSize(sNewLoadMenu.Background, windowSizeX, windowSizeY);
 
     glfwGetCursorPos(window, &xMousePos, &yMousePos);
-    printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
-    printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
+    //printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
+    //printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
 
     renderAnimSprite(sNewLoadMenu.Background, SpriteShaderProgram, time(NULL), 1.0);
     renderSprite(sNewLoadMenu.ButtonPlates, SpriteShaderProgram, FIRST_TEXTURE);
@@ -230,10 +232,11 @@ void renderNewLoadMenu(GLFWwindow* window)
     }
 
 
-    if (cursorInArea(xMousePos, yMousePos, 434, 534, 841, 421, windowSizeX, windowSizeY)){
+    if (cursorInArea(xMousePos, yMousePos, 434, 534, 841, 421, windowSizeX, windowSizeY) && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
             renderText(sNewLoadMenu.TextParams, TextShaderProgram, "LOAD GAME", correctXcoords(458.0, windowSizeX) , correctYcoords(222, windowSizeY), correctTextSize(1.65, windowSizeX, windowSizeY), 1.0f, 1.0f, 1.0f);
             if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS){
                 playerInfo.scene = LOAD_GAME_SCENES;
+                lastClickTime = glfwGetTime();
             }
     }
     else{
@@ -271,8 +274,8 @@ void renderGameSettingsMenu(GLFWwindow* window)
     changeAnimSpriteSize(sGameSettingsMenu.Background, windowSizeX, windowSizeY);
 
     glfwGetCursorPos(window, &xMousePos, &yMousePos);
-    printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
-    printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
+    //printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
+    //printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
 
     renderAnimSprite(sGameSettingsMenu.Background, SpriteShaderProgram, time(NULL), 1.0);
 
@@ -457,8 +460,8 @@ void renderRaftPlacement10x10(GLFWwindow* window)
     static int lastSceneState = 0;
     
     glfwGetCursorPos(window, &xMousePos, &yMousePos);
-    printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
-    printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
+    //printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
+    //printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
 
     changeSpriteSize(sRaftPlacement10X10.Background, windowSizeX, windowSizeY);
     changeSpriteSize(sRaftPlacement10X10.ButtonPlates, windowSizeX, windowSizeY);
@@ -489,14 +492,14 @@ void renderRaftPlacement10x10(GLFWwindow* window)
         if (sRaftPlacement10X10.state == IN_EDIT_MODE){
             sRaftPlacement10X10.state = NOT_IN_EDIT_MODE;
             if (shipIsCorrect(map, shipBase, elemCount, MAP_SIZE_10_X_10, coords) == SHIP_IS_CORRECT){
-                printf("IS_CORRECT!\n");
+                //printf("IS_CORRECT!\n");
                 putShipInBase(shipBase, coords, elemCount);
                 putShipInMap(map, coords, elemCount);
+                
                 for (int i = 0 ; i < 10; i++){
                     for (int j = 0; j < 10; j++){
                         if (sRaftPlacement10X10.MapArray[i][j].spriteState == PLATE_PRESSED){
-                            sRaftPlacement10X10.MapArray[i][j].spriteState = PLATE_SUCCES;
-                                
+                            sRaftPlacement10X10.MapArray[i][j].spriteState = PLATE_SUCCES; 
                         }
                     }
                 }
@@ -512,11 +515,12 @@ void renderRaftPlacement10x10(GLFWwindow* window)
 
             }
             else {
-                printf("IS_NOT_CORRECT!\n");
+                //printf("IS_NOT_CORRECT!\n");
                 for (int i = 0 ; i < 10; i++){
                     for (int j = 0; j < 10; j++){
                         if (sRaftPlacement10X10.MapArray[i][j].spriteState == PLATE_PRESSED){
-                            sRaftPlacement10X10.MapArray[i][j].spriteState = PLATE_NOT_PRESSED;    
+                            sRaftPlacement10X10.MapArray[i][j].spriteState = PLATE_NOT_PRESSED;  
+                            
                         }
                     }
                 }
@@ -535,7 +539,10 @@ void renderRaftPlacement10x10(GLFWwindow* window)
                 if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && cursorInArea(xMousePos, yMousePos, sRaftPlacement10X10.MapArray[i][j].sprite->positionX, windowSizeY - sRaftPlacement10X10.MapArray[i][j].sprite->positionY, sRaftPlacement10X10.MapArray[i][j].sprite->positionX + sRaftPlacement10X10.MapArray[i][j].sprite->sizeX, windowSizeY - sRaftPlacement10X10.MapArray[i][j].sprite->positionY - sRaftPlacement10X10.MapArray[i][j].sprite->sizeY, windowSizeX, windowSizeY) && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
                     if (sRaftPlacement10X10.MapArray[i][j].spriteState == PLATE_PRESSED){
                         sRaftPlacement10X10.MapArray[i][j].spriteState = PLATE_NOT_PRESSED;
-                        elemCount--;
+                        for (int i = 0; i < elemCount; i++){
+                            sRaftPlacement10X10.MapArray[coords[i]->y][coords[i]->x].spriteState = PLATE_NOT_PRESSED;
+                        }
+                        elemCount = 0;
                     }
                     else {
                         if (elemCount < maxElemCount && sRaftPlacement10X10.MapArray[i][j].spriteState != PLATE_SUCCES && sRaftPlacement10X10.MapArray[i][j].spriteState != PLATE_ERROR){
@@ -600,8 +607,6 @@ void renderRaftPlacement10x10(GLFWwindow* window)
         }
 
         if (AllShipsInMap(shipBase) == ALL_SHIPS_IN_MAP && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
-            //ТУТ НУЖНО БУДЕТ СГЕНЕРИТЬ РАССТАНОВКУ ДЛЯ БОТА!!!
-    
             playerInfo.scene = MAIN_GAME_BASE_10_X_10;
 
             for (int i = 0; i < 10; i++){
@@ -626,13 +631,6 @@ void renderRaftPlacement10x10(GLFWwindow* window)
             clearTrashFromMap(mapBot);
             
             sMainGameBase10x10.state = PLAYER_SHOT;
-
-            for (int i = 0; i < 10; i++){
-                for (int j = 0; j < 10; j++){
-                    printf("%d ", map[i + 1][j + 1]);
-                }
-                printf("\n");
-            }
 
             lastClickTime = glfwGetTime();
         }  
@@ -701,7 +699,7 @@ void renderRaftPlacement10x10(GLFWwindow* window)
     }
 
     //Обработка кнопки Exit
-    if (cursorInArea(xMousePos, yMousePos, 1202, 64, 1262, 17, windowSizeX, windowSizeY)){
+    if (cursorInArea(xMousePos, yMousePos, 1202, 64, 1262, 17, windowSizeX, windowSizeY) && sRaftPlacement10X10.state != FAQ){
         renderSprite(sRaftPlacement10X10.ExitBtn, SpriteShaderProgram, SECOND_TEXTURE);
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
             
@@ -795,8 +793,8 @@ void renderRaftPlacement15x15(GLFWwindow* window)
     static int lastSceneState = 0;
     
     glfwGetCursorPos(window, &xMousePos, &yMousePos);
-    printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
-    printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
+    //printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
+    //printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
 
     changeSpriteSize(sRaftPlacement15X15.Background, windowSizeX, windowSizeY);
     changeSpriteSize(sRaftPlacement15X15.ButtonPlates, windowSizeX, windowSizeY);
@@ -815,7 +813,7 @@ void renderRaftPlacement15x15(GLFWwindow* window)
         if (sRaftPlacement15X15.state == IN_EDIT_MODE){
             sRaftPlacement15X15.state = NOT_IN_EDIT_MODE;
             if (shipIsCorrect(map, shipBase, elemCount, MAP_SIZE_15_X_15, coords) == SHIP_IS_CORRECT){
-                printf("IS_CORRECT!\n");
+                //printf("IS_CORRECT!\n");
                 putShipInBase(shipBase, coords, elemCount);
                 putShipInMap(map, coords, elemCount);
                 for (int i = 0 ; i < 15; i++){
@@ -837,7 +835,7 @@ void renderRaftPlacement15x15(GLFWwindow* window)
 
             }
             else {
-                printf("IS_NOT_CORRECT!\n");
+                //printf("IS_NOT_CORRECT!\n");
                 for (int i = 0 ; i < 15; i++){
                     for (int j = 0; j < 15; j++){
                         if (sRaftPlacement15X15.MapArray[i][j].spriteState == PLATE_PRESSED){
@@ -859,8 +857,10 @@ void renderRaftPlacement15x15(GLFWwindow* window)
             for (int j = 0; j < 15; j++){
                 if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && cursorInArea(xMousePos, yMousePos, sRaftPlacement15X15.MapArray[i][j].sprite->positionX, windowSizeY - sRaftPlacement15X15.MapArray[i][j].sprite->positionY, sRaftPlacement15X15.MapArray[i][j].sprite->positionX + sRaftPlacement15X15.MapArray[i][j].sprite->sizeX, windowSizeY - sRaftPlacement15X15.MapArray[i][j].sprite->positionY - sRaftPlacement15X15.MapArray[i][j].sprite->sizeY, windowSizeX, windowSizeY) && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
                     if (sRaftPlacement15X15.MapArray[i][j].spriteState == PLATE_PRESSED){
-                        sRaftPlacement15X15.MapArray[i][j].spriteState = PLATE_NOT_PRESSED;
-                        elemCount--;
+                        for (int i = 0; i < elemCount; i++){
+                            sRaftPlacement15X15.MapArray[coords[i]->y][coords[i]->x].spriteState = PLATE_NOT_PRESSED;
+                        }
+                        elemCount = 0;
                     }
                     else {
                         if (elemCount < maxElemCount && sRaftPlacement15X15.MapArray[i][j].spriteState != PLATE_SUCCES && sRaftPlacement15X15.MapArray[i][j].spriteState != PLATE_ERROR){
@@ -1104,8 +1104,8 @@ void renderRaftPlacement10x10BF(GLFWwindow* window)
     static int lastSceneState = 0;
 
     glfwGetCursorPos(window, &xMousePos, &yMousePos);
-    printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
-    printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
+    //printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
+    //printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
 
     static int elemCount = 0;
     int maxElemCount;
@@ -1138,7 +1138,7 @@ void renderRaftPlacement10x10BF(GLFWwindow* window)
             if (sRaftPlacement10X10BF.state == IN_EDIT_MODE){
                 sRaftPlacement10X10BF.state = NOT_IN_EDIT_MODE;
                 if (shipIsCorrect(mapBot1, shipBaseBFBot1, elemCount, MAP_SIZE_10_X_10, coords) == SHIP_IS_CORRECT){
-                    printf("IS_CORRECT!\n");
+                    //printf("IS_CORRECT!\n");
                     putShipInBase(shipBaseBFBot1, coords, elemCount);
                     putShipInMap(mapBot1, coords, elemCount);
                     for (int i = 0 ; i < 10; i++){
@@ -1161,7 +1161,7 @@ void renderRaftPlacement10x10BF(GLFWwindow* window)
 
                 }
                 else {
-                    printf("IS_NOT_CORRECT!\n");
+                    //printf("IS_NOT_CORRECT!\n");
                     for (int i = 0 ; i < 10; i++){
                         for (int j = 0; j < 10; j++){
                             if (sRaftPlacement10X10BF.MapArrayBot1[i][j].spriteState == PLATE_PRESSED){
@@ -1183,8 +1183,10 @@ void renderRaftPlacement10x10BF(GLFWwindow* window)
                 for (int j = 0; j < 10; j++){
                     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && cursorInArea(xMousePos, yMousePos, sRaftPlacement10X10BF.MapArrayBot1[i][j].sprite->positionX, windowSizeY - sRaftPlacement10X10BF.MapArrayBot1[i][j].sprite->positionY, sRaftPlacement10X10BF.MapArrayBot1[i][j].sprite->positionX + sRaftPlacement10X10BF.MapArrayBot1[i][j].sprite->sizeX, windowSizeY - sRaftPlacement10X10BF.MapArrayBot1[i][j].sprite->positionY - sRaftPlacement10X10BF.MapArrayBot1[i][j].sprite->sizeY, windowSizeX, windowSizeY) && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
                         if (sRaftPlacement10X10BF.MapArrayBot1[i][j].spriteState == PLATE_PRESSED){
-                            sRaftPlacement10X10BF.MapArrayBot1[i][j].spriteState = PLATE_NOT_PRESSED;
-                            elemCount--;
+                            for (int i = 0; i < elemCount; i++){
+                                sRaftPlacement10X10BF.MapArrayBot1[coords[i]->y][coords[i]->x].spriteState = PLATE_NOT_PRESSED;
+                            }
+                            elemCount = 0;
                         }
                         else {
                             if (elemCount < maxElemCount && sRaftPlacement10X10BF.MapArrayBot1[i][j].spriteState != PLATE_SUCCES && sRaftPlacement10X10BF.MapArrayBot1[i][j].spriteState != PLATE_ERROR){
@@ -1313,7 +1315,7 @@ void renderRaftPlacement10x10BF(GLFWwindow* window)
             if (sRaftPlacement10X10BF.state == IN_EDIT_MODE){
                 sRaftPlacement10X10BF.state = NOT_IN_EDIT_MODE;
                 if (shipIsCorrect(mapBot2, shipBaseBFBot2, elemCount, MAP_SIZE_10_X_10, coords) == SHIP_IS_CORRECT){
-                    printf("IS_CORRECT!\n");
+                    //printf("IS_CORRECT!\n");
                     putShipInBase(shipBaseBFBot2, coords, elemCount);
                     putShipInMap(mapBot2, coords, elemCount);
                     for (int i = 0 ; i < 10; i++){
@@ -1335,7 +1337,7 @@ void renderRaftPlacement10x10BF(GLFWwindow* window)
 
                 }
                 else {
-                    printf("IS_NOT_CORRECT!\n");
+                    //printf("IS_NOT_CORRECT!\n");
                     for (int i = 0 ; i < 10; i++){
                         for (int j = 0; j < 10; j++){
                             if (sRaftPlacement10X10BF.MapArrayBot2[i][j].spriteState == PLATE_PRESSED){
@@ -1357,8 +1359,10 @@ void renderRaftPlacement10x10BF(GLFWwindow* window)
                 for (int j = 0; j < 10; j++){
                     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && cursorInArea(xMousePos, yMousePos, sRaftPlacement10X10BF.MapArrayBot2[i][j].sprite->positionX, windowSizeY - sRaftPlacement10X10BF.MapArrayBot2[i][j].sprite->positionY, sRaftPlacement10X10BF.MapArrayBot2[i][j].sprite->positionX + sRaftPlacement10X10BF.MapArrayBot2[i][j].sprite->sizeX, windowSizeY - sRaftPlacement10X10BF.MapArrayBot2[i][j].sprite->positionY - sRaftPlacement10X10BF.MapArrayBot2[i][j].sprite->sizeY, windowSizeX, windowSizeY) && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
                         if (sRaftPlacement10X10BF.MapArrayBot2[i][j].spriteState == PLATE_PRESSED){
-                            sRaftPlacement10X10BF.MapArrayBot2[i][j].spriteState = PLATE_NOT_PRESSED;
-                            elemCount--;
+                            for (int i = 0; i < elemCount; i++){
+                                sRaftPlacement10X10BF.MapArrayBot2[coords[i]->y][coords[i]->x].spriteState = PLATE_NOT_PRESSED;
+                            }
+                            elemCount = 0;
                         }
                         else {
                             if (elemCount < maxElemCount && sRaftPlacement10X10BF.MapArrayBot2[i][j].spriteState != PLATE_SUCCES && sRaftPlacement10X10BF.MapArrayBot2[i][j].spriteState != PLATE_ERROR){
@@ -1635,8 +1639,8 @@ void renderRaftPlacement15x15BF(GLFWwindow* window)
     static int lastSceneState = 0;
 
     glfwGetCursorPos(window, &xMousePos, &yMousePos);
-    printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
-    printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
+    //printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
+    //printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
 
     static int elemCount = 0;
     int maxElemCount;
@@ -1653,7 +1657,7 @@ void renderRaftPlacement15x15BF(GLFWwindow* window)
         }
         
         maxElemCount = maxPlatesShip(shipBaseBFBot1);
-        printf("2\n");
+
         //Подгон под размер окна каждой клетки на поле
         for (int i = 0 ; i < 15; i++){
             for (int j = 0; j < 15; j++){
@@ -1669,7 +1673,7 @@ void renderRaftPlacement15x15BF(GLFWwindow* window)
             if (sRaftPlacement15X15BF.state == IN_EDIT_MODE){
                 sRaftPlacement15X15BF.state = NOT_IN_EDIT_MODE;
                 if (shipIsCorrect(mapBot1, shipBaseBFBot1, elemCount, MAP_SIZE_15_X_15, coords) == SHIP_IS_CORRECT){
-                    printf("IS_CORRECT!\n");
+                    //printf("IS_CORRECT!\n");
                     putShipInBase(shipBaseBFBot1, coords, elemCount);
                     putShipInMap(mapBot1, coords, elemCount);
                     for (int i = 0 ; i < 15; i++){
@@ -1691,7 +1695,7 @@ void renderRaftPlacement15x15BF(GLFWwindow* window)
 
                 }
                 else {
-                    printf("IS_NOT_CORRECT!\n");
+                    //printf("IS_NOT_CORRECT!\n");
                     for (int i = 0 ; i < 15; i++){
                         for (int j = 0; j < 15; j++){
                             if (sRaftPlacement15X15BF.MapArrayBot1[i][j].spriteState == PLATE_PRESSED){
@@ -1713,8 +1717,10 @@ void renderRaftPlacement15x15BF(GLFWwindow* window)
                 for (int j = 0; j < 15; j++){
                     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && cursorInArea(xMousePos, yMousePos, sRaftPlacement15X15BF.MapArrayBot1[i][j].sprite->positionX, windowSizeY - sRaftPlacement15X15BF.MapArrayBot1[i][j].sprite->positionY, sRaftPlacement15X15BF.MapArrayBot1[i][j].sprite->positionX + sRaftPlacement15X15BF.MapArrayBot1[i][j].sprite->sizeX, windowSizeY - sRaftPlacement15X15BF.MapArrayBot1[i][j].sprite->positionY - sRaftPlacement15X15BF.MapArrayBot1[i][j].sprite->sizeY, windowSizeX, windowSizeY) && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
                         if (sRaftPlacement15X15BF.MapArrayBot1[i][j].spriteState == PLATE_PRESSED){
-                            sRaftPlacement15X15BF.MapArrayBot1[i][j].spriteState = PLATE_NOT_PRESSED;
-                            elemCount--;
+                            for (int i = 0; i < elemCount; i++){
+                                sRaftPlacement15X15BF.MapArrayBot1[coords[i]->y][coords[i]->x].spriteState = PLATE_NOT_PRESSED;
+                            }
+                            elemCount = 0;
                         }
                         else {
                             if (elemCount < maxElemCount && sRaftPlacement15X15BF.MapArrayBot1[i][j].spriteState != PLATE_SUCCES && sRaftPlacement15X15BF.MapArrayBot1[i][j].spriteState != PLATE_ERROR){
@@ -1844,7 +1850,7 @@ void renderRaftPlacement15x15BF(GLFWwindow* window)
             if (sRaftPlacement15X15BF.state == IN_EDIT_MODE){
                 sRaftPlacement15X15BF.state = NOT_IN_EDIT_MODE;
                 if (shipIsCorrect(mapBot2, shipBaseBFBot2, elemCount, MAP_SIZE_15_X_15, coords) == SHIP_IS_CORRECT){
-                    printf("IS_CORRECT!\n");
+                    //printf("IS_CORRECT!\n");
                     putShipInBase(shipBaseBFBot2, coords, elemCount);
                     putShipInMap(mapBot2, coords, elemCount);
                     for (int i = 0 ; i < 15; i++){
@@ -1866,7 +1872,7 @@ void renderRaftPlacement15x15BF(GLFWwindow* window)
 
                 }
                 else {
-                    printf("IS_NOT_CORRECT!\n");
+                    //printf("IS_NOT_CORRECT!\n");
                     for (int i = 0 ; i < 15; i++){
                         for (int j = 0; j < 15; j++){
                             if (sRaftPlacement15X15BF.MapArrayBot2[i][j].spriteState == PLATE_PRESSED){
@@ -1887,8 +1893,10 @@ void renderRaftPlacement15x15BF(GLFWwindow* window)
                 for (int j = 0; j < 15; j++){
                     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && cursorInArea(xMousePos, yMousePos, sRaftPlacement15X15BF.MapArrayBot2[i][j].sprite->positionX, windowSizeY - sRaftPlacement15X15BF.MapArrayBot2[i][j].sprite->positionY, sRaftPlacement15X15BF.MapArrayBot2[i][j].sprite->positionX + sRaftPlacement15X15BF.MapArrayBot2[i][j].sprite->sizeX, windowSizeY - sRaftPlacement15X15BF.MapArrayBot2[i][j].sprite->positionY - sRaftPlacement15X15BF.MapArrayBot2[i][j].sprite->sizeY, windowSizeX, windowSizeY) && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
                         if (sRaftPlacement15X15BF.MapArrayBot2[i][j].spriteState == PLATE_PRESSED){
-                            sRaftPlacement15X15BF.MapArrayBot2[i][j].spriteState = PLATE_NOT_PRESSED;
-                            elemCount--;
+                            for (int i = 0; i < elemCount; i++){
+                                sRaftPlacement15X15BF.MapArrayBot2[coords[i]->y][coords[i]->x].spriteState = PLATE_NOT_PRESSED;
+                            }
+                            elemCount = 0;
                         }
                         else {
                             if (elemCount < maxElemCount && sRaftPlacement15X15BF.MapArrayBot2[i][j].spriteState != PLATE_SUCCES && sRaftPlacement15X15BF.MapArrayBot2[i][j].spriteState != PLATE_ERROR){
@@ -2182,8 +2190,8 @@ void renderMainGameBase10x10(GLFWwindow* window)
                   lastBotShotTime = 0;
 
     glfwGetCursorPos(window, &xMousePos, &yMousePos);
-    printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
-    printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
+    //printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
+    //printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
 
     renderSprite(sMainGameBase10x10.Background, SpriteShaderProgram, FIRST_TEXTURE);
     renderSprite(sMainGameBase10x10.ButtonPlates, SpriteShaderProgram, FIRST_TEXTURE);
@@ -2673,7 +2681,6 @@ void renderMainGameBase15x15(GLFWwindow* window)
         }
         else if (playerInfo.BotLevel == NORMAL_BOT_LEVEL){
             if (botMode == ATTACK_MODE){
-                printf("\n");
                 if ((botAttackResult = mediumLevelBot(&x, &y, map, MAP_SIZE_15_X_15, GAME_PROCESS)) == HIT_PLATE){
                     //Если корабль убит, то продолжаем базовый подбор клетки для атаки, в противном случае активируем режим добивания
                     if (killShipInShipBase(shipBase, x - 1, y - 1) == SHIP_KILLED){
@@ -3049,8 +3056,8 @@ void renderMainGameBotFight10x10(GLFWwindow* window)
     static int lastBotShotTime = 0;
 
     glfwGetCursorPos(window, &xMousePos, &yMousePos);
-    printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
-    printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
+    //printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
+    //printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
 
     renderSprite(sMainGameBotFight10x10.Background, SpriteShaderProgram, FIRST_TEXTURE);
     renderSprite(sMainGameBotFight10x10.ButtonPlates, SpriteShaderProgram, FIRST_TEXTURE);
@@ -3126,7 +3133,7 @@ void renderMainGameBotFight10x10(GLFWwindow* window)
             else {
                 if ((botAttackResult = finishingOffBF(xb1 , yb1, mapBot2, shipBaseBFBot2, ATTACK_PROCESS, MAP_SIZE_10_X_10, BOT_1_SHOT)) == MISS_PLATE){
                     sMainGameBotFight10x10.state = BOT_2_SHOT;
-                    printf("bot1 %d %d\n", xb1, yb1);
+                    //printf("bot1 %d %d\n", xb1, yb1);
                 }
                 else if (botAttackResult == SHIP_KILLED){
                     finishingOffBF(xb1 , yb1, mapBot2, shipBaseBFBot2, ATTACK_END, MAP_SIZE_10_X_10, BOT_1_SHOT);
@@ -3474,7 +3481,6 @@ void renderMainGameBotFight15x15(GLFWwindow* window)
     
     if (sMainGameBotFight15x15.state == BOT_1_SHOT && glfwGetTime() - lastBotShotTime >= BOT_BF_DELAY){
         //Обработка выстрела бота
-        for (int i = 0; i < 10000000; i++);
 
         if (playerInfo.BotLevel == EASY_BOT_LEVEL){
             if ((botAttackResult = easyLevelBot(&xb1, &yb1, mapBot2, MAP_SIZE_15_X_15)) == HIT_PLATE){
@@ -3513,7 +3519,7 @@ void renderMainGameBotFight15x15(GLFWwindow* window)
             else {
                 if ((botAttackResult = finishingOffBF(xb1 , yb1, mapBot2, shipBaseBFBot2, ATTACK_PROCESS, MAP_SIZE_15_X_15, BOT_1_SHOT)) == MISS_PLATE){
                     sMainGameBotFight15x15.state = BOT_2_SHOT;
-                    printf("bot1 %d %d\n", xb1, yb1);
+                    //printf("bot1 %d %d\n", xb1, yb1);
                 }
                 else if (botAttackResult == SHIP_KILLED){
                     finishingOffBF(xb1 , yb1, mapBot2, shipBaseBFBot2, ATTACK_END, MAP_SIZE_15_X_15, BOT_1_SHOT);
@@ -3931,13 +3937,13 @@ void renderLeaders(GLFWwindow* window)
     char dataStr[5] = {'\0'};
 
     glfwGetCursorPos(window, &xMousePos, &yMousePos);
-    printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
-    printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
+    //printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
+    //printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
 
     renderAnimSprite(sLeaders.Background, SpriteShaderProgram, time(NULL), 1.0);
     renderSprite(sLeaders.buttonPlates, SpriteShaderProgram, FIRST_TEXTURE);
 
-    //if (leaderBoard == NULL) getDataFromLeaderBoard(PATH_TO_LEADERBOARD_DATA); 
+    if (leaderBoard == NULL) getDataFromLeaderBoard(PATH_TO_LEADERBOARD_DATA); 
 
     //Map Size buttons
     if ((cursorInArea(xMousePos, yMousePos, 40, 186, 312, 108, windowSizeX, windowSizeY) && sLeaders.state != FAQ) || mapSize == MAP_SIZE_10_X_10){
@@ -3945,6 +3951,7 @@ void renderLeaders(GLFWwindow* window)
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
             if (mapSize != MAP_SIZE_10_X_10){
                 mapSize = MAP_SIZE_10_X_10;
+                startNumber = 0;
                 lastClickTime = glfwGetTime();
             }
         }
@@ -3958,6 +3965,7 @@ void renderLeaders(GLFWwindow* window)
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
             if (mapSize != MAP_SIZE_15_X_15){
                 mapSize = MAP_SIZE_15_X_15;
+                startNumber = 0;
                 lastClickTime = glfwGetTime();
             }
         }
@@ -3973,6 +3981,7 @@ void renderLeaders(GLFWwindow* window)
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
             if (botLevel != EASY_BOT_LEVEL){
                 botLevel = EASY_BOT_LEVEL;
+                startNumber = 0;
                 lastClickTime = glfwGetTime();
             }
         }
@@ -3986,6 +3995,7 @@ void renderLeaders(GLFWwindow* window)
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
             if (botLevel != NORMAL_BOT_LEVEL){
                 botLevel = NORMAL_BOT_LEVEL;
+                startNumber = 0;
                 lastClickTime = glfwGetTime();
             }
         }
@@ -3999,6 +4009,7 @@ void renderLeaders(GLFWwindow* window)
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetTime() - lastClickTime >= KEY_PRESSED_DELAY){
             if (botLevel != HARD_BOT_LEVEL){
                 botLevel = HARD_BOT_LEVEL;
+                startNumber = 0;
                 lastClickTime = glfwGetTime();
             }
         }
@@ -4051,12 +4062,14 @@ void renderLeaders(GLFWwindow* window)
 
     double y = 570;
     int place = 1;
+    static int lastPrintInd = 0;
 
     //Вывод выборки
     if (mapSize != 0 && botLevel != 0){
+        int j = 0;
         for (int i = 0; i < leaderBoard->count; i++){
             if (mapSize == leaderBoard->nodes[i]->MapSize && botLevel == leaderBoard->nodes[i]->BotLevel){
-                if ((i >= startNumber && i < startNumber + 15) || (place < 15 && i >= startNumber + 15)){
+                if ((j >= startNumber && j < startNumber + 15)){
                     snprintf(dataStr, 4, "%d", place);
                     renderText(sLeaders.TextParams2, TextShaderProgram, dataStr , correctXcoords(500, windowSizeX) , correctYcoords(y, windowSizeY), correctTextSize(0.6, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
                     memset(dataStr, '\0', 5);
@@ -4066,6 +4079,8 @@ void renderLeaders(GLFWwindow* window)
                     renderText(sLeaders.TextParams2, TextShaderProgram, leaderBoard->nodes[i]->Nickname , correctXcoords(610, windowSizeX) , correctYcoords(y, windowSizeY), correctTextSize(0.6, windowSizeX, windowSizeY), 0.0f, 0.0f, 0.0f);
                     y -= 35;
                 }
+                j++;
+                lastPrintInd = i;
                 place++;
             }
         }
@@ -4122,8 +4137,8 @@ void renderGetSaveName(GLFWwindow* window)
     static int lastSceneState = 0;
 
     glfwGetCursorPos(window, &xMousePos, &yMousePos);
-    printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
-    printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
+    //printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
+    //printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
 
     renderAnimSprite(sGetSaveName.Background, SpriteShaderProgram, time(NULL), 1.0);
     renderSprite(sGetSaveName.buttonPlates, SpriteShaderProgram, FIRST_TEXTURE);
@@ -4523,8 +4538,8 @@ void renderLoadingMenu(GLFWwindow* window)
     char symbolsLeftStr[5] = {'\0'};
 
     glfwGetCursorPos(window, &xMousePos, &yMousePos);
-    printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
-    printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
+    //printf("%.2lf  %.2lf    ", xMousePos, yMousePos);
+    //printf("Window size: %dx%d\n", windowSizeX, windowSizeY);
 
     renderAnimSprite(sLoadingMenu.Background, SpriteShaderProgram, time(NULL), 1.0);
     renderSprite(sLoadingMenu.buttonPlates, SpriteShaderProgram, FIRST_TEXTURE);

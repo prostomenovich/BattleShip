@@ -3,6 +3,7 @@
 #ifndef SPRITE_C
 #define SPRITE_C
 
+//Вспомогательная функция
 void fillTextureFieldsWithZeros(Sprite* sprite)
 {
     sprite->Texture1 = 0;
@@ -11,6 +12,7 @@ void fillTextureFieldsWithZeros(Sprite* sprite)
     sprite->Texture4 = 0;
 }
 
+//Создаёт новый спрайт, возвращает указатель
 Sprite* initSprite()
 {
     const GLfloat initVertexCoords[] = {
@@ -77,6 +79,7 @@ Sprite* initSprite()
     return newSprite;
 }
 
+//Задаёт стартовые параметры для нового спрайта
 void setStartSpriteParams(Sprite* sprite, GLfloat spriteSizeX,
                                           GLfloat spriteSizeY,
                                           GLfloat spritePosX,
@@ -90,6 +93,8 @@ void setStartSpriteParams(Sprite* sprite, GLfloat spriteSizeX,
     sprite->rotate = spriteRotate;
 }
 
+//Загружает в спрайт текстуру
+//Последний аргумент функции отвеает за то, в какой слот будет загружена текстура для спрайта
 void setSpriteTexture(Sprite* sprite, char* pathToTexture, GLenum filter, GLenum wrapMode,GLint textureNumber)
 {
     GLuint spriteTexture;
@@ -116,6 +121,7 @@ void setSpriteTexture(Sprite* sprite, char* pathToTexture, GLenum filter, GLenum
     } 
 }
 
+//Выполняет отрисовку спрайта
 void renderSprite(Sprite* sprite, GLuint shaderProgram, GLint textureNumber)
 {
     glUseProgram(shaderProgram);
@@ -168,22 +174,26 @@ void renderSprite(Sprite* sprite, GLuint shaderProgram, GLint textureNumber)
     glUseProgram(0);
 }
 
+//Изменяет позицию спрайта на оси X
 void changeSpritePosX(Sprite* sprite, GLfloat newPosX)
 {
     sprite->positionX = newPosX;
 }
 
+//Изменяет позицию спрайта на оси Y
 void changeSpritePosY(Sprite* sprite, GLfloat newPosY)
 {
     sprite->positionY = newPosY;
 }
 
+//Изменяет размер спрайта
 void changeSpriteSize(Sprite* sprite, GLfloat newSizeX, GLfloat newSizeY)
 {
     sprite->sizeX = newSizeX;
     sprite->sizeY = newSizeY;
 }
 
+//Освобождает память выделенную по спрайт
 void freeSprite(Sprite* sprite)
 {
     if (sprite->Texture1 != 0){

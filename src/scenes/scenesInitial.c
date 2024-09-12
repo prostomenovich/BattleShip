@@ -6,13 +6,13 @@
 
 Player playerInfo;
 
-//map
+//Игровые поля
 int map[18][18] = {0, };
 int mapBot[18][18] = {0, };
 int mapBot1[18][18] = {0, };
 int mapBot2[18][18] = {0, };
 
-//Scenes
+//Сцены
 MainMenu sMainMenu;
 About sAbout;
 NewLoadMenu sNewLoadMenu;
@@ -31,14 +31,14 @@ GetSaveName sGetSaveName;
 LoadingMenu sLoadingMenu;
 
 
-//ShipBase
+//Базы кораблей
 ShipBase* shipBase = NULL;
 ShipBase* botShipBase = NULL;
 ShipBase* shipBaseBFBot1 = NULL;
 ShipBase* shipBaseBFBot2 = NULL;
 Coordinates* coords[5] = {NULL, };
 
-//Other veriables
+//Другие переменные
 PiratesSprites PiratesSpritesBase;
 LeaderBoard* leaderBoard = NULL;
 SaveNamesList* listSaveNames = NULL;
@@ -51,7 +51,7 @@ char nickname[MAX_NICKNAME_SIZE] = {'\0',};
 char saveName[MAX_SAVENAME_SIZE] = {'\0',};
 char loadName[MAX_SAVENAME_SIZE] = {'\0',};
 
-//FAQ Text
+//Текст для FAQ
 char FAQMainGame10x10Basic [7][MAX_STRING_SIZE] = 
 {
     "In the basic mode you have to fight against a bot.",
@@ -233,6 +233,12 @@ char AboutRules [70][MAX_STRING_SIZE] =
 };
 
 const int AboutRulesStringCount = 70;
+
+/*
+    Все дальнейшие функции подгружают необходимые текстуры для каждой из сцен!
+    Некоторые текстуры подгружаются единожды и просто копируются в другие сцены (для ускорения загрузки и экономии памяти)
+    Для каждой сцены есть отдельная структура, которая находится в файле scenesInitial.h
+*/
 
 void initMainMenu()
 {

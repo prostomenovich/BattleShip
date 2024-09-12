@@ -3,6 +3,7 @@
 #ifndef SHIPBASE_C
 #define SHIPBASE_C
 
+//Создаёт новую базу данных для хранения информации о кораблях
 ShipBase* initShipBase(int mapSize)
 {	
 	int MaxShipsPlates = 4;
@@ -73,13 +74,14 @@ ShipBase* initShipBase(int mapSize)
 	return shipBase;
 }
 
+//Добавляет новый корабль в базу
 int putShipInBase(ShipBase* shipBase, Coordinates* coords[5], int ShipType)
 {
 	ShipBase* sb = shipBase;
 	while (sb != NULL) {
 		if (sb->shipType == ShipType) {
             if (sb->shipsCount == sb->shipsInMap){
-                printf("MAX_SHIPS_THIS_TYPE!\n");
+                //printf("MAX_SHIPS_THIS_TYPE!\n");
                 return MAX_SHIPS_THIS_TYPE;
             } 
 
@@ -89,15 +91,16 @@ int putShipInBase(ShipBase* shipBase, Coordinates* coords[5], int ShipType)
 			}
 			sb->ships[sb->shipsInMap]->inMap = IN_MAP;
 			sb->shipsInMap += 1;
-            printf("ADD_SUCCESS!\n");
+            //printf("ADD_SUCCESS!\n");
 			return ADD_SUCCESS;
 		}
 		sb = sb->nextShip;
 	}
-    printf("ADD_ERROR!\n");
+    //printf("ADD_ERROR!\n");
 	return ADD_ERROR;
 }
 
+//Возвращает тип не убитого корабля с наибольшим числом палуб
 int maxPlatesShip(ShipBase* shipBase)
 {
 	ShipBase* sb = shipBase;
@@ -112,6 +115,7 @@ int maxPlatesShip(ShipBase* shipBase)
 	return maxPlates;
 }
 
+//Сортировка координат по Y
 void selectSortY(Coordinates* coords[5], int shipType)
 {
     int min;
@@ -131,6 +135,7 @@ void selectSortY(Coordinates* coords[5], int shipType)
     }
 }
 
+//Сортировка координат по X
 void selectSortX(Coordinates* coords[5], int shipType)
 {
     int min;
@@ -150,6 +155,7 @@ void selectSortX(Coordinates* coords[5], int shipType)
     }
 }
 
+//Проверяет корректны ли координаты корабля, который собираются поставить
 int shipIsCorrect(int map[18][18], ShipBase* shipBase, int shipType, int MapSize, Coordinates* coords[5])
 {
     ShipBase* sb = shipBase; 
@@ -158,7 +164,7 @@ int shipIsCorrect(int map[18][18], ShipBase* shipBase, int shipType, int MapSize
 
     while (sb->shipType != shipType) sb = sb->nextShip;
     if (sb->shipsCount == sb->shipsInMap){
-        printf("Ships of this type are already deployed!\n");
+        //printf("Ships of this type are already deployed!\n");
         return SHIP_NOT_CORRECT;
     }
 
@@ -177,7 +183,6 @@ int shipIsCorrect(int map[18][18], ShipBase* shipBase, int shipType, int MapSize
 
     for (int i = 0; i < shipType - 1; i++){
         if (coords[i]->x != coords[i + 1]->x){
-            printf("141\n");
             correctCoordsX = SHIP_NOT_CORRECT;
         }
         if (coords[i]->y != coords[i + 1]->y){
@@ -189,7 +194,6 @@ int shipIsCorrect(int map[18][18], ShipBase* shipBase, int shipType, int MapSize
 
     for (int i = 0; i < shipType - 1; i++){
         if (abs(coords[i]->x - coords[i + 1]->x) > 1 || abs(coords[i]->y - coords[i + 1]->y) > 1 ){
-            printf("145\n");
             return SHIP_NOT_CORRECT;
         }
     }
@@ -198,25 +202,18 @@ int shipIsCorrect(int map[18][18], ShipBase* shipBase, int shipType, int MapSize
     //1 - нельзя ставить (корабль на соседней клетке)
     //0 - клетка свободна
 
-    for (int i = 0; i < shipType; i++){
-        printf("(%d, %d)\n", coords[i]->x, coords[i]->y);
-    }
-
     if (coords[0]->x + 1 > MapSize || coords[0]->x + 1 < 1 || coords[0]->y + 1 < 1 || coords[0]->y + 1 > MapSize) return SHIP_NOT_CORRECT;
     if (coords[shipType - 1]->x + 1 > MapSize || coords[shipType - 1]->x + 1 < 1 || coords[shipType - 1]->y + 1 > MapSize || coords[shipType - 1]->y + 1 < 1) return SHIP_NOT_CORRECT;
 
     if (flag == CHANGE_X){
         if (map[coords[0]->y + 1][coords[0]->x + 1 - 1] == 2 || map[coords[0]->y + 1 + 1][coords[0]->x + 1 - 1] == 2 || map[coords[0]->y + 1 - 1][coords[0]->x + 1 - 1] == 2 ){
-            printf("165\n");
             return SHIP_NOT_CORRECT;
         }
         if (map[coords[shipType - 1]->y + 1][coords[shipType - 1]->x + 1 + 1] == 2 || map[coords[shipType - 1]->y + 1 + 1][coords[shipType - 1]->x + 1 + 1] == 2 || map[coords[shipType - 1]->y + 1 - 1][coords[shipType - 1]->x + 1 + 1] == 2 ){
-            printf("169\n");
             return SHIP_NOT_CORRECT;
         }
         for (int i = 0; i < shipType; i++){
             if (map[coords[i]->y + 1][coords[i]->x + 1] != 0 || map[coords[i]->y + 1 + 1][coords[i]->x + 1] == 2 || map[coords[i]->y + 1 - 1][coords[i]->x + 1] == 2){
-                printf("174\n");
                 return SHIP_NOT_CORRECT;
             }
         }
@@ -225,16 +222,13 @@ int shipIsCorrect(int map[18][18], ShipBase* shipBase, int shipType, int MapSize
     }
     else {
         if (map[coords[0]->y + 1 - 1][coords[0]->x + 1] == 2 || map[coords[0]->y + 1 - 1][coords[0]->x + 1 + 1] == 2 || map[coords[0]->y + 1 - 1][coords[0]->x + 1 - 1] == 2 ){
-            printf("183\n");
             return SHIP_NOT_CORRECT;
         }
         if (map[coords[shipType - 1]->y + 1 + 1][coords[shipType - 1]->x + 1] == 2 || map[coords[shipType - 1]->y + 1 + 1][coords[shipType - 1]->x + 1 + 1] == 2 || map[coords[shipType - 1]->y + 1 + 1][coords[shipType - 1]->x + 1 - 1] == 2 ){
-            printf("187\n");
             return SHIP_NOT_CORRECT;
         }
         for (int i = 0; i < shipType; i++){
             if (map[coords[i]->y + 1][coords[i]->x + 1] != 0 || map[coords[i]->y + 1][coords[i]->x + 1 + 1] == 2  || map[coords[i]->y + 1][coords[i]->x + 1 - 1] == 2){
-                printf("192\n");
                 return SHIP_NOT_CORRECT;
             }
         }
@@ -244,6 +238,7 @@ int shipIsCorrect(int map[18][18], ShipBase* shipBase, int shipType, int MapSize
 
 }
 
+//Добавляет корабль на игровое поле (в двумерный массив)
 void putShipInMap(int map[18][18], Coordinates* coords[5], int shipType)
 {
     int flag;
@@ -285,15 +280,9 @@ void putShipInMap(int map[18][18], Coordinates* coords[5], int shipType)
             map[coords[i]->y + 1 ][coords[i]->x + 1 + 1] = 1;
         }
     }
-
-    for (int i = 1; i <= 10; i++){
-        for (int j = 1; j <= 10; j++){
-            printf("%d ",map[i][j]);
-        }
-        printf("\n");
-    }
 }
 
+//Записывает в строку shipsCountStr число оставшихся в живых кораблей
 void getRemainedShips(ShipBase* shipBase, int shipType, char* shipsCountStr)
 {
     ShipBase* sb = shipBase;
@@ -311,6 +300,7 @@ void getRemainedShips(ShipBase* shipBase, int shipType, char* shipsCountStr)
     shipsCountStr[0] = remained + '0';
 }
 
+//Проверяет все ли корабли были расставлены на поле
 int AllShipsInMap(ShipBase* shipBase)
 {
     ShipBase* sb = shipBase;
@@ -322,6 +312,7 @@ int AllShipsInMap(ShipBase* shipBase)
     return ALL_SHIPS_IN_MAP;
 }
 
+//Очищает игровое поле
 void clearMap(int map[18][18])
 {
     for (int i = 0; i < 18; i++){
@@ -331,6 +322,7 @@ void clearMap(int map[18][18])
     }
 }
 
+//Очищает базу кораблей
 void clearShipBase(ShipBase* shipBase)
 {
     ShipBase* sb = shipBase;
@@ -340,6 +332,7 @@ void clearShipBase(ShipBase* shipBase)
     }
 }
 
+//Возвращает максимальное количество палуб, которое можно поставить на поле
 static ShipBase* maxNotPutShip(ShipBase* shipBase)
 {
     ShipBase* sb = shipBase;
@@ -353,6 +346,7 @@ static ShipBase* maxNotPutShip(ShipBase* shipBase)
     return tmpsb;
 }
 
+//Проверка корректности координат корабля, который требуется поставить (для автоматической расстановки)
 static int canPutThisShip(int map[18][18], int shipType, int MapSize, Coordinates* coords[5])
 {
     
@@ -369,16 +363,13 @@ static int canPutThisShip(int map[18][18], int shipType, int MapSize, Coordinate
 
     if (flag == CHANGE_X){
         if (map[coords[0]->y + 1][coords[0]->x + 1 - 1] == 2 || map[coords[0]->y + 1 + 1][coords[0]->x + 1 - 1] == 2 || map[coords[0]->y + 1 - 1][coords[0]->x + 1 - 1] == 2 ){
-            printf("165\n");
             return SHIP_NOT_CORRECT;
         }
         if (map[coords[shipType - 1]->y + 1][coords[shipType - 1]->x + 1 + 1] == 2 || map[coords[shipType - 1]->y + 1 + 1][coords[shipType - 1]->x + 1 + 1] == 2 || map[coords[shipType - 1]->y + 1 - 1][coords[shipType - 1]->x + 1 + 1] == 2 ){
-            printf("169\n");
             return SHIP_NOT_CORRECT;
         }
         for (int i = 0; i < shipType; i++){
             if (map[coords[i]->y + 1][coords[i]->x + 1] != 0 || map[coords[i]->y + 1 + 1][coords[i]->x + 1] == 2 || map[coords[i]->y + 1 - 1][coords[i]->x + 1] == 2){
-                printf("174\n");
                 return SHIP_NOT_CORRECT;
             }
         }
@@ -387,16 +378,13 @@ static int canPutThisShip(int map[18][18], int shipType, int MapSize, Coordinate
     }
     else {
         if (map[coords[0]->y + 1 - 1][coords[0]->x + 1] == 2 || map[coords[0]->y + 1 - 1][coords[0]->x + 1 + 1] == 2 || map[coords[0]->y + 1 - 1][coords[0]->x + 1 - 1] == 2 ){
-            printf("183\n");
             return SHIP_NOT_CORRECT;
         }
         if (map[coords[shipType - 1]->y + 1 + 1][coords[shipType - 1]->x + 1] == 2 || map[coords[shipType - 1]->y + 1 + 1][coords[shipType - 1]->x + 1 + 1] == 2 || map[coords[shipType - 1]->y + 1 + 1][coords[shipType - 1]->x + 1 - 1] == 2 ){
-            printf("187\n");
             return SHIP_NOT_CORRECT;
         }
         for (int i = 0; i < shipType; i++){
             if (map[coords[i]->y + 1][coords[i]->x + 1] != 0 || map[coords[i]->y + 1][coords[i]->x + 1 + 1] == 2  || map[coords[i]->y + 1][coords[i]->x + 1 - 1] == 2){
-                printf("192\n");
                 return SHIP_NOT_CORRECT;
             }
         }
@@ -404,7 +392,7 @@ static int canPutThisShip(int map[18][18], int shipType, int MapSize, Coordinate
     }
 }
 
-
+//Генерирует автоматическую расстановку кораблей на поле
 void genRandShips(int map[18][18], ShipBase* shipBase, int MapSize)
 {
     srand(time(NULL));
@@ -471,18 +459,15 @@ void genRandShips(int map[18][18], ShipBase* shipBase, int MapSize)
             }
             flag = false;
             
-        }
-
-        
+        }   
     }
-
 
     for (int i = 0; i < 5; i++){
         free(coords[i]);
     }
 }
 
-
+//Освобождает память, выделенную под базу для кораблей
 void freeShipBase(ShipBase* shipBase)
 {
     ShipBase* tmp = NULL;
@@ -520,6 +505,7 @@ void freeShipBase(ShipBase* shipBase)
     shipBase = NULL;
 }
 
+//Удаляет мусор с карты (применяется при переходе в игрвой режим т.к. при расстановке кораблей на карту добавляются вспомогательные элементы)
 void clearTrashFromMap(int map[18][18])
 {
     for (int i = 0; i < 18; i++){
@@ -530,6 +516,7 @@ void clearTrashFromMap(int map[18][18])
 }
 
 //Проверка убит корабль, подбит или промах
+//В случае попадания убирает жизнь у корабля в базе данных
 int killShipInShipBase(ShipBase* shipBase, int x, int y)
 {
     ShipBase* sb = shipBase;
@@ -566,35 +553,27 @@ void putMisses(int map[18][18], ShipBase* shipBase, int x, int y, int digit)
                 for (int j = 0; j < sb->shipType; j++){
                     if (sb->ships[i]->coords[j]->x == x && sb->ships[i]->coords[j]->y == y){
                         for (int k = 0; k < sb->shipType; k++){
-                            printf("1\n");
                             if (map[sb->ships[i]->coords[k]->y + 1][sb->ships[i]->coords[k]->x + 1 - 1] != 3 && map[sb->ships[i]->coords[k]->y + 1][sb->ships[i]->coords[k]->x + 1 - 1] != 1 && map[sb->ships[i]->coords[k]->y + 1][sb->ships[i]->coords[k]->x + 1 - 1] != 2){
                                 map[sb->ships[i]->coords[k]->y + 1][sb->ships[i]->coords[k]->x + 1 - 1] = digit;
                             }
-                            printf("2\n");
                             if (map[sb->ships[i]->coords[k]->y + 1][sb->ships[i]->coords[k]->x + 1 + 1] != 3 && map[sb->ships[i]->coords[k]->y + 1][sb->ships[i]->coords[k]->x + 1 + 1] != 1 && map[sb->ships[i]->coords[k]->y + 1][sb->ships[i]->coords[k]->x + 1 + 1] != 2){
                                 map[sb->ships[i]->coords[k]->y + 1][sb->ships[i]->coords[k]->x + 1 + 1] = digit;
                             }
-                            printf("3\n");
                             if (map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1] != 3 && map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1] != 1 && map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1] != 2){
                                 map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1] = digit;
                             }
-                            printf("4\n");
                             if (map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1 + 1] != 3 && map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1 + 1] != 1 && map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1 + 1] != 2){
                                 map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1 + 1] = digit;
                             }
-                            printf("5\n");
                             if (map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1 - 1] != 3 && map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1 - 1] != 1 && map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1 - 1] != 2){
                                 map[sb->ships[i]->coords[k]->y + 1 + 1][sb->ships[i]->coords[k]->x + 1 - 1] = digit;
                             }
-                            printf("6\n");
                             if (map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1] != 3 && map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1] != 1 && map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1] != 2){
                                 map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1] = digit;
                             }
-                            printf("7\n");
                             if (map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1 + 1] != 3 && map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1 + 1] != 1 && map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1 + 1] != 2){
                                 map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1 + 1] = digit;
                             }
-                            printf("8\n");
                             if (map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1 - 1] != 3 && map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1 - 1] != 1 && map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1 - 1] != 2){
                                 map[sb->ships[i]->coords[k]->y + 1 - 1][sb->ships[i]->coords[k]->x + 1 - 1] = digit;
                             } 
@@ -609,6 +588,7 @@ void putMisses(int map[18][18], ShipBase* shipBase, int x, int y, int digit)
     }
 }
 
+//Возвращает количество оставшихся в живых кораблей
 int getShipsLeft(ShipBase* shipBase)
 {
     ShipBase* sb = shipBase;

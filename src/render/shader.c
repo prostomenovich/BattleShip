@@ -3,6 +3,8 @@
 #ifndef SHADER_C
 #define SHADER_C
 
+//Считывает текст шейдера из указанного файла
+//Возвращает строку с текстом шейдера
 const GLchar* readShaderFromFile(char* fileName)
 {
     FILE* SHADERFILE = fopen(fileName, "r");
@@ -45,6 +47,7 @@ const GLchar* readShaderFromFile(char* fileName)
 
 }
 
+//Создаёт вершинный шейдер, возвращает его идентификатор
 GLuint MakeVertexShader(const GLchar* shaderText)
 {
 	GLint ErrorCheck;
@@ -66,6 +69,7 @@ GLuint MakeVertexShader(const GLchar* shaderText)
     return vertexShader;
 }
 
+//Создаёт фрагментный шейдер, возвращает его идентификатор
 GLuint MakeFragmentShader(const GLchar* shaderText)
 {
     GLint ErrorCheck;
@@ -87,6 +91,8 @@ GLuint MakeFragmentShader(const GLchar* shaderText)
     return fragmentShader;
 }
 
+//Создаёт шейдерную программу, возвращает её идентификатор
+//В качестве аргументов передаются пути до фрагментного и вертексного шейдеров
 GLuint MakeShaderProgram(char* PathToVertex, char* PathToFragment)
 {
     const GLchar* vertexShaderText = readShaderFromFile(PathToVertex);

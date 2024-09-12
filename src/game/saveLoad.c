@@ -4,6 +4,7 @@
 #ifndef SAVELOAD_C
 #define SAVELOAD_C
 
+//Создаёт сохранение с указаным именем в директории для сохранений
 int saveGame(char* pathToFolder, 
              char* saveName, 
              int mode, 
@@ -121,6 +122,7 @@ int saveGame(char* pathToFolder,
     return SAVE_SUCCESS;
 }
 
+//Загружает игру из директории для сохранений, если сохранение корректно загружает данные во все необходимые переменные и возвращает LOAD_SUCCESS
 int loadGame(char* pathToFolder, char* saveName)
 {
     extern int playerScore;
@@ -171,7 +173,7 @@ int loadGame(char* pathToFolder, char* saveName)
     char symb;
     int sCounter = 0;
     int state = 0;
-    printf("load started!\n");
+
     char* pathToSave = (char*)malloc(sizeof(char) * (strlen(pathToFolder) + strlen(saveName) + 3));
     if (pathToSave == NULL){
         printf("Mem alloc for path to save ERROR!\n");
@@ -180,7 +182,6 @@ int loadGame(char* pathToFolder, char* saveName)
     memset(pathToSave, '\0', strlen(pathToFolder) + strlen(saveName) + 3);
     strcat(pathToSave, pathToFolder);
     strcat(pathToSave, saveName);
-    printf("string made!\n");
 
     FILE* SAVEFILE = NULL;
     SAVEFILE = fopen(pathToSave, "r");
@@ -189,7 +190,7 @@ int loadGame(char* pathToFolder, char* saveName)
         free(pathToSave);
         return SAVE_ERROR;
     }
-    printf("file was open!\n");
+
     if (fscanf(SAVEFILE,"m:%d\nms:%d\nbl:%d\n", &playerInfo.GameMode, &playerInfo.MapSize, &playerInfo.BotLevel) != 3){
         playerInfo.BotLevel = NOT_FILLED_IN;
         playerInfo.GameMode = NOT_FILLED_IN;
@@ -306,10 +307,6 @@ int loadGame(char* pathToFolder, char* saveName)
         }
     }
 
-    
-
-    printf("m:%d\nms:%d\nbl:%d\ns1:%d\ns2:%d\nstate:%d", playerInfo.GameMode, playerInfo.MapSize, playerInfo.BotLevel, playerScore, botScore, state);
-    printf("base info was getting\n");
     fseek(SAVEFILE, 4, SEEK_CUR);
 
     int counter = 0,
@@ -371,12 +368,10 @@ int loadGame(char* pathToFolder, char* saveName)
         fclose(SAVEFILE);
         return LOAD_ERROR;
     }
-    printf("First map was getting!\n");
+
     fseek(SAVEFILE, 5, SEEK_CUR);
     
     if (playerInfo.GameMode == BASIC_MODE){
-        //if (shipBase != NULL) freeShipBase(shipBase);
-
         if (playerInfo.MapSize == MAP_SIZE_10_X_10) shipBase = initShipBase(MAP_SIZE_10_X_10);
         else if (playerInfo.MapSize == MAP_SIZE_15_X_15) shipBase = initShipBase(MAP_SIZE_15_X_15);
         else {
@@ -442,8 +437,6 @@ int loadGame(char* pathToFolder, char* saveName)
         }
     }
     else if (playerInfo.GameMode == BOTS_FIGHT_MODE){
-        //if (shipBaseBFBot1 != NULL) freeShipBase(shipBaseBFBot1);
-
         if (playerInfo.MapSize == MAP_SIZE_10_X_10) shipBaseBFBot1 = initShipBase(MAP_SIZE_10_X_10);
         else if (playerInfo.MapSize == MAP_SIZE_15_X_15) shipBaseBFBot1 = initShipBase(MAP_SIZE_15_X_15);
         else {
@@ -524,19 +517,6 @@ int loadGame(char* pathToFolder, char* saveName)
         fclose(SAVEFILE);
         return LOAD_ERROR;
     }
-    printf("first shipBase was getting\n");
-
-    /*ShipBase* sb = shipBase;
-    while (sb != NULL){
-        for (int i = 0; i < sb->shipsCount; i++){
-            printf("l: %d\n", sb->ships[i]->lives);
-            for (int j = 0; j < sb->shipType; j++){
-                printf("%d %d\n", sb->ships[i]->coords[j]->x, sb->ships[i]->coords[j]->y);
-            }
-        }
-
-        sb = sb->nextShip;
-    }*/
 
     fseek(SAVEFILE, 4, SEEK_CUR);
 
@@ -602,12 +582,10 @@ int loadGame(char* pathToFolder, char* saveName)
         fclose(SAVEFILE);
         return LOAD_ERROR;
     }
-    printf("second map was getting\n");
+
     fseek(SAVEFILE, 5, SEEK_CUR);
 
     if (playerInfo.GameMode == BASIC_MODE){
-        //if (botShipBase != NULL) freeShipBase(botShipBase);
-
         if (playerInfo.MapSize == MAP_SIZE_10_X_10) botShipBase = initShipBase(MAP_SIZE_10_X_10);
         else if (playerInfo.MapSize == MAP_SIZE_15_X_15) botShipBase = initShipBase(MAP_SIZE_15_X_15);
         else {
@@ -681,8 +659,6 @@ int loadGame(char* pathToFolder, char* saveName)
         }
     }
     else if (playerInfo.GameMode == BOTS_FIGHT_MODE){
-        //if (shipBaseBFBot2 != NULL) freeShipBase(shipBaseBFBot2);
-
         if (playerInfo.MapSize == MAP_SIZE_10_X_10) shipBaseBFBot2  = initShipBase(MAP_SIZE_10_X_10);
         else if (playerInfo.MapSize == MAP_SIZE_15_X_15) shipBaseBFBot2  = initShipBase(MAP_SIZE_15_X_15);
         else {
@@ -773,13 +749,14 @@ int loadGame(char* pathToFolder, char* saveName)
         fclose(SAVEFILE);
         return LOAD_ERROR;
     }
-    printf("second shipBase was getting\n");
+
     free(pathToSave);
     fclose(SAVEFILE);
 
     return LOAD_SUCCESS;
 }
 
+//Получает все доступные имена сохранений из директории для сохранений
 SaveNamesList* getSaveNames(char* pathToFolder)
 {
     DIR* directory;
@@ -827,6 +804,7 @@ SaveNamesList* getSaveNames(char* pathToFolder)
     return list;
 }
 
+//Очищает список с именами сохранений
 void freeSaveNames(SaveNamesList* list){
     for (int i = 0 ; i < list->count && i < MAX_SAVE_NAMES; i++){
         free(list->names[i]);
@@ -836,6 +814,7 @@ void freeSaveNames(SaveNamesList* list){
     list = NULL;
 }
 
+//Удаляет сохранение из директории
 int delSave(char* pathToFolder, char* saveName)
 {
     char* string = (char*)malloc(sizeof(char) * (strlen(pathToFolder) + strlen(saveName) + 4));

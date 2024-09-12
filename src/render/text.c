@@ -3,6 +3,7 @@
 #ifndef TEXT_C
 #define TEXT_C
 
+//Загружает новый шрифт
 FT_Face* loadNewFace(FT_Library* ft_lib, const char* pathToFont)
 {
     FT_Face* newFace = (FT_Face*)malloc(sizeof(FT_Face));
@@ -19,11 +20,13 @@ FT_Face* loadNewFace(FT_Library* ft_lib, const char* pathToFont)
     return newFace;
 }
 
+//Устанавливает базовые параметры для шрифта
 void setFaceSize(FT_Face face, GLuint height)
 {
     FT_Set_Pixel_Sizes(face, 0, height);
 }
 
+//Генерирует массив с символами
 Character** genCharactersArray(FT_Face face, FT_Library ft)
 {
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -76,6 +79,7 @@ Character** genCharactersArray(FT_Face face, FT_Library ft)
     return charArray;
 }
 
+//Создаёт новый текст, возвращает структуру со всеми параметрами необходимыми для вывода символов
 Text* makeNewText(FT_Library* ft_lib, const char* pathToFont, GLuint height)
 {
     FT_Face* newFace = loadNewFace(ft_lib, pathToFont);
@@ -124,6 +128,7 @@ Text* makeNewText(FT_Library* ft_lib, const char* pathToFont, GLuint height)
     return newText;
 }
 
+//Отрисовка заданной строки текста
 void renderText(Text* textParams,GLuint shaderProgram, const char* text, GLfloat x, GLfloat y, GLfloat scale, GLfloat red, GLfloat green, GLfloat blue)
 {
     glUseProgram(shaderProgram);
@@ -167,6 +172,7 @@ void renderText(Text* textParams,GLuint shaderProgram, const char* text, GLfloat
     glUseProgram(0);
 }
 
+//Освобождение памяти, выделенной для параметров текста
 void freeText(Text* textParams)
 {
     glDeleteBuffers(1, &textParams->VAO);

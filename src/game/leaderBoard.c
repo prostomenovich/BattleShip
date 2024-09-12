@@ -4,6 +4,7 @@
 #ifndef LEADERBOARD_C
 #define LEADERBOARD_C
 
+//Добавляет имя в файл с таблицей лидеров
 void pushDataInLeaderBoard(char* nickname,int score, int MapSize, int BotLevel, char* LeaderBoardName)
 {
     FILE* LEADERBOARD = NULL;
@@ -19,6 +20,7 @@ void pushDataInLeaderBoard(char* nickname,int score, int MapSize, int BotLevel, 
     fclose(LEADERBOARD);
 }
 
+//Получает данные из таблицы лидеров, если файл с таблицей лидеров каким-то образом сломан, создаёт новую пустую таблицу лидеров
 LeaderBoard* getDataFromLeaderBoard(char* LeaderBoardName)
 {
     FILE* LEADERBOARD = NULL;
@@ -100,6 +102,7 @@ LeaderBoard* getDataFromLeaderBoard(char* LeaderBoardName)
     return leaderBoard;
 }
 
+//Заносит в файл таблицы лидеров данные из текущей таблицы лидеров (перетирает их)
 void updateLeaderBoard(char* LeaderBoardName, LeaderBoard* lb)
 {
     FILE* LEADERBOARD = NULL;
@@ -116,6 +119,7 @@ void updateLeaderBoard(char* LeaderBoardName, LeaderBoard* lb)
     fclose(LEADERBOARD);
 }
 
+//Сортирует таблицу лидеров, находящуюся в оперативной памяти
 void sortLeaderBoard(LeaderBoard* leaderboard)
 {
     LeaderBoardNode* min;
@@ -135,6 +139,7 @@ void sortLeaderBoard(LeaderBoard* leaderboard)
     }
 }
 
+//Очищает память, выделенную под таблицу лидеров
 void freeLeaderBoard(LeaderBoard* leaderBoard)
 {
     
@@ -149,7 +154,7 @@ void freeLeaderBoard(LeaderBoard* leaderBoard)
     leaderBoard = NULL;
 }
 
-
+//Обновляет рекорд, если указанное игроком имя уже есть в таблице и рекорд лучше текущего
 int checkNickname(LeaderBoard* lb, char* nickname,int score, int mapSize, int botLevel)
 {
     for (int i = 0; i < lb->count; i++){

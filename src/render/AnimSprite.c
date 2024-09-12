@@ -3,7 +3,7 @@
 #ifndef ANIMSPRITE_C
 #define ANIMSPRITE_C
 
-
+//Создание нового анимированного спрайта, возвращает указатель
 AnimatedSprite* initAnimatedSprite()
 {
     const GLfloat initVertexCoords[] = {
@@ -70,6 +70,7 @@ AnimatedSprite* initAnimatedSprite()
     return newAnimSprite;
 }
 
+//Устанавливает базовые параметры для нового анимированного спрайта
 void setStartAnimSpriteParams(AnimatedSprite* animSprite, 
                               GLfloat animSpriteSizeX,
                               GLfloat animSpriteSizeY,
@@ -84,7 +85,7 @@ void setStartAnimSpriteParams(AnimatedSprite* animSprite,
     animSprite->rotate = animSpriteRotate;
 }
 
-
+//Позволяет загрузить кадры, которые будут повторяться во время проигрывания анимированного спрайта
 void setAnimSpriteFrames(AnimatedSprite* animSprite, 
                          GLuint texturesCount, 
                          GLuint repeat, 
@@ -122,6 +123,7 @@ void setAnimSpriteFrames(AnimatedSprite* animSprite,
     animSprite->currentFrameIndex = -1;
 }
 
+//Отрисовка анимированного спрайта
 void renderAnimSprite(AnimatedSprite* sprite, GLuint shaderProgram, time_t currentTime, double delay)
 {   
     glUseProgram(shaderProgram);
@@ -184,12 +186,14 @@ void renderAnimSprite(AnimatedSprite* sprite, GLuint shaderProgram, time_t curre
     glUseProgram(0);
 }
 
+//Изменение размера анимированного спрайта
 void changeAnimSpriteSize(AnimatedSprite* sprite, GLfloat newSizeX, GLfloat newSizeY)
 {
     sprite->sizeX = newSizeX;
     sprite->sizeY = newSizeY;
 }
 
+//Освобождает память, которую выделели под анимированный спрайт
 void freeAnimSprite(AnimatedSprite* animSprite)
 {
     glDeleteBuffers(1, &animSprite->texCoordsVBO);
@@ -203,4 +207,5 @@ void freeAnimSprite(AnimatedSprite* animSprite)
     free(animSprite->frameBuffer);
     free(animSprite);
 }
+
 #endif

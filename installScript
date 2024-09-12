@@ -1,0 +1,6 @@
+#!/bin/bash
+sudo apt-get install gcc g++ libwayland-dev cmake xorg-dev libglu1-mesa-dev libvlccore-dev libvlc-dev libxkbcommon-x11-dev
+sudo mkdir build
+cd build
+sudo cmake ..
+sudo cmake --build .

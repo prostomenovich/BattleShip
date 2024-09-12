@@ -25,8 +25,6 @@ GLuint TextShaderProgram;
 FT_Library ft1;
 FT_Library ft2;
 
-
-
 void glfwWindowSizeCallback(GLFWwindow* window, int width, int height);
 void glfwKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void character_callback( GLFWwindow * window, unsigned  int codepoint);
@@ -46,7 +44,7 @@ int main(void)
 
     GLFWwindow* window;
 
-    /* Initialize the library */
+    /*Инициализация библиотеки GLFW*/
     if (!glfwInit()){
         printf("Error initializing GLFW!\n");
         return EXIT_FAILURE;
@@ -54,18 +52,18 @@ int main(void)
     
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-    //Setting an OpenGL context
+    //Создание OpenGL контекста
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    //Creating a Window
+    //Создание окна
     window = glfwCreateWindow(windowSizeX, windowSizeY, "BattleShip", NULL, NULL);
 
     glfwSetWindowAttrib(window, GLFW_RESIZABLE, GLFW_FALSE);
     glfwSetWindowSizeLimits(window, 1280, 720, 1280, 720);
 
-    //Callbacks
+    //Обработка коллбэков
     glfwSetWindowSizeCallback(window, glfwWindowSizeCallback);
     glfwSetKeyCallback(window, glfwKeyCallback);
     glfwSetCharCallback (window, character_callback);
@@ -103,6 +101,8 @@ int main(void)
     TextShaderProgram = MakeShaderProgram("../resources/shaders/textVertex.glsl",
                                             "../resources/shaders/textFragment.glsl");
 
+    printf("Wait...We're equipping the team\n");
+
     initPiratesSprites();
     initMainMenu();
     initAbout();
@@ -112,11 +112,17 @@ int main(void)
     initRaftPlacement15x15();
     initRaftPlacement10x10BF();
     initRaftPlacement15x15BF();
+
+    printf("Wait...we're inspecting the guns\n");
+
     initMainGameBase10x10();
     initMainGameBase15x15();
     initMainGameBotFight10x10();
     initMainGameBotFight15x15();
     initAddingNickName();
+
+    printf("Wait...We're swimming out of the bay\n");
+
     initLeaders();
     initGetSaveName();
     initLoadingMenu();
@@ -130,7 +136,9 @@ int main(void)
     glUseProgram(TextShaderProgram);
     sendMatrix4ToShader("projection", &projectionMatrix, TextShaderProgram);
 
-    /* Loop until the user closes the window */
+    printf("Press ESC to close window\n");
+
+    /* Основной цикл */
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
@@ -186,12 +194,14 @@ int main(void)
         }
         
     
-        /* Swap front and back buffers */
+        /*Смен буферов*/
         glfwSwapBuffers(window);
 
-        /* Poll for and process events */
+        /*Проверка на события*/
         glfwPollEvents();
     }
+
+    printf("Bye)\n");
 
     //Сохраняем текущую таблицу лидеров
     if (leaderBoard != NULL) updateLeaderBoard(PATH_TO_LEADERBOARD_DATA, leaderBoard);
@@ -248,7 +258,7 @@ void glfwKeyCallback(GLFWwindow* window, int key, int scancode, int action, int 
 
 void character_callback( GLFWwindow * window, unsigned  int codepoint)
 {
-    printf("%c", codepoint);
+    //printf("%c", codepoint);
 }
 
 void changeSpriteRotation(Sprite* sprite, GLfloat newRotate)
